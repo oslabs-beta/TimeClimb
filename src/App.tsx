@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import { useState } from 'react';
+import './App.css';
+import LandingPage from './landingPage/landingPage';
+// import LoginForm from './loginForm';
+// import SignUpForm from './signUpForm';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+  <>
+    {/* <LoginForm />
+    <SignUpForm /> */}
+    <LandingPage />
+  </>
   )
 }
 
-export default App
+export default App;
+
+// app
+
+// login/sign
+//     login
+//     sign up
+
+// landing
+//     nav bar
+//         Diff options (home, about us, etc)
+//     step function cards
+//     add function button
+
+// detailed view
+//     UI
+//         Back button
+//     Flow Chart
+//         flowchart view
+//             Flowchart elements
+//                 Ability to click into and see graph
+//         Filter for data to show
+//         Select function button
+//     Data Container
+//         Collapsable menu of diff visualization tools
+//             Data visualization tool component
+//         Toggle time period button/filter
+//     Time Slice
+//         Slider with time range
+//         Toggle between day/week/month button
