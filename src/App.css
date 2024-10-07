@@ -10,6 +10,13 @@ div {
   text-align: center;
 }
 
+div {
+  border: 1px solid red;
+  margin: 10px;
+  padding: 10px
+}
+
+
 .logo {
   height: 6em;
   padding: 1.5em;

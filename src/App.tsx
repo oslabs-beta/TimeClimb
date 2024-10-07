@@ -1,9 +1,17 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import './App.css';
-import DetailedView from './DetailedView/DetailedView';
+import LandingPage from './landingPage/landingPage';
+// import LoginForm from './loginForm';
+// import SignUpForm from './signUpForm';
 
 function App() {
-  return <></>;
+  return (
+    <>
+      {/* <LoginForm />
+    <SignUpForm /> */}
+      <LandingPage />
+    </>
+  );
 }
 
 export default App;
