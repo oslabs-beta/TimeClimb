@@ -1,7 +1,7 @@
 import AboutPage from './aboutPage.tsx';
 import ContactUs from './contactUs.tsx';
 import HomeButton from './homeButton.tsx';
-import Logout from './logOut.tsx';
+import Logout from './logOut.tsx'; //need to fix
 
 
 
