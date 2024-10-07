@@ -5,14 +5,13 @@ import LandingPage from './landingPage/landingPage';
 // import SignUpForm from './signUpForm';
 
 function App() {
-
   return (
-  <>
-    {/* <LoginForm />
+    <>
+      {/* <LoginForm />
     <SignUpForm /> */}
-    <LandingPage />
-  </>
-  )
+      <LandingPage />
+    </>
+  );
 }
 
 export default App;
