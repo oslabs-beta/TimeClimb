@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-sfn": "^3.666.0",
+    "@aws-sdk/credential-providers": "^3.666.0",
+    "@types/node": "^22.7.5",
     "@xyflow/react": "^12.3.1",
+    "dotenv": "^16.4.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
