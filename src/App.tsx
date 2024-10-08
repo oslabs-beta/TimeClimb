@@ -1,6 +1,7 @@
 // import { useState } from 'react';
 import './App.css';
-import LandingPage from './landingPage/landingPage';
+import DetailedView from './DetailedView/DetailedView';
+//import LandingPage from './landingPage/landingPage';
 // import LoginForm from './loginForm';
 // import SignUpForm from './signUpForm';
 
@@ -9,7 +10,7 @@ function App() {
     <>
       {/* <LoginForm />
     <SignUpForm /> */}
-      <LandingPage />
+      <DetailedView />
     </>
   );
 }
