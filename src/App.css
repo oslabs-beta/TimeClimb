@@ -1,3 +1,8 @@
+div {
+  border: 1px solid rgb(216, 29, 29);
+  margin: 5px;
+  padding: 5px;
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;
