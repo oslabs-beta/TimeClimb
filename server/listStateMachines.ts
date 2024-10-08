@@ -2,6 +2,7 @@ import "dotenv/config";
 import {
   SFNClient,
   ListStateMachinesCommand,
+  ListStateMachinesCommandOutput,
   ListStateMachineVersionsCommand,
   ListStateMachineVersionsCommandOutput,
   DescribeStateMachineCommand,
@@ -43,10 +44,11 @@ async function getStateMachineDetails(
 
 /**
  * Get state machine version information for each state machine
+ * not invoked anymore in this file - could use some throttling implemented
  */
 async function getStateMachineVersions(
-  response: ListStateMachineVersionsCommandOutput
-): undefined {
+  response: ListStateMachinesCommandOutput
+): Promise<undefined> {
   const stateMachineVersions: ListStateMachineVersionsCommandOutput[] = [];
 
   if (response.stateMachines) {
