@@ -3,13 +3,17 @@ import './App.css';
 import LandingPage from './landingPage/landingPage';
 // import LoginForm from './loginForm';
 // import SignUpForm from './signUpForm';
+import { Provider } from 'react-redux';
+import store from '../store.tsx';
 
 function App() {
   return (
     <>
-      {/* <LoginForm />
-    <SignUpForm /> */}
+      <Provider store= {store}>
+      {/* <LoginForm /> */}
+      {/* <SignUpForm />  */}
       <LandingPage />
+      </Provider>
     </>
   );
 }
