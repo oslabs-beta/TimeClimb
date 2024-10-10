@@ -13,6 +13,15 @@ import { fromEnv } from "@aws-sdk/credential-providers";
  * Reads access token from these environment variables:
  * AWS_ACCESS_KEY_ID
  * AWS_SECRET_ACCESS_KEY
+ *
+ * Using fromEnv() to automatically pull the data in from environment variables
+ * When I tried specifying the creditials manually, TypeScript complained.
+ * This could probably be done without the need for
+ * @aws-sdk/credentials-provider library with proper TypeScript configuration.
+ *
+ * However, that library would be useful if we offered another way to
+ * authenticate other than with access keys, which amazon suggests to do, so it
+ * was worth experimenting with as well.
  */
 const sfn = new SFNClient({
   region: process.env.AWS_REGION,
@@ -23,12 +32,14 @@ const listStateMachines = new ListStateMachinesCommand();
 const response = await sfn.send(listStateMachines);
 console.log("listStateMachines response", response);
 
-/**
- * get the detailed implementations of a state machine
- */
+// just getting the details for the first state machine returned
 if (response.stateMachines && response.stateMachines[0].stateMachineArn) {
   getStateMachineDetails(response.stateMachines[0].stateMachineArn);
 }
+
+/**
+ * get the detailed implementations of a state machine
+ */
 async function getStateMachineDetails(
   stateMachineArn: string
 ): Promise<undefined> {
@@ -43,8 +54,8 @@ async function getStateMachineDetails(
 }
 
 /**
- * Get state machine version information for each state machine
- * not invoked anymore in this file - could use some throttling implemented
+ * Get state machine version information for each state machine found
+ * Not invoked anymore in this file - could use some throttling later
  */
 async function getStateMachineVersions(
   response: ListStateMachinesCommandOutput
