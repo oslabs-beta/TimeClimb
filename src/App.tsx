@@ -13,7 +13,7 @@ function App() {
       <Provider store={store}>
         {/* <LoginForm /> */}
         {/* <SignUpForm />  */}
-        <LandingPage />
+        <DetailedView />
       </Provider>
     </>
   );

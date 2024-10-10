@@ -3,6 +3,7 @@ import { Handle, Position } from '@xyflow/react';
 type BubbleProps = {
   data: {
     metric: number;
+    name: string;
   };
 };
 
@@ -15,7 +16,7 @@ function FlowChartBubble({ data }: BubbleProps) {
       style={{ backgroundColor: `rgb(${red}, ${green}, 0)` }}
     >
       <Handle type='target' position={Position.Top} />
-      <div>{data.metric}</div>
+      <div>{data.name}</div>
       <Handle type='source' position={Position.Bottom} />
     </div>
   );
