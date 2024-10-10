@@ -67,6 +67,8 @@ async function listExecutionEventInfo(){
                 //add the end time, push into stepInfo and clear currentObj for next new step
                 //still need to add total time as property as well!!!
                 currentObj.endTime = ev.timestamp;
+                currentObj.stepTotalRuntime = (currentObj.endTime.getTime() - currentObj.startTime.getTime()) / 1000 ;
+                //create property
                 stepInfo.push(currentObj);
                 currentObj = {};
             }
@@ -78,5 +80,8 @@ async function listExecutionEventInfo(){
         console.log("Error:", error)
     }
 }
+const testTime = new Date(1525283875.58)
+console.log(testTime)
+
 listExecutionEventInfo()
 
