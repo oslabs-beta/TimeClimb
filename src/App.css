@@ -8,3 +8,41 @@
   padding: 5px;
   border-radius: 5px;
 }
+
+.landingPage {
+  display: flex;
+}
+
+.navBar {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: fit-content;
+  margin: 20px;
+  padding: 10px;
+  justify-content: space-between;
+}
+
+.about a, .contact a, .home a, .logout a {
+  text-decoration: none;
+  color: black;
+}
+
+.addCard {
+  display: flex;
+  width: fit-content;
+  margin: 20px;
+}
+
+.addCard .add {
+  height: 100px;
+  width: 100px;
+  border-radius: 5px;
+}
+
+.functionCards{
+  border: 1px solid black;
+  margin: 20px;
+  border-radius: 5px;
+}

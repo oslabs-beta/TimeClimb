@@ -2,33 +2,27 @@
 // import { useDispatch, useSelector } from 'react-redux';
 // import { AppDispatch } from '../../store.tsx';
 // import { fetchCards } from '../reducers/cardSlice.tsx';
+import { card } from "../reducers/cardSlice"
 
-interface props {
-    name: string
-    chart: string
-    view: string
-    remove: string
-}
-
-function FunctionCards({name, chart, view, remove}:props) {
+function FunctionCards({name, visual, view, remove}:card) {
     // const username = useSelector(selectUser);
     // const dispatch: AppDispatch = useDispatch();
 
     return (
         <div className="functionCards">
-            <div>
-                'Name of function' {name}
+            <div className="cardName">
+                {name}
             </div>
-            <div> 
-                Visualization flow chart {chart} 
+            <div className="cardVisual"> 
+                {visual} 
             </div>
 
-            <button>
-                View {view}
+            <button id="viewButton">
+                {view}
             </button>
 
-            <button id = 'deletebutton'>
-                Remove {remove}
+            <button id = 'deleteButton'>
+                {remove}
             </button>
         </div>
     )

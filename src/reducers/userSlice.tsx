@@ -1,8 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../store.tsx';
 
 const initialState = {
-    username: null,
+    accessKeyID: '',
+    secretAccessKey: '',
+    region: 'Select one',
     allCards: {},
 };
 
@@ -10,16 +12,23 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setUser: (state, action) => {
-            state.username = action.payload
+        setAccessKeyID: (state, action) => {
+            state.accessKeyID = action.payload
         },
-        
+        setSecretAccessKey: (state, action) => {
+            state.secretAccessKey = action.payload
+        },
+        setRegion: (state, action) => {
+            state.region = action.payload
+        }
     }
 })
 
 export const {
-    setUser
+    setAccessKeyID,
+    setSecretAccessKey,
+    setRegion
 } = userSlice.actions;
 
-export const selectUser = (state:RootState) => state.user.username
+export const selectUser = (state:RootState) => state.user
 export default userSlice.reducer

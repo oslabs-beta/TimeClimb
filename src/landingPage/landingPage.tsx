@@ -1,25 +1,14 @@
 import NavBar from './navbar/navBar.tsx'
 import AllCard from './allCards.tsx'
-import { selectUser } from '../reducers/userSlice.tsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCards } from '../reducers/cardSlice.tsx';
-import { AppDispatch } from '../../store.tsx';
-import { useEffect } from 'react';
+import AddCard from './addCard.tsx';
 
 
 function LandingPage() {
-    const username = useSelector(selectUser);
-    const dispatch: AppDispatch = useDispatch();
 
-    useEffect(() => {
-        if (username) {
-            dispatch(fetchCards(username))
-        }
-    }, []);
-    
     return (
-        <div>
+        <div className='landingPage'>
             <NavBar />
+            <AddCard /> 
             <AllCard />
             This is the Landing Page
         </div>
