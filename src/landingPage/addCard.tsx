@@ -2,11 +2,10 @@
 
 function AddCard() {
     return (
-        <div>
-            <button>
+        <div className="addCard">
+            <button className="add" >
                 Add Function
             </button>
-            This is the Add Card
         </div>
     )
 }

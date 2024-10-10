@@ -1,33 +1,43 @@
-import AddCard from './addCard.tsx'
 import FunctionCards from './functionCards.tsx'
-import { useSelector } from 'react-redux';
 import { RootState } from '../../store.tsx';
+import { card, selectCard } from '../reducers/cardSlice.tsx'
+import { selectUser } from '../reducers/userSlice.tsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCards } from '../reducers/cardSlice.tsx';
+import { AppDispatch } from '../../store.tsx';
+import { useEffect } from 'react';
 
 
 function AllCards() {
 
-    const cards = useSelector((state: RootState)=> state.card.allCards)
+    const cards = useSelector((state: RootState)=> state.card.allCards) as card[];
+    // console.log('card', cards)
 
-    interface cardType {
-        name: string
-        chart: string
-        view: string
-        remove: string
-    }
+    const user = useSelector(selectUser);
+    const card = useSelector(selectCard);
+    const dispatch: AppDispatch = useDispatch();
 
-    const allCards = [];
-      for (let i = 0; i < cards.length; i++) {
-        const card: cardType = cards[i];
-        const { name, chart, view ,remove} = card 
-        allCards.push(<FunctionCards key={i} name={name} chart= {chart} remove ={remove} view ={view}/>);
-      }
+    useEffect(() => {
+        if (user && card.status === 'idle') {
+            dispatch(fetchCards(user.accessKeyID))
+        }
+    }, []);
 
     return (
-        <div className='allCards'>
-            <AddCard />
-            <div className='allFunctionCards'>{allCards}</div>
-            This is the All Cards
-        </div>
+      <div className='allFunctionCards'>
+        {cards.map((card, index) => {
+          console.log('card info', card);
+          return(
+            <FunctionCards 
+            key={index} 
+            name={card.name} 
+            visual={card.visual} 
+            remove= {card.remove} 
+            view= {card.view}/>
+            )
+          }
+        )}  
+      </div>
     )
 }
 
