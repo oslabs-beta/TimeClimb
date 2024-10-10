@@ -1,4 +1,3 @@
-import React from 'react';
 import DetailedViewUI from './DetailedViewUI';
 import FlowChart from './FlowChart';
 import DataContainer from './DataContainer';

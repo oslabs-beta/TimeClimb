@@ -1,6 +1,7 @@
 // import { useState } from 'react';
 import './App.css';
-import LandingPage from './landingPage/landingPage';
+import DetailedView from './DetailedView/DetailedView';
+//import LandingPage from './landingPage/landingPage';
 // import LoginForm from './loginForm';
 // import SignUpForm from './signUpForm';
 import { Provider } from 'react-redux';
@@ -9,10 +10,10 @@ import store from '../store.tsx';
 function App() {
   return (
     <>
-      <Provider store= {store}>
-      {/* <LoginForm /> */}
-      {/* <SignUpForm />  */}
-      <LandingPage />
+      <Provider store={store}>
+        {/* <LoginForm /> */}
+        {/* <SignUpForm />  */}
+        <LandingPage />
       </Provider>
     </>
   );
