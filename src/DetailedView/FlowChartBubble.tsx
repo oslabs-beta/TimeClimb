@@ -1,6 +1,12 @@
 import { Handle, Position } from '@xyflow/react';
 
-function FlowChartBubble({ data }) {
+type BubbleProps = {
+  data: {
+    metric: number;
+  };
+};
+
+function FlowChartBubble({ data }: BubbleProps) {
   const red = data.metric;
   const green = 255 - data.metric;
   return (
