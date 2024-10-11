@@ -8,6 +8,8 @@ import { AppDispatch } from '../../store.tsx';
 import { useEffect } from 'react';
 
 
+
+
 function AllCards() {
 
     const cards = useSelector((state: RootState)=> state.card.allCards) as card[];
@@ -17,16 +19,18 @@ function AllCards() {
     const card = useSelector(selectCard);
     const dispatch: AppDispatch = useDispatch();
 
+    //not sure how we are continually fetching data yet
+    //this gives 'Unexpected token '<', "<!doctype "... is not valid JSON' error
     useEffect(() => {
         if (user && card.status === 'idle') {
-            dispatch(fetchCards(user.accessKeyID))
+            dispatch(fetchCards())
         }
     }, []);
 
     return (
       <div className='allFunctionCards'>
         {cards.map((card, index) => {
-          console.log('card info', card);
+          // console.log('card info', card);
           return(
             <FunctionCards 
             key={index} 

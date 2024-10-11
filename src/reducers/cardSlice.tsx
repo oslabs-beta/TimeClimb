@@ -1,49 +1,104 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../store.tsx';
 
-type accessKeyID = string;
 
 export interface card {
     name: string,
     visual: string,
-    view: string
-    remove: string//dom.element or react.element?
+    view: string,
+    remove: string,//dom.element or react.element?
+    // link?: string //how are we validating step functions when we are adding new function cards?
 }
 
 interface cardState {
     allCards: card[],
     status: 'idle' | 'loading' | 'success' | 'failed',
-    error: string | null
+    error: string | null,
+    addCardform: boolean,
+    currentLink: string,
+    currentName: string
 }
 
 const initialState:cardState = {
     allCards: [
-        { name: 'Card 1', visual: 'Flowchart 1', view: 'View', remove: 'Delete' },
-        { name: 'Card 2', visual: 'Flowchart 2', view: 'View', remove: 'Delete' }
+        { name: 'Card 1', visual: 'Flowchart 1', view: 'View', remove: 'Delete'},
+        { name: 'Card 2', visual: 'Flowchart 2', view: 'View', remove: 'Delete'}
     ],
     status: 'idle',
-    error: null,
+    error: '',
+    addCardform: false,
+    currentLink: '',
+    currentName: ''
 }
 
 export const fetchCards = createAsyncThunk(
     'cards/fetchingCards',
-    async (accessKeyID: accessKeyID) => {
-        const cards = await fetch(`/home/card/${accessKeyID}`, {
+    async () => {
+        const cards = await fetch(`/home/card`, {
             headers: {"content-Type": "application/json"}
         })
         if (!cards.ok) {
             throw new Error('cannot fetch cards')
         }
         const homeCards = await cards.json();
-        console.log(homeCards)
+        // console.log(homeCards)
         return homeCards;
+    }
+)
+
+export const fetchFunc = createAsyncThunk(
+    'cards/fetchFunc',
+    async(link: string) => {
+        const func = await fetch(`home/func/${link}`, {
+            headers:{'content-Type':'application/json'}
+        })
+        if (!func.ok) {
+            throw new Error('cannot fetch func')
+        }
+        const funcCard = await func.json();
+        // console.log(funcCard)
+        return funcCard
     }
 )
 
 export const cardSlice = createSlice({
     name: 'card',
     initialState,
-    reducers: {},
+    reducers: {
+        setAddCardForm: (state) => {
+            state.addCardform = true
+        },
+        setAddCardFormFalse: (state) => {
+            state.addCardform = false
+        },
+        setCardLink: (state, action) => {
+            state.currentLink = action.payload
+        },
+        setCardName: (state, action) => {
+            state.currentName = action.payload
+        },
+        addCard: (state) => {
+            const exists = state.allCards.some((card)=> card.name === state.currentName)
+            if (exists) {
+                state.error = 'name already exists'
+                return
+            }
+            const newCard: card = {
+                name: state.currentName,
+                visual: 'chart',
+                view: 'View',
+                remove: 'delete',
+                // link: state.currentLink
+            }
+            state.allCards.push(newCard)
+            state.currentName = '';
+            // state.currentLink = '',
+            state.error = ''
+        },
+        deleteCard: (state, action) => {
+            state.allCards = state.allCards.filter((card)=> card.name !== action.payload)
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchCards.pending, (state)=> {
@@ -61,6 +116,15 @@ export const cardSlice = createSlice({
     }
  }
 )
+
+export const {
+    setAddCardForm,
+    setAddCardFormFalse,
+    setCardLink,
+    setCardName,
+    addCard,
+    deleteCard
+} = cardSlice.actions
 
 export const selectCard = (state:RootState) => state.card
 export default cardSlice.reducer
