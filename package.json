@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "migrate:make": "tsx ./node_modules/.bin/knex --knexfile knexfile.ts migrate:make",
+    "migrate:make": "npx tsx ./node_modules/.bin/knex migrate:make",
     "migrate:latest": "npx tsx ./node_modules/.bin/knex migrate:latest",
     "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback"
   },
