@@ -5,6 +5,7 @@ import LandingPage from './landingPage/landingPage';
 // import LoginForm from './loginForm';
 // import SignUpForm from './signUpForm';
 import { Provider } from 'react-redux';
+import DetailedView from './DetailedView/DetailedView.tsx';
 import store from '../store.tsx';
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
       <Provider store={store}>
         {/* <LoginForm /> */}
         {/* <SignUpForm />  */}
-        <LandingPage />
+        <DetailedView />
       </Provider>
     </>
   );
