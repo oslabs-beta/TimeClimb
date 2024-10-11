@@ -1,12 +1,17 @@
 // import { selectUser } from '../reducers/userSlice.tsx';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { AppDispatch } from '../../store.tsx';
+import { useDispatch} from 'react-redux';
+import { AppDispatch } from '../../store.tsx';
 // import { fetchCards } from '../reducers/cardSlice.tsx';
-import { card } from "../reducers/cardSlice"
+import { card, deleteCard } from "../reducers/cardSlice"
+
 
 function FunctionCards({name, visual, view, remove}:card) {
     // const username = useSelector(selectUser);
-    // const dispatch: AppDispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
+
+    const handleDelete = (name: string) => {
+        dispatch(deleteCard(name))
+    }
 
     return (
         <div className="functionCards">
@@ -21,7 +26,7 @@ function FunctionCards({name, visual, view, remove}:card) {
                 {view}
             </button>
 
-            <button id = 'deleteButton'>
+            <button id = 'deleteButton' onClick={()=> handleDelete(name)}>
                 {remove}
             </button>
         </div>

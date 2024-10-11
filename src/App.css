@@ -8,9 +8,14 @@
   padding: 5px;
   border-radius: 5px;
 }
-
+html, body {
+  height: 100%;
+  margin: 0;
+}
 .landingPage {
   display: flex;
+  height: 75vw;
+  width: 100vw;
 }
 
 .navBar {
@@ -27,6 +32,7 @@
 .about a, .contact a, .home a, .logout a {
   text-decoration: none;
   color: black;
+  margin: 200px 5px;
 }
 
 .addCard {
@@ -44,5 +50,35 @@
 .functionCards{
   border: 1px solid black;
   margin: 20px;
+  border-radius: 5px;
+}
+
+.stepFunc {
+  position: fixed; 
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1); 
+}
+
+.stepFunc form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.stepFunc form label, .stepFunc form input, .stepFunc form button {
+  margin: 5px 20px;
+}
+
+.stepFunc form label, .stepFunc form button {
   border-radius: 5px;
 }
