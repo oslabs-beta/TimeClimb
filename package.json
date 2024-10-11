@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-sfn": "^3.666.0",
+    "@aws-sdk/credential-providers": "^3.666.0",
+    "@types/node": "^22.7.5",
     "aws-sdk": "^2.1691.0",
     "dotenv": "^16.4.5",
     "@xyflow/react": "^12.3.1",
