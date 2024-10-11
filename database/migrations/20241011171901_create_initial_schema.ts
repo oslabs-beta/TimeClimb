@@ -79,16 +79,9 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  let sql = await knex.schema.dropTableIfExists("step_functions").toSQL();
-  console.log("drop sql:", sql);
-  sql = await knex.schema.dropTableIfExists("steps").toSQL();
-  console.log("drop sql:", sql);
-  sql = await knex.schema.dropTableIfExists("step_latencies").toSQL();
-  console.log("drop sql:", sql);
-  sql = await knex.schema.dropTableIfExists("step_function_latencies").toSQL();
-  console.log("drop sql:", sql);
-  sql = await knex.schema.dropTableIfExists("step_function_monitoring").toSQL();
-  console.log("drop sql:", sql);
-  // await knex.schema.dropTableIfExists("step_functions");
-  // await knex.schema.dropTableIfExists("step_functions");
+  await knex.schema.dropTableIfExists("step_functions");
+  await knex.schema.dropTableIfExists("steps");
+  await knex.schema.dropTableIfExists("step_latencies");
+  await knex.schema.dropTableIfExists("step_function_latencies");
+  await knex.schema.dropTableIfExists("step_function_monitoring");
 }
