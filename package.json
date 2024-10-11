@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "migrate:make": "tsx ./node_modules/.bin/knex --knexfile knexfile.ts migrate:make"
+    "migrate:make": "tsx ./node_modules/.bin/knex --knexfile knexfile.ts migrate:make",
+    "migrate:latest": "npx tsx ./node_modules/.bin/knex migrate:latest",
+    "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback"
   },
   "dependencies": {
     "@aws-sdk/client-sfn": "^3.666.0",
