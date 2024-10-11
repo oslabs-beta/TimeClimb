@@ -4,16 +4,19 @@ import {
   Controls,
   Background,
   BackgroundVariant,
+  NodeTypes,
+  BuiltInNode,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import FlowChartBubble from './FlowChartBubble';
+import dagre, { Node } from '@dagrejs/dagre';
 
 type FlowChartNode = {
   id: string;
   type: string;
   position: { x: number; y: number };
-  data: { metric: number; name: string };
+  data: { metric: number; name: string | undefined };
 };
 //{ id: 'e1-2', source: '1', target: '2' }
 type FlowChartEdge = {
@@ -22,8 +25,15 @@ type FlowChartEdge = {
   target: string;
 };
 
+type NodesAndEdges = {
+  nodes: FlowChartNode[];
+  edges: FlowChartEdge[];
+};
+
 function FlowChartView() {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
+  // const [initialNodes, setInitialNodes] = useState<FlowChartNode[]>([]);
+  // const [initialEdges, setInitialEdges] = useState<FlowChartEdge[]>([]);
 
   const exampleFunction = {
     Comment:
@@ -63,7 +73,32 @@ function FlowChartView() {
       },
       No: {
         Type: 'Fail',
-        Cause: 'Not Hello World',
+        Next: 'Not Hello World',
+      },
+      'Not Hello World': {
+        Comment:
+          'A Parallel state can be used to create parallel branches of execution in your state machine.',
+        Type: 'Parallel',
+        Branches: [
+          {
+            StartAt: 'Goodbye',
+            States: {
+              Goodbye: {
+                Type: 'Pass',
+                Next: 'Sadness',
+              },
+            },
+          },
+          {
+            StartAt: 'Cruel World',
+            States: {
+              'Cruel World': {
+                Type: 'Pass',
+                End: true,
+              },
+            },
+          },
+        ],
       },
       'Wait 3 sec': {
         Comment:
@@ -71,6 +106,32 @@ function FlowChartView() {
         Type: 'Wait',
         Seconds: 3,
         Next: 'Parallel State',
+      },
+      Sadness: {
+        Comment:
+          'A Parallel state can be used to create parallel branches of execution in your state machine.',
+        Type: 'Parallel',
+        Next: 'Hello World',
+        Branches: [
+          {
+            StartAt: 'Hello',
+            States: {
+              Hello: {
+                Type: 'Pass',
+                End: true,
+              },
+            },
+          },
+          {
+            StartAt: 'World',
+            States: {
+              World: {
+                Type: 'Pass',
+                End: true,
+              },
+            },
+          },
+        ],
       },
       'Parallel State': {
         Comment:
@@ -105,146 +166,82 @@ function FlowChartView() {
     },
   };
 
-  const initialNodes: FlowChartNode[] = [];
-  const initialEdges: FlowChartEdge[] = [];
+  var g = new dagre.graphlib.Graph();
 
-  function createStepFunctionFlowchart(
-    data,
-    coordinates = { x: 0, y: 0 }
-  ): void {
-    //let { x, y } = coordinates;
-    //Count for choices
-    let choiceCount = 0;
-    let xOffset = 0;
-    //Get the states of the data
-    const States = data.States;
-    for (const state in States) {
-      //Create a new flowchart node with the same name and add it to the list
-      const newNode: FlowChartNode = {
-        id: state,
+  g.setGraph({});
+
+  g.setDefaultEdgeLabel(function () {
+    return {};
+  });
+
+  function createFlowchart(g, data) {
+    function createGraph(g, subgraph, next?) {
+      console.log('Creating graph for: ', subgraph);
+      console.log(subgraph.States);
+      for (const state in subgraph.States) {
+        g.setNode(state, { label: state, width: 100, height: 100 });
+        if (
+          subgraph.States[state].Next &&
+          !(subgraph.States[state].Type === 'Parallel')
+        )
+          g.setEdge(state, subgraph.States[state].Next);
+
+        if (subgraph.States[state].Type === 'Choice') {
+          subgraph.States[state].Choices.forEach((ele) => {
+            g.setEdge(state, ele.Next);
+          });
+        }
+        if (subgraph.States[state].Type === 'Parallel') {
+          subgraph.States[state].Branches.forEach((ele) => {
+            createGraph(g, ele, subgraph.States[state].Next);
+            g.setEdge(state, ele.StartAt);
+          });
+        }
+        if (subgraph.States[state].End && next) {
+          g.setEdge(state, next);
+        }
+      }
+    }
+    createGraph(g, data);
+
+    dagre.layout(g);
+
+    const initialNodes = [];
+    const initialEdges = [];
+    g.nodes().forEach(function (v) {
+      console.log('Node ' + v + ': ' + JSON.stringify(g.node(v)));
+      const newNode = {
+        id: g.node(v).label,
         type: 'flowChartBubble',
-        position: { x: coordinates.x, y: coordinates.y },
-        data: { metric: Math.floor(Math.random() * 255), name: state },
+        position: { x: g.node(v).x, y: g.node(v).y },
+        data: {
+          metric: Math.floor(Math.random() * 255),
+          name: g.node(v).label,
+        },
       };
       initialNodes.push(newNode);
-      if (choiceCount > 1) {
-        //Shift the positions of nodes horizontally when generating choices
-        coordinates.x += 200;
-        choiceCount--;
-      } else {
-        coordinates.x = xOffset;
-        coordinates.y += 100;
-      }
-      if (States[state].Type === 'Choice') {
-        choiceCount = States[state].Choices.length;
-        coordinates.x = -((choiceCount - 1) * 100);
-        xOffset = -((choiceCount - 1) * 100);
-        //Create a new edge for each choice
-        for (let i = 0; i < States[state].Choices.length; i++) {
-          const newEdge = {
-            id: `${state}-${States[state].Choices[i].Next}`,
-            source: state,
-            target: States[state].Choices[i].Next,
-          };
-          initialEdges.push(newEdge);
-        }
-      }
-      if (States[state].Type === 'Parallel') {
-        coordinates.x = -((States[state].Branches.length - 1) * 100) + xOffset;
-        for (let i = 0; i < States[state].Branches.length; i++) {
-          const newEdge = {
-            id: `${state}-${States[state].Branches[i].StartAt}`,
-            source: state,
-            target: States[state].Branches[i].StartAt,
-          };
-          console.log(newEdge);
-          initialEdges.push(newEdge);
-          let originalY = coordinates.y;
-          createStepFunctionFlowchart(States[state].Branches[i], coordinates);
-          coordinates.y = originalY;
-          coordinates.x += 100;
-        }
-        coordinates.y += 100;
-        coordinates.x = xOffset;
-      }
+    });
+
+    g.edges().forEach(function (e) {
+      console.log(
+        'Edge ' + e.v + ' -> ' + e.w + ': ' + JSON.stringify(g.edge(e))
+      );
       const newEdge = {
-        id: `${state}-${States[state].Next}`,
-        source: state,
-        target: States[state].Next,
+        id: `${e.v}->${e.w}`,
+        source: e.v,
+        target: e.w,
       };
       initialEdges.push(newEdge);
-      console.log(newNode);
-    }
+    });
+    return { nodes: initialNodes, edges: initialEdges };
   }
 
-  useEffect(() => {
-    createStepFunctionFlowchart(exampleFunction);
-  }, []);
+  const results = createFlowchart(g, exampleFunction);
+  const initialNodes = results.nodes;
+  const initialEdges = results.edges;
 
-  // const initialNodea = [
-  //   {
-  //     id: '1',
-  //     type: 'flowChartBubble',
-  //     position: { x: 0, y: 0 },
-  //     data: { label: '1', metric: '255' },
-  //   },
-  //   {
-  //     id: '2',
-  //     type: 'flowChartBubble',
-  //     position: { x: 0, y: 100 },
-  //     data: { label: '2', metric: '0' },
-  //   },
-  //   {
-  //     id: '3',
-  //     type: 'flowChartBubble',
-  //     position: { x: 100, y: 200 },
-  //     data: { label: '3', metric: '100' },
-  //   },
-  //   {
-  //     id: '4',
-  //     type: 'flowChartBubble',
-  //     position: { x: -100, y: 200 },
-  //     data: { label: '4', metric: '125' },
-  //   },
-  //   {
-  //     id: '5',
-  //     type: 'flowChartBubble',
-  //     position: { x: 200, y: 300 },
-  //     data: { label: '5', metric: '200' },
-  //   },
-  //   {
-  //     id: '6',
-  //     type: 'flowChartBubble',
-  //     position: { x: 0, y: 300 },
-  //     data: { label: '6', metric: '50' },
-  //   },
-  //   {
-  //     id: '7',
-  //     type: 'flowChartBubble',
-  //     position: { x: -200, y: 300 },
-  //     data: { label: '7', metric: '69' },
-  //   },
-  //   {
-  //     id: '8',
-  //     type: 'flowChartBubble',
-  //     position: { x: 0, y: 400 },
-  //     data: { label: '8', metric: '240' },
-  //   },
-  // ];
-  // const initialEdges = [
-  //   { id: 'e1-2', source: '1', target: '2' },
-  //   { id: 'e2-4', source: '2', target: '4' },
-  //   { id: 'e2-3', source: '2', target: '3' },
-  //   { id: 'e4-7', source: '4', target: '7' },
-  //   { id: 'e4-6', source: '4', target: '6' },
-  //   { id: 'e3-6', source: '3', target: '6' },
-  //   { id: 'e3-5', source: '3', target: '5' },
-  //   { id: 'e7-8', source: '7', target: '8' },
-  //   { id: 'e6-8', source: '6', target: '8' },
-  //   { id: 'e5-8', source: '5', target: '8' },
-  // ];
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div style={{ width: '50vw', height: '50vh' }}>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}
