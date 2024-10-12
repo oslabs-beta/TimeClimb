@@ -84,9 +84,7 @@ for a specific step function by id
 #### 400 Invalid Step Function Id
 
 ```json
-{
-  "error": "Invalid step_function_id"
-}
+{ "error": "Invalid step_function_id" }
 ```
 
 #### 404 Step Function Not Found
@@ -113,9 +111,7 @@ for a specific step function by id
 #### Example Value
 
 ```json
-{
-  "arn": "arn:partition:service:region:account-id:resource-type:resource-id"
-}
+{ "arn": "arn:partition:service:region:account-id:resource-type:resource-id" }
 ```
 
 ### Responses
@@ -144,17 +140,13 @@ for a specific step function by id
 #### 400 Invalid ARN
 
 ```json
-{
-  "error": "Invalid arn"
-}
+{ "error": "Invalid arn" }
 ```
 
 #### 401 Unauthorized
 
 ```json
-{
-  "error": "Unauthorized to access this arn"
-}
+{ "error": "Unauthorized to access this arn" }
 ```
 
 </details>
