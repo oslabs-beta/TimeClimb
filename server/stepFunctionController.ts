@@ -37,9 +37,16 @@ const stepFunctionController: stepFunctionController = {
         const response = await sfn.send(listStateMachines);
         console.log("listSTateMachines response", response)
         //iterate through statemachines array
-        //for each machine, create an object with properties in database
+        //for each machine,
+        //get it's details and create an object with properties in database
         response.stateMachines.map((mach) => {
-
+            async function getStateMachineDetails(
+                stateMachineArn:string
+            ): Promise<undefined>{
+                const describeStateMachine = new getStateMachineDetails({
+                    stateMachineArn,
+                });
+            }
         })
         return next()
         }
