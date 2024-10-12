@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "build:server": "tsc -b tsconfig.server.json",
     "start": "node dist/server/server.js",
-    "dev:server": "tsx watch server/server.ts"
+    "dev:server": "tsx watch server/server.ts",
+    "migrate:make": "npx tsx ./node_modules/.bin/knex migrate:make",
+    "migrate:latest": "npx tsx ./node_modules/.bin/knex migrate:latest",
+    "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback"
   },
   "dependencies": {
     "@aws-sdk/client-sfn": "^3.666.0",
@@ -32,6 +35,7 @@
     "@eslint/js": "^9.11.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/node": "^22.7.5",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -39,8 +43,9 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.9.0",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.3",
+    "typescript": "^5.5.3",
     "typescript-eslint": "^8.7.0",
     "vite": "^5.4.8"
   }
