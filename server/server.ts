@@ -3,15 +3,18 @@ import cors from "cors";
 import logData from "./models/controllers";
 import stepFunctionController from "./controllers/stepFunctionController";
 import apiRouter from "./routes/api/index";
+import clientRouter from "./routes/client/index";
 import { Request, Response, NextFunction } from "express";
-
+import clientRouter from "./routes/client";
+const PORT = 3000;
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = 3000;
+// API router
+app.use("/api", apiRouter);
 
 app.get("/", logData, (req: Request, res: Response) => {
   res.status(200).json({ message: "Hello, Typescript Express!" });
@@ -25,7 +28,8 @@ app.get(
   }
 );
 
-app.use("/api", apiRouter);
+// for react app
+app.use(clientRouter);
 
 app.use((err, req, res, next) => {
   const errObj = {
