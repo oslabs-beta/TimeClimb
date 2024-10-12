@@ -128,21 +128,6 @@ for a specific step function by id
 
 ### Example Responses
 
-#### 200 Ok
-
-```json
-{
-  "step_function_id": 0,
-  "name": "string",
-  "comment": "string",
-  "description": "string",
-  "alias": "string",
-  "asl": {} // json definition as an object
-}
-```
-
-### Example Responses
-
 #### 200 Successfully added step function for monitoring
 
 ```json
