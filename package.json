@@ -8,6 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "build:server": "tsc -b tsconfig.server.json",
+    "start": "node dist/server/server.js",
+    "dev:server": "tsx watch server/server.ts",
     "migrate:make": "npx tsx ./node_modules/.bin/knex migrate:make",
     "migrate:latest": "npx tsx ./node_modules/.bin/knex migrate:latest",
     "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback"
@@ -17,14 +20,20 @@
     "@aws-sdk/credential-providers": "^3.666.0",
     "@xyflow/react": "^12.3.1",
     "aws-sdk": "^2.1691.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.21.1",
     "knex": "^3.1.0",
     "pg": "^8.13.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "ts-node-dev": "^2.0.0",
+    "vite-express": "^0.19.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.7.5",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",

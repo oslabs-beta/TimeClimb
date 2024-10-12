@@ -35,6 +35,7 @@ console.log("listStateMachines response", response);
 // just getting the details for the first state machine returned
 if (response.stateMachines && response.stateMachines[0].stateMachineArn) {
   getStateMachineDetails(response.stateMachines[0].stateMachineArn);
+  getStateMachineVersions(response)
 }
 
 /**
@@ -49,7 +50,7 @@ async function getStateMachineDetails(
 
   const response = await sfn.send(describeStateMachine);
   console.log("getStateMachineDetails reponse", response);
-
+  
   return undefined;
 }
 
