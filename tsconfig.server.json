@@ -7,6 +7,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["server"],
+  "include": ["server", "knexfile.ts"],
   "exclude": ["node_modules"]
 }

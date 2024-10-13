@@ -1,11 +1,11 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import logData from "./models/controllers";
 import stepFunctionController from "./controllers/stepFunctionController";
 import apiRouter from "./routes/api/index";
 import clientRouter from "./routes/client/index";
-import { Request, Response, NextFunction } from "express";
-import clientRouter from "./routes/client";
+
 const PORT = 3000;
 const app = express();
 

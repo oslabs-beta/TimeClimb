@@ -1,7 +1,7 @@
 // file for describing the shape of the database tables in order to help
 // ensure that we are building and using models correctly
 
-export interface StepFunctions {
+export interface StepFunctionsTable {
   step_function_id: number;
   name: string;
   arn: string;

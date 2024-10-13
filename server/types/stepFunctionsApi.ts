@@ -8,8 +8,8 @@ export interface GetStepFunctionByIdRequest {
 export interface GetStepFunctionResponse {
   step_function_id: number;
   name: string;
-  comment?: string;
-  description?: string;
-  alias?: string;
+  comment?: string | null;
+  description?: string | null;
+  alias?: string | null;
   asl: string;
 }

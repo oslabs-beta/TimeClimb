@@ -1,11 +1,15 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
+import stepFunctionsApiController from "../../controllers/api/stepFunctionsApiController";
+
 const stepFunctionRouter = express.Router();
 
 // routes /api/step-functions
 stepFunctionRouter.get(
   "/",
-  (req: Request, res: Response, next: NextFunction): void => {
-    return next();
+  stepFunctionsApiController.getStepFunctions,
+  async (req: Request, res: Response): Promise<void> => {
+    res.status(200).json(res.locals.stepFunctions);
+    return;
   }
 );
 
