@@ -8,16 +8,38 @@ import { Provider } from 'react-redux';
 import DetailedView from './DetailedView/DetailedView.tsx';
 import store from '../store.tsx';
 
+import {Route, Routes, Link} from "react-router-dom";
+
 function App() {
+  // return (
+  //   <>
+  //     <Provider store={store}>
+  //       {/* <LoginForm /> */}
+  //       {/* <SignUpForm />  */}
+  //       {/* <DetailedView /> */}
+  //       <LandingPage />
+  //     </Provider>
+  //   </>
+  // );old
+
   return (
     <>
-      <Provider store={store}>
-        {/* <LoginForm /> */}
-        {/* <SignUpForm />  */}
-        <DetailedView />
-      </Provider>
-    </>
-  );
+      <nav>
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/expandView" >graph</Link></li>
+        </ul>
+      </nav>
+    <Provider store={store}>
+      <Routes>
+          <Route path="/" element={<LandingPage />}/>
+          <Route path="/expandView" element={<DetailedView />}>
+            {/*possible to nest comps in here dont know that I will */}
+          </Route>
+        </Routes>
+    </Provider>
+  </>
+  )
 }
 
 export default App;
