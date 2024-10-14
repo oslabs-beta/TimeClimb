@@ -4,6 +4,7 @@ import { AppDispatch } from '../../store.tsx';
 // import { fetchCards } from '../reducers/cardSlice.tsx';
 import { card, deleteCard } from "../reducers/cardSlice"
 import { useNavigate } from 'react-router-dom';
+import FlowChartView from '../DetailedView/FlowChartView.tsx';
 
 function FunctionCards({name, region, visual, view, remove}:card) {
     // const username = useSelector(selectUser);
@@ -14,12 +15,12 @@ function FunctionCards({name, region, visual, view, remove}:card) {
         dispatch(deleteCard(name))
     }
 
-    // const handleView = (name :string) => {
-    //     navigate(`detailedView/:name`, {state: {cardName: name}})
-    // }
-    function changeView(){
-        navigate("/expandView")
+    const handleView = (name :string) => {
+        navigate(`/expandView`, {state: {cardName: name}})
     }
+    // function changeView(){
+    //     navigate("/expandView")
+    // }
 
     return (
         <div className="functionCards">
@@ -31,11 +32,11 @@ function FunctionCards({name, region, visual, view, remove}:card) {
                 {region}
             </div>
 
-            <div className="cardVisual"> 
-                {visual} 
+            <div className="cardVisual" > 
+                {visual} <FlowChartView height = {200} width ={200}/> 
             </div>
 
-            <button id="viewButton" onClick={changeView}>
+            <button id="viewButton" onClick={()=> handleView(name)}>
                 {view}
             </button>
 
