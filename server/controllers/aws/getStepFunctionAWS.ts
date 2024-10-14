@@ -2,9 +2,7 @@ import "dotenv/config";
 import { SFNClient, DescribeStateMachineCommand } from "@aws-sdk/client-sfn";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import { GetStateMachineDetailsFromAWS } from "../../types/stepFunctionDetailsFromAWS";
-
-
-
+import  stepFunctionsModel from "/Users/alexstewart/gh-repos/timeClimb/TimeClimb/server/models/stepFunctionsModel"
 
 async function getStateMachineDetails(
     stateMachineArn: GetStateMachineDetailsFromAWS
@@ -21,7 +19,7 @@ async function getStateMachineDetails(
    // sfn.config.region = stateMachineArn.split(":")
     const response = await sfn.send(describeStateMachine);
     console.log("getStateMachineDetails response", response);
-
+    stepFunctionsModel.addToStepFunctionTable(response);
     return undefined
 
 }
