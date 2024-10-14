@@ -11,6 +11,7 @@
 html, body {
   height: 100%;
   margin: 0;
+  /* background-color: aquamarine; */
 }
 .landingPage {
   display: flex;
@@ -81,4 +82,42 @@ html, body {
 
 .stepFunc form label, .stepFunc form button {
   border-radius: 5px;
+}
+
+/* slider */
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  border-radius: 25px;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4e77ff;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
+  cursor: pointer;
 }
