@@ -22,9 +22,11 @@ html, body {
 .navBar {
   display: flex;
   flex-direction: column;
+  
   border: 1px solid black;
   border-radius: 5px;
   width: fit-content;
+  height: 500px;
   margin: 20px;
   padding: 10px;
   justify-content: space-between;
