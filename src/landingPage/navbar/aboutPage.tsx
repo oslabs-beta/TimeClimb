@@ -2,8 +2,8 @@
 
 function AboutPage() {
     return (
-        <div>
-            This is the About Page
+        <div className="about">
+            <a href="#">About</a>
         </div>
     )
 }
