@@ -14,7 +14,8 @@
     "setup:database": "npx tsx ./database/setupDatabase",
     "migrate:make": "npx tsx ./node_modules/.bin/knex migrate:make",
     "migrate:latest": "npx tsx ./node_modules/.bin/knex migrate:latest",
-    "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback"
+    "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback",
+    "seed:make": "npx tsx ./node_modules/.bin/knex seed:make"
   },
   "dependencies": {
     "@aws-sdk/client-sfn": "^3.666.0",

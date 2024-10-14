@@ -8,14 +8,42 @@ export async function up(knex: Knex): Promise<void> {
     table.string("arn", 2048).notNullable();
     table.string("region", 80).notNullable();
     table.string("type", 10).notNullable();
-    table.string("alias", 80);
-    table.json("asl").notNullable();
+    table.json("definition").notNullable();
     table.string("description", 256);
     table.text("comment");
-    table.boolean("has_versions").notNullable();
+    table.boolean("has_versions").notNullable().defaultTo(false);
+    table.boolean("is_version").notNullable().defaultTo(false);
+    table.string("revisionId", 32).notNullable();
     table.integer("parent_id").unsigned();
     table
       .foreign("parent_id")
+      .references("step_function_id")
+      .inTable("step_functions")
+      .onDelete("CASCADE");
+  });
+
+  // step_function_aliases table
+  await knex.schema.createTable("step_function_aliases", (table) => {
+    table.increments("alias_id").notNullable();
+    table.string("name", 80).notNullable();
+    table.string("arn", 2048).notNullable();
+    table.string("region", 80).notNullable();
+    table.string("description", 256);
+  });
+  // alias_routes table
+  await knex.schema.createTable("alias_routes", (table) => {
+    table.integer("alias_id").unsigned().notNullable();
+    table.integer("step_function_id").unsigned().notNullable();
+    table.smallint("weight").unsigned().notNullable();
+    table.primary(["alias_id", "step_function_id"]);
+    table
+      .foreign("alias_id")
+      .references("alias_id")
+      .inTable("step_function_aliases")
+      .onDelete("CASCADE");
+
+    table
+      .foreign("step_function_id")
       .references("step_function_id")
       .inTable("step_functions")
       .onDelete("CASCADE");
