@@ -2,8 +2,8 @@
 
 function HomeButton() {
     return (
-        <div>
-            This is the Home Button
+        <div className="home">
+            <a href="#">Home</a>  
         </div>
     )
 }

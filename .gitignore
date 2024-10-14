@@ -131,3 +131,4 @@ dist
 
 #sample aws api requests / responses
 .aws-api
+.DS_Store
