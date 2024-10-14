@@ -21,4 +21,7 @@ const selectAllStepFunctions = async () => {
 const stepFunctionsModel = {
   selectAllStepFunctions,
 };
+
+//add to step_functions table
+
 export default stepFunctionsModel;
