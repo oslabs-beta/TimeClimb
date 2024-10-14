@@ -10,6 +10,5 @@ export interface GetStepFunctionResponse {
   name: string;
   comment?: string | null;
   description?: string | null;
-  alias?: string | null;
-  asl: string;
+  definition: string;
 }

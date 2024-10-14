@@ -8,7 +8,7 @@ const selectAllStepFunctions = async () => {
     const rows = await db<StepFunctionsTable>("step_functions").select(
       "step_function_id",
       "name",
-      "asl",
+      "definition",
       "comment",
       "description"
     );
