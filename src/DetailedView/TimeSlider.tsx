@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const getColor = (num: number): string => {
   //the score form green to red is between 1 and max
-  let max: number = 100;
+  let max: number = 7;
   //colors in rgb
   let red: number;
   let green: number;
@@ -25,17 +25,6 @@ const getColor = (num: number): string => {
 }
 
 function TimeSlider() {
-//   const slider = document.getElementById("myRange");
-//   const output = document.getElementById("demo");
-//   output.innerHTML = slider.value;
-
-// slider.oninput = function() {
-//   output.innerHTML = this.value;
-// }
-//   return <div className="slidecontainer">
-//   <input type="range" min="1" max="100" value="50" className="slider" id="myRange"/>
-//   <p>Value: <span id="demo"></span></p>
-// </div>;
 
   // Define state to hold the value of the slider
   const [sliderValue, setSliderValue] = useState(50);
@@ -51,7 +40,7 @@ function TimeSlider() {
       <input 
         type="range" 
         min="1" 
-        max="100" 
+        max="7" 
         value={sliderValue} 
         className="slider" 
         onChange={handleSliderChange}
