@@ -1,54 +1,84 @@
-div {
-  border: 1px solid rgb(216, 29, 29);
-  margin: 5px;
+.chartBubble {
+  height: 50px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #eee;
   padding: 5px;
+  border-radius: 5px;
 }
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+html, body {
+  height: 100%;
+  margin: 0;
 }
-
-div {
-  border: 1px solid red;
-  margin: 10px;
-  padding: 10px
+.landingPage {
+  display: flex;
+  height: 75vw;
+  width: 100vw;
 }
 
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.navBar {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: fit-content;
+  margin: 20px;
+  padding: 10px;
+  justify-content: space-between;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.about a, .contact a, .home a, .logout a {
+  text-decoration: none;
+  color: black;
+  margin: 200px 5px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.addCard {
+  display: flex;
+  width: fit-content;
+  margin: 20px;
 }
 
-.card {
-  padding: 2em;
+.addCard .add {
+  height: 100px;
+  width: 100px;
+  border-radius: 5px;
 }
 
-.read-the-docs {
-  color: #888;
+.functionCards{
+  border: 1px solid black;
+  margin: 20px;
+  border-radius: 5px;
+}
+
+.stepFunc {
+  position: fixed; 
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1); 
+}
+
+.stepFunc form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.stepFunc form label, .stepFunc form input, .stepFunc form button {
+  margin: 5px 20px;
+}
+
+.stepFunc form label, .stepFunc form button {
+  border-radius: 5px;
 }
