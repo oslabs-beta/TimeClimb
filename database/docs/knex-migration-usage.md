@@ -4,7 +4,28 @@ https://knexjs.org/
 
 Knex helps to document and automate database schema changes and data migrations over time.
 
-## Usage
+## Getting Started
+
+### Creating and Updating the database time_climb
+
+<ol>
+  <li>Create an .env file in the root folder directory.  Make sure it is ignored by
+git.
+  </li>
+  <li>Add the following environment variables to .env:
+    <ul>
+      <li><code>PGHOST='localhost'</code> (whatever address postgres is listening on)</li>
+      <li><code>PGPORT='5432'</code> (whatever port postgres is listening on)</li>
+      <li><code>PGUSER='postgres'</code> (whatever your username is)</li>
+      <li><code>PGPASSWORD='your_users_password'</code></li>
+    </ul>
+  </li>
+<li><code>npm run setup:database</code> to create the initial database called `time_climb`.
+</li>
+<li><code>npm run migrate:latest</code> to update the database with the latest schema.
+</ol>
+
+## Knex Detailed Usage
 
 Convience scripts are set up in package.json to run common knex migration functions.
 

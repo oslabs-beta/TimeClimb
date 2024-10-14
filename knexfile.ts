@@ -4,7 +4,13 @@ import type { Knex } from "knex";
 
 const development: Knex.Config = {
   client: "pg",
-  connection: process.env.DATABASE_URL,
+  connection: {
+    host: process.env.PGHOST,
+    port: Number(process.env.PGPORT),
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+    database: "time_climb",
+  },
   migrations: {
     directory: "./database/migrations",
     extension: "ts",
