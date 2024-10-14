@@ -1,8 +1,12 @@
 {
+  "compilerOptions": {
+    "types": ["vitest/globals"],
+  },
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.server.json" },
+    { "path": "./tsconfig.app.json" }
   ],
   "compilerOptions": {
     "typeRoots": ["./node_modules/@types"]

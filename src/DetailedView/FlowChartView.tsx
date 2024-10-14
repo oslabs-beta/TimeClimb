@@ -30,7 +30,7 @@ type NodesAndEdges = {
   edges: FlowChartEdge[];
 };
 
-function FlowChartView() {
+function FlowChartView({ height, width }) {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
   // const [initialNodes, setInitialNodes] = useState<FlowChartNode[]>([]);
   // const [initialEdges, setInitialEdges] = useState<FlowChartEdge[]>([]);
@@ -241,7 +241,7 @@ function FlowChartView() {
   const initialEdges = results.edges;
 
   return (
-    <div style={{ width: '50vw', height: '50vh' }}>
+    <div style={{ width: 200, height: 200 }}>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}
