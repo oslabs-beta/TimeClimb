@@ -5,12 +5,11 @@ import Logout from './logout.tsx';
 
 function NavBar() {
   return (
-    <div>
+    <div className='navBar'>
       <HomeButton />
       <AboutPage />
       <ContactUs />
       <Logout />
-      This is the Nav Bar
     </div>
   );
 }
