@@ -1,12 +1,13 @@
 // import { useState } from 'react';
 import './App.css';
 // import DetailedView from './DetailedView/DetailedView';
-import LandingPage from './landingPage/landingPage';
+// import LandingPage from './landingPage/landingPage';npm
 // import LoginForm from './loginForm';
 // import SignUpForm from './signUpForm';
 import { Provider } from 'react-redux';
-import DetailedView from './DetailedView/DetailedView.tsx';
+// import DetailedView from './DetailedView/DetailedView.tsx';
 import store from '../store.tsx';
+import LandingPage from './landingPage/landingPage.tsx';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       <Provider store={store}>
         {/* <LoginForm /> */}
         {/* <SignUpForm />  */}
-        <DetailedView />
+        {/* <DetailedView /> */}
+        <LandingPage />
       </Provider>
     </>
   );

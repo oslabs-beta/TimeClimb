@@ -3,21 +3,31 @@ import { useDispatch} from 'react-redux';
 import { AppDispatch } from '../../store.tsx';
 // import { fetchCards } from '../reducers/cardSlice.tsx';
 import { card, deleteCard } from "../reducers/cardSlice"
+// import { useNavigate } from 'react-router-dom'
 
-
-function FunctionCards({name, visual, view, remove}:card) {
+function FunctionCards({name, region, visual, view, remove}:card) {
     // const username = useSelector(selectUser);
     const dispatch: AppDispatch = useDispatch();
+    // const navigate = useNavigate()
 
     const handleDelete = (name: string) => {
         dispatch(deleteCard(name))
     }
+
+    // const handleView = (name :string) => {
+    //     navigate(`detailedView/:name`, {state: {cardName: name}})
+    // }
 
     return (
         <div className="functionCards">
             <div className="cardName">
                 {name}
             </div>
+
+            <div className="cardRegion">
+                {region}
+            </div>
+
             <div className="cardVisual"> 
                 {visual} 
             </div>
@@ -34,3 +44,4 @@ function FunctionCards({name, visual, view, remove}:card) {
 }
 
 export default FunctionCards;
+
