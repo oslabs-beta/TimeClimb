@@ -1,13 +1,76 @@
 import { Knex } from "knex";
+import definitions from "./data/step-function-definitions";
 
 export async function seed(knex: Knex): Promise<void> {
-    // Deletes ALL existing entries
-    await knex("table_name").del();
+  // Deletes ALL existing entries
+  await knex("step_functions").del();
 
-    // Inserts seed entries
-    await knex("table_name").insert([
-        { id: 1, colName: "rowValue1" },
-        { id: 2, colName: "rowValue2" },
-        { id: 3, colName: "rowValue3" }
-    ]);
-};
+  // Inserts seed entries
+  await knex("step_functions").insert([
+    {
+      step_function_id: 1,
+      name: "CallbackExample",
+      arn: "arn:aws:states:us-east-1:123456789012:stateMachine:CallBackExample",
+      region: "us-east-1",
+      type: "STANDARD",
+      definition: definitions[0],
+      comment:
+        "An example of the Amazon States Language for starting a task and waiting for a callback.",
+      has_versions: false,
+      is_version: false,
+      revisionId: "e3f0c4c8a0b503b8059f2b9f876bcc27",
+    },
+    // {
+    //   step_function_id: 2,
+    //   name: "CallbackExample",
+    //   arn: "arn:aws:states:us-east-1:123456789012:stateMachine:CallBackExample",
+    //   region: "us-east-1",
+    //   type: "STANDARD",
+    //   definition: definitions[0],
+    //   comment:
+    //     "An example of the Amazon States Language for starting a task and waiting for a callback.",
+    //   has_versions: false,
+    //   is_version: false,
+    //   revision_id: "e3f0c4c8a0b503b8059f2b9f876bcc27",
+    // },
+    // {
+    //   step_function_id: 3,
+    //   name: "CallbackExample",
+    //   arn: "arn:aws:states:us-east-1:123456789012:stateMachine:CallBackExample",
+    //   region: "us-east-1",
+    //   type: "STANDARD",
+    //   definition: definitions[0],
+    //   comment:
+    //     "An example of the Amazon States Language for starting a task and waiting for a callback.",
+    //   has_versions: false,
+    //   is_version: false,
+    //   revision_id: "e3f0c4c8a0b503b8059f2b9f876bcc27",
+    // },
+    // {
+    //   step_function_id: 4,
+    //   name: "CallbackExample",
+    //   arn: "arn:aws:states:us-east-1:123456789012:stateMachine:CallBackExample",
+    //   region: "us-east-1",
+    //   type: "STANDARD",
+    //   definition: definitions[0],
+    //   comment:
+    //     "An example of the Amazon States Language for starting a task and waiting for a callback.",
+    //   has_versions: false,
+    //   is_version: false,
+    //   revision_id: "e3f0c4c8a0b503b8059f2b9f876bcc27",
+    // },
+    // {
+    //   step_function_id: 5,
+    //   name: "CallbackExample",
+    //   arn: "arn:aws:states:us-east-1:123456789012:stateMachine:CallBackExample",
+    //   region: "us-east-1",
+    //   type: "STANDARD",
+    //   definition: definitions[0],
+    //   comment:
+    //     "An example of the Amazon States Language for starting a task and waiting for a callback.",
+    //   has_versions: false,
+    //   is_version: false,
+    //   revision_id: "f5g0c4c8a0b503b8059f2b9f876bfd45",
+    // },
+  ]);
+}
