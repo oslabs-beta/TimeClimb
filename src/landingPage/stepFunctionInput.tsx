@@ -1,6 +1,6 @@
 import { useDispatch} from "react-redux";
 import { AppDispatch } from "../../store.tsx";
-import { setAddCardFormFalse, setCardName, addCard} from "../reducers/cardSlice"
+import { setAddCardFormFalse, setCardName, addCard, setCardRegion } from "../reducers/cardSlice"
 import { selectCard } from '../reducers/cardSlice.tsx'
 import { useSelector } from "react-redux";
 // import { card } from "../reducers/cardSlice";
@@ -19,17 +19,21 @@ function StepFunctionInput () {
         const form = e.target as HTMLFormElement;
 
         const name = (form.elements.namedItem("name") as HTMLInputElement).value;
-        // const link = (form.elements.namedItem("link") as HTMLInputElement).value;
-
+        const link = (form.elements.namedItem("link") as HTMLInputElement).value;
+        const region = link.split(':states:')[1].split(':')[0]
         // dispatch(setCardLink(link))
         dispatch(setCardName(name))
         // dispatch(fetchFunc(link))// not sure how we are verifying or getting info yet
+
+        dispatch(setCardRegion(region))
+
         
         dispatch(addCard())
         
         if (!card.error) {
             dispatch(setAddCardFormFalse());
         }
+
     }
 
     const handleClose = (e:React.FormEvent) => {
@@ -42,7 +46,7 @@ function StepFunctionInput () {
             <form name={'form'} onSubmit={handleSubmit}>
                 <label htmlFor="name"> Name of Function</label>
                 <input className='name' name="name" type="text" defaultValue={card.currentName}/>
-                <label htmlFor="stepFunc">Step Function Link</label>
+                <label htmlFor="stepFunc">Step Function ARN Link</label>
                 <input className='name' name='link' type="text" defaultValue={card.currentLink}/>
 
                 {card.error && <p className="error">{card.error}</p>}
@@ -57,3 +61,6 @@ function StepFunctionInput () {
 }
 
 export default StepFunctionInput;
+
+
+
