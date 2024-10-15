@@ -1,12 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "ES2020",
     "module": "CommonJS",
-    "outDir": "./dist/server",
-    "rootDir": "./server",
+    "outDir": "./dist/database",
+    "rootDir": "./database",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["server"],
-  "exclude": ["node_modules"]
+  "include": ["database"],
+  "exclude": ["docs", "seeds"]
 }
