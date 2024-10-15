@@ -11,6 +11,8 @@ import '@xyflow/react/dist/style.css';
 import { useEffect, useMemo, useState } from 'react';
 import FlowChartBubble from './FlowChartBubble';
 import dagre, { Node } from '@dagrejs/dagre';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store.tsx'
 
 type FlowChartNode = {
   id: string;
@@ -173,11 +175,11 @@ function FlowChartView({ height, width }) {
   g.setDefaultEdgeLabel(function () {
     return {};
   });
+  const latency = useSelector((state:RootState) => state.data.latency)
+  console.log(latency)
 
   function createFlowchart(g, data) {
     function createGraph(g, subgraph, next?) {
-      console.log('Creating graph for: ', subgraph);
-      console.log(subgraph.States);
       for (const state in subgraph.States) {
         g.setNode(state, { label: state, width: 100, height: 100 });
         if (
@@ -209,13 +211,12 @@ function FlowChartView({ height, width }) {
     const initialNodes = [];
     const initialEdges = [];
     g.nodes().forEach(function (v) {
-      console.log('Node ' + v + ': ' + JSON.stringify(g.node(v)));
       const newNode = {
         id: g.node(v).label,
         type: 'flowChartBubble',
         position: { x: g.node(v).x, y: g.node(v).y },
         data: {
-          metric: Math.floor(Math.random() * 255),
+          metric: latency, //Math.floor(Math.random() * 255),
           name: g.node(v).label,
         },
       };
@@ -223,9 +224,6 @@ function FlowChartView({ height, width }) {
     });
 
     g.edges().forEach(function (e) {
-      console.log(
-        'Edge ' + e.v + ' -> ' + e.w + ': ' + JSON.stringify(g.edge(e))
-      );
       const newEdge = {
         id: `${e.v}->${e.w}`,
         source: e.v,
@@ -241,7 +239,7 @@ function FlowChartView({ height, width }) {
   const initialEdges = results.edges;
 
   return (
-    <div style={{ width: 200, height: 200 }}>
+    <div style={{ width: 500, height: 500}}>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}
