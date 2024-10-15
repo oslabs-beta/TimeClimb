@@ -9,6 +9,5 @@
     { "path": "./tsconfig.server.json" },
     { "path": "./tsconfig.knex.json" },
     { "path": "./tsconfig.app.json" }
-  ],
-    
+  ]
 }
