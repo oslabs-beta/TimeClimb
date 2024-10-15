@@ -2,14 +2,14 @@
 // and imported into controllers where necessary
 import db from "./db";
 import type { StepFunctionsTable } from "./types";
+import type { GetStepFunctionResponse } from "../types/stepFunctionsApi";
 
-const selectAllStepFunctions = async () => {
+const selectAllStepFunctions = async (): Promise<GetStepFunctionResponse[]> => {
   try {
     const rows = await db<StepFunctionsTable>("step_functions").select(
       "step_function_id",
       "name",
       "definition",
-      "comment",
       "description"
     );
     return rows;

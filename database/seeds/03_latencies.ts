@@ -1,14 +1,10 @@
 import { Knex } from "knex";
-import {
-  StepLatenciesTable,
-  StepFunctionLatenciesTable,
-  StepTimeData,
-} from "./utils/types";
+import { StepTimeData } from "./utils/types";
 import latenciesGenerator from "./utils/latenciesGenerator";
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
-  await knex("step_latencies").del();
-  await knex("step_function_latencies").del();
+  await knex("step_average_latencies").del();
+  await knex("step_function_average_latencies").del();
   // // Inserts seed entries
 
   const steps: StepTimeData[] = [
@@ -42,14 +38,14 @@ export async function seed(knex: Knex): Promise<void> {
     await knex.transaction(async (transaction) => {
       console.log("Inserting data in batches");
       await knex
-        .batchInsert("step_latencies", data.step_latencies, batchSize)
+        .batchInsert("step_average_latencies", data.step_latencies, batchSize)
         .transacting(transaction);
       console.log(
         `Inserted ${data.step_latencies.length} rows in step_latences`
       );
       await knex
         .batchInsert(
-          "step_function_latencies",
+          "step_function_average_latencies",
           data.step_function_latencies,
           batchSize
         )
@@ -58,12 +54,6 @@ export async function seed(knex: Knex): Promise<void> {
         `Inserted ${data.step_function_latencies.length} rows in step_function_latences`
       );
     });
-    await knex<StepLatenciesTable>("step_latencies").insert(
-      data.step_latencies
-    );
-    await knex<StepFunctionLatenciesTable>("step_function_latencies").insert(
-      data.step_function_latencies
-    );
   } catch (error) {
     console.log(`Error inserting latency data: ${error}`);
   }

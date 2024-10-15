@@ -24,7 +24,7 @@ export interface StepsTable {
   comment?: string | null;
 }
 
-export interface StepLatenciesTable {
+export interface StepAverageLatenciesTable {
   latency_id?: number;
   step_id: number;
   average: number;
@@ -33,7 +33,7 @@ export interface StepLatenciesTable {
   end_time: string;
 }
 
-export interface StepFunctionLatenciesTable {
+export interface StepFunctionAverageLatenciesTable {
   latency_id?: number;
   step_id: number;
   average: number;

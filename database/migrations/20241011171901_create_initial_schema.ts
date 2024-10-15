@@ -62,7 +62,7 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete("CASCADE");
   });
   // step_latencies table
-  await knex.schema.createTable("step_latencies", (table) => {
+  await knex.schema.createTable("step_average_latencies", (table) => {
     table.bigIncrements("latency_id").notNullable();
     table.integer("step_id").unsigned().notNullable();
     table.double("average").notNullable();
@@ -76,7 +76,7 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete("CASCADE");
   });
   // step_function_latencies table
-  await knex.schema.createTable("step_function_latencies", (table) => {
+  await knex.schema.createTable("step_function_average_latencies", (table) => {
     table.bigIncrements("latency_id").notNullable();
     table.integer("step_function_id").unsigned().notNullable();
     table.double("average").notNullable();
@@ -111,7 +111,7 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTableIfExists("step_function_aliases");
   await knex.schema.dropTableIfExists("step_function_monitoring");
   await knex.schema.dropTableIfExists("step_function_latencies");
-  await knex.schema.dropTableIfExists("step_latencies");
+  await knex.schema.dropTableIfExists("step_average_latencies");
   await knex.schema.dropTableIfExists("steps");
-  await knex.schema.dropTableIfExists("step_functions");
+  await knex.schema.dropTableIfExists("step_average_functions");
 }

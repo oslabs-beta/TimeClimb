@@ -1,8 +1,8 @@
 import moment from "moment";
 import {
   StepTimeData,
-  StepLatenciesTable,
-  StepFunctionLatenciesTable,
+  StepAverageLatenciesTable,
+  StepFunctionAverageLatenciesTable,
 } from "./types";
 
 const getRandomNumber = (range: number, offset: number): number => {
@@ -25,8 +25,8 @@ const getRandomNumber = (range: number, offset: number): number => {
  */
 
 interface LatencyData {
-  step_latencies: StepLatenciesTable[];
-  step_function_latencies: StepFunctionLatenciesTable[];
+  step_latencies: StepAverageLatenciesTable[];
+  step_function_latencies: StepFunctionAverageLatenciesTable[];
 }
 
 const latenciesGenerator = async (
@@ -34,11 +34,10 @@ const latenciesGenerator = async (
   stepFunctionId: number
 ): Promise<LatencyData> => {
   const data: LatencyData = { step_latencies: [], step_function_latencies: [] };
-  // dates in moment are mutable, so we need to create a new one before
-  // subtracting here... doing now.subtract() would alter now
+
   const now = moment.utc();
   const oneYearAgo = moment.utc().subtract(1, "year");
-  // const oneDayAgo = moment.utc().subtract(1, "day");
+
   while (now.isAfter(oneYearAgo)) {
     const startOfCurrentHour = now.clone().utc().startOf("hour");
     const endOfCurrentHour = now.clone().utc().endOf("hour");
@@ -72,7 +71,6 @@ const latenciesGenerator = async (
 
     now.subtract(1, "hour");
   }
-
   return data;
 };
 

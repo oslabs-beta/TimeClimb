@@ -1,13 +1,14 @@
 import type { Request, Response, NextFunction } from "express";
 import stepFunctionsModel from "../../models/stepFunctionsModel";
-import type { GetStepFunctionsResponse } from "../../types/stepFunctionsApi";
+import type { GetStepFunctionResponse } from "../../types/stepFunctionsApi";
 
 const getStepFunctions = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const stepFunctions = await stepFunctionsModel.selectAllStepFunctions();
+  const stepFunctions: GetStepFunctionResponse[] =
+    await stepFunctionsModel.selectAllStepFunctions();
 
   console.log(stepFunctions);
   res.locals.stepFunctions = stepFunctions;
