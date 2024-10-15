@@ -23,7 +23,7 @@ const selectAllStepFunctions = async () => {
 const addToStepFunctionTable = async (detailObj) => {
   try {
    
-    await db<StepFunctionsTable>("step_functions").insert({
+    const [step_function_id, name, definition] = await db<StepFunctionsTable>("step_functions").insert({
       name: detailObj.name,
       arn: detailObj.stateMachineArn,
       region: 'us-west-2',//probably can get rid of this
@@ -33,7 +33,8 @@ const addToStepFunctionTable = async (detailObj) => {
       revisionId: 56789929,
       has_versions: false, //can't remember how we determine this
     })
-    return;
+    .returning(["step_function_id", "name", "definition"])
+    return {step_function_id, name, definition};
   } catch(error){
     console.log("Error:", error)
     return;

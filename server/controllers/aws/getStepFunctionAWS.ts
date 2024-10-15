@@ -17,7 +17,7 @@ const getStateMachineDetails = async(
             .where({arn: req.body.arn})
             .first();
         if(result){
-           res.locals.newTable = {name: result.name, definition: result.definition}
+           res.locals.newTable = {name: result.name, step_function_id: result.step_function_id, definition: result.definition}
           return next();
         }
         //otherwise, retrieve state machine from AWS, add it to database, and retrieve from database
@@ -33,8 +33,8 @@ const getStateMachineDetails = async(
    // sfn.config.region = stateMachineArn.split(":")
     const response = await sfn.send(describeStateMachine);
    // console.log("getStateMachineDetails response", response);
-    stepFunctionsModel.addToStepFunctionTable(response);
-    res.locals.newTable = {name: response.name, definition: JSON.parse(response.definition)}
+    const addStepFunction = stepFunctionsModel.addToStepFunctionTable(response);
+    res.locals.newTable = addStepFunction;
     return next();
         } catch(error){
             return next(error)
