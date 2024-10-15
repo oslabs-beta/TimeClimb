@@ -35,7 +35,7 @@ export interface StepAverageLatenciesTable {
 
 export interface StepFunctionAverageLatenciesTable {
   latency_id?: number;
-  step_id: number;
+  step_function_id: number;
   average: number;
   executions: number;
   start_time: string;
