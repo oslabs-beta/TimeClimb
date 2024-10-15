@@ -2,8 +2,8 @@
 
 function ContactUs() {
     return (
-        <div>
-            This is the Contact Us
+        <div className="contact">
+            <a href="#">Contact Us</a>            
         </div>
     )
 }

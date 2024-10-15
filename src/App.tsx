@@ -1,15 +1,21 @@
 // import { useState } from 'react';
 import './App.css';
+// import DetailedView from './DetailedView/DetailedView';
 import LandingPage from './landingPage/landingPage';
 // import LoginForm from './loginForm';
 // import SignUpForm from './signUpForm';
+import { Provider } from 'react-redux';
+import DetailedView from './DetailedView/DetailedView.tsx';
+import store from '../store.tsx';
 
 function App() {
   return (
     <>
-      {/* <LoginForm />
-    <SignUpForm /> */}
-      <LandingPage />
+      <Provider store={store}>
+        {/* <LoginForm /> */}
+        {/* <SignUpForm />  */}
+        <DetailedView />
+      </Provider>
     </>
   );
 }

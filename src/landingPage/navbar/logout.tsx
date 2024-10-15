@@ -2,8 +2,8 @@
 
 function Logout() {
     return (
-        <div>
-            This is the Logout
+        <div className="logout">
+            <a href="#">Logout</a>  
         </div>
     )
 }
