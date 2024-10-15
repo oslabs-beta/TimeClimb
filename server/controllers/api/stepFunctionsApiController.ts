@@ -7,8 +7,7 @@ const getStepFunctions = async (
   res: Response,
   next: NextFunction
 ) => {
-  const stepFunctions: GetStepFunctionsResponse =
-    await stepFunctionsModel.selectAllStepFunctions();
+  const stepFunctions = await stepFunctionsModel.selectAllStepFunctions();
 
   console.log(stepFunctions);
   res.locals.stepFunctions = stepFunctions;

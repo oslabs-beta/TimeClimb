@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
     table.text("comment");
     table.boolean("has_versions").notNullable().defaultTo(false);
     table.boolean("is_version").notNullable().defaultTo(false);
-    table.string("revisionId", 32).notNullable();
+    table.string("revision_id", 32);
     table.integer("parent_id").unsigned();
     table
       .foreign("parent_id")
@@ -97,7 +97,7 @@ export async function up(knex: Knex): Promise<void> {
     table.timestamp("oldest_update", { useTz: true });
     table.timestamp("start_time", { useTz: true });
     table.timestamp("end_time", { useTz: true });
-    table.boolean("active").notNullable();
+    table.boolean("active").defaultTo(true).notNullable();
     table
       .foreign("step_function_id")
       .references("step_function_id")
