@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import Chart from 'chart.js'
 
 function DataVisualization() {
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
 
-  return <div>this is a data visualizer</div>;
+  return (
+    <div className="rightSideGraphs">
+      <canvas id="ac"></canvas>
+      this is a data visualizer
+    </div>
+  )
 }
 
 export default DataVisualization;
