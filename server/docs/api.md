@@ -2,10 +2,9 @@
 
 ## Base URL
 
-### **`http://localhost:port/api`**
+### **`http://localhost:3000/api`**
 
-All API requests should be made to http://localhost:port/api, whatever the port
-is we decide the server is runnong on.
+All API requests should be made to http://localhost:3000/api,
 
 ## Endpoints
 
@@ -38,8 +37,7 @@ previously stored in the database
     "name": "string",
     "comment": "string",
     "description": "string",
-    "alias": "string",
-    "asl": {} // json definition as an object
+    "definition": {}
   }
 ]
 ```
@@ -90,9 +88,7 @@ for a specific step function by id
 #### 404 Step Function Not Found
 
 ```json
-{
-  "error": "No step function found"
-}
+{ "error": "No step function found" }
 ```
 
 </details>

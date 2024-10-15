@@ -1,4 +1,3 @@
-import React from 'react';
 import TimeSlider from './TimeSlider';
 import TimeToggle from './TimeToggle';
 
