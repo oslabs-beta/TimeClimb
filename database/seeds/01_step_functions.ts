@@ -18,7 +18,7 @@ export async function seed(knex: Knex): Promise<void> {
         "An example of the Amazon States Language for starting a task and waiting for a callback.",
       has_versions: false,
       is_version: false,
-      revisionId: "e3f0c4c8a0b503b8059f2b9f876bcc27",
+      revision_id: "e3f0c4c8a0b503b8059f2b9f876bcc27",
     },
   ]);
 }

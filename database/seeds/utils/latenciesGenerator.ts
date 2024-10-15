@@ -9,20 +9,37 @@ const getRandomNumber = (range: number, offset: number): number => {
   return Math.random() * range + offset;
 };
 
+/**
+ * This function is designed to generate random latency data for steps_latencies
+ * and step_function_latencies tables.  The data is random, but with a
+ * designated range and offset.  Future versions could generate a sine wave
+ * pattern if random is less visually interesting.  Generating data in this way
+ * lets it be random, yet have a predictable average.
+ *
+ * @param events array of StepTimeData objects, which have paremets to tweak the
+ * random numbers generated
+ * @param stepFunctionId the id of the step function, as stored in the
+ * step_functions_table
+ * @returns Object of {step_latencies: StepLatenciesTable[],
+ * step_function_latencies: StepFunctionLatenciesTablep[]}
+ */
+
+interface LatencyData {
+  step_latencies: StepLatenciesTable[];
+  step_function_latencies: StepFunctionLatenciesTable[];
+}
+
 const latenciesGenerator = async (
   events: StepTimeData[],
   stepFunctionId: number
-) => {
-  const data: {
-    step_latencies: StepLatenciesTable[];
-    step_function_latencies: StepFunctionLatenciesTable[];
-  } = { step_latencies: [], step_function_latencies: [] };
+): Promise<LatencyData> => {
+  const data: LatencyData = { step_latencies: [], step_function_latencies: [] };
   // dates in moment are mutable, so we need to create a new one before
   // subtracting here... doing now.subtract() would alter now
   const now = moment.utc();
-  // const oneYearAgo = moment.utc().subtract(1, "year");
-  const oneDayAgo = moment.utc().subtract(1, "day");
-  while (now.isAfter(oneDayAgo)) {
+  const oneYearAgo = moment.utc().subtract(1, "year");
+  // const oneDayAgo = moment.utc().subtract(1, "day");
+  while (now.isAfter(oneYearAgo)) {
     const startOfCurrentHour = now.clone().utc().startOf("hour");
     const endOfCurrentHour = now.clone().utc().endOf("hour");
     let totalDuration = 0;
@@ -55,7 +72,7 @@ const latenciesGenerator = async (
 
     now.subtract(1, "hour");
   }
-  // function that generates step data object for specific hour
+
   return data;
 };
 
