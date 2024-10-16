@@ -34,8 +34,10 @@ console.log("listStateMachines response", response);
 
 // just getting the details for the first state machine returned
 if (response.stateMachines && response.stateMachines[0].stateMachineArn) {
-  getStateMachineDetails(response.stateMachines[0].stateMachineArn);
-  getStateMachineVersions(response)
+  getStateMachineDetails(
+    "arn:aws:states:us-east-1:124355667606:stateMachine:HelloWorldVersions:1"
+  );
+  getStateMachineVersions(response);
 }
 
 /**
@@ -50,7 +52,7 @@ async function getStateMachineDetails(
 
   const response = await sfn.send(describeStateMachine);
   console.log("getStateMachineDetails reponse", response);
-  
+
   return undefined;
 }
 
