@@ -11,7 +11,9 @@
 html, body {
   height: 100%;
   margin: 0;
-  /* background-color: aquamarine; */
+  color: 
+  background-color: rgb(36, 36, 36);
+  /* background-color: rgb(247, 247, 247); */
 }
 .landingPage {
   display: flex;
@@ -88,7 +90,9 @@ html, body {
 
 /* slider */
 .slidecontainer {
-  width: 100%;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .slider {
@@ -123,3 +127,29 @@ html, body {
   background: #04AA6D;
   cursor: pointer;
 }
+
+#graph-style{
+  margin-left: auto;
+  margin-right: auto;
+  border: solid black;
+}
+
+.dv-btn{
+  background-color: #4e77ff;
+  opacity: 0.9;
+  height: 30px;
+  width:60px;
+  margin: 5px;
+  box-shadow: 3px 3px 0px 0px black;
+}
+
+.dv-btn:hover{
+  opacity: 1;
+  /* width: 100px;
+  height: 50px; */
+}
+/* #detailed-view{
+
+  width: 40%;
+  background-color: blue;
+} */

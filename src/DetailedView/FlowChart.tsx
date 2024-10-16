@@ -6,7 +6,7 @@ import StepFunctionSelector from './StepFunctionSelector';
 function FlowChart() {
   return (
     <div>
-      This is the flow chart
+      {/* This is the flow chart */}
       <FlowChartView />
       <FlowChartDataSelector />
       <StepFunctionSelector />

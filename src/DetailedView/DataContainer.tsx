@@ -4,7 +4,7 @@ import DataVisualization from './DataVisualization';
 function DataContainer() {
   return (
     <div>
-      This is the Data Container
+      {/* This is the Data Container */}
       <TimePeriodToggle />
       <DataVisualization />
     </div>

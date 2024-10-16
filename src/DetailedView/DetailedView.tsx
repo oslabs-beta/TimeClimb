@@ -28,10 +28,10 @@ function DetailedView() {
   }
   return (
     <div>
-      This is the detailed view
-      <button onClick={onclick}>Get one</button>
-      <button onClick={getall}>Get all</button>
-      <DetailedViewUI />
+      {/* This is the detailed view */}
+      <DetailedViewUI />{/* this is just the back button */}
+      {/* <button className="dv-btn" onClick={onclick}>Get one</button>
+      <button className="dv-btn" onClick={getall}>Get all</button> */}
       <FlowChart />
       <DataContainer />
       <TimeSlice />

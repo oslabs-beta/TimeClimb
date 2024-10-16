@@ -5,7 +5,7 @@ function BackButton() {
   function goBack(){
     navigate('/');
   }
-  return <button onClick={goBack}>Back</button>;
+  return <button className="dv-btn" onClick={goBack}>Back</button>;
 }
 
 export default BackButton;

@@ -244,7 +244,7 @@ function FlowChartView({ height, width }) {
   const initialEdges = results.edges;
 
   return (
-    <div style={{ width: 500, height: 500 }}>
+    <div id="graph-style" style={{ width: 500, height: 500}}>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}
