@@ -5,7 +5,8 @@ import logData from "./models/controllers";
 import stepFunctionController from "./controllers/stepFunctionController";
 import apiRouter from "./routes/api/index";
 import clientRouter from "./routes/client/index";
-
+import stepAverageLatenciesApiController from "./controllers/api/stepAverageLatenciesApiController";
+console.log(stepAverageLatenciesApiController);
 const PORT = 3000;
 const app = express();
 

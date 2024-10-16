@@ -110,8 +110,12 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTableIfExists("alias_routes");
   await knex.schema.dropTableIfExists("step_function_aliases");
   await knex.schema.dropTableIfExists("step_function_monitoring");
-  await knex.schema.dropTableIfExists("step_function_latencies");
   await knex.schema.dropTableIfExists("step_average_latencies");
+  await knex.schema.dropTableIfExists("step_function_average_latencies");
+
+  await knex.schema.dropTableIfExists("step_function_latencies");
+  await knex.schema.dropTableIfExists("step_latencies");
+
   await knex.schema.dropTableIfExists("steps");
-  await knex.schema.dropTableIfExists("step_average_functions");
+  await knex.schema.dropTableIfExists("step_functions");
 }
