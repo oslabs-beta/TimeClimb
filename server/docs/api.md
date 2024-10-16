@@ -149,12 +149,14 @@ for a specific step function by id - <b>Not Yet Implemented</b>
 
 <details>
 <summary>
-<code>GET</code> <code>/average-latencies/{step_fucntion_id}</code> Gets yesterday's latency data per hour for the step function and each step.
+<code>GET</code> <code>/average-latencies/{step_function_id}</code> Gets yesterday's latency data per hour for the step function and each step.
 </summary>
 
 ### Parameters
 
-> None
+> | name             | type     | data type   | description                                  |
+> | ---------------- | -------- | ----------- | -------------------------------------------- |
+> | step_function_id | required | integer > 0 | unique id associated with this step function |
 
 ### Responses
 
@@ -164,55 +166,23 @@ for a specific step function by id - <b>Not Yet Implemented</b>
 
 ### Example Responses
 
-#### 200 Sorted by start_time
+#### 200 Sorted by start_time in hour increments
 
 ```json
 [
   {
     "step_function_average_latency": 12.345,
-    "step_function_executions": 5000,
     "start_time": "isoString",
-    "end_time": "isoString",
     "steps": {
       "step_name": {
-        "average": 54.4123512,
-        "executions": 100
+        "average": 54.4123512
       },
       "other_step_name": {
-        "average": 54.4123512,
-        "executions": 100
+        "average": 54.4123512
       }
     }
   }
 ]
-```
-
-```javascript
-const data = response;
-data[0].steps["hello world"].average;
-```
-
-#### 200 Option 2
-
-```json
-{
-  "step_function_average_latencies": [
-    {
-      "start_time": "isoString",
-      "end_time": "isoString",
-      "average": 54.4123512,
-      "executions": 100
-    }
-  ],
-  "step_average_latencies": {
-    "step_name": {
-      "start_time": "isoString",
-      "end_time": "isoString",
-      "average": 54.4123512,
-      "executions": 100
-    }
-  }
-}
 ```
 
 </details>

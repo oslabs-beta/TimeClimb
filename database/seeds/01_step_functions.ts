@@ -20,5 +20,18 @@ export async function seed(knex: Knex): Promise<void> {
       is_version: false,
       revision_id: "e3f0c4c8a0b503b8059f2b9f876bcc27",
     },
+    {
+      step_function_id: 2,
+      name: "HelloWorld",
+      arn: "arn:aws:states:us-west-2:123456789012:stateMachine:HelloWorld",
+      region: "us-west-2",
+      type: "STANDARD",
+      definition: definitions[1],
+      comment:
+        "A Hello World example demonstrating various state types of the Amazon States Language. It is composed of flow control states only, so it does not need resources to run.",
+      has_versions: false,
+      is_version: false,
+      revision_id: "afq0c4c8a0b503b8059f2b9f876egg56",
+    },
   ]);
 }
