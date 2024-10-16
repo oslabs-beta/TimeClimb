@@ -217,6 +217,7 @@ function FlowChartView({ height, width }) {
         data: {
           metric: Math.floor(Math.random() * 255),
           name: g.node(v).label,
+          latency: [Math.floor(Math.random() * 10),Math.floor(Math.random() * 10),Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)]////////////////////////added this
         },
       };
       initialNodes.push(newNode);
