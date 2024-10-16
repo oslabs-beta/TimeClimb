@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import {useDispatch} from 'react-redux'
+import { setLatency } from '../reducers/dataSlice';
 
-const getColor = (num: number): string => {
+const getColor = (num: number, max: number = 100): string => {
   //the score form green to red is between 1 and max
-  let max: number = 7;
   //colors in rgb
   let red: number;
   let green: number;
@@ -20,7 +21,6 @@ const getColor = (num: number): string => {
     red = 255
     green = Math.floor(255 - (255 * halfRatio))
   }
-  console.log(`rgb(${red}, ${green}, 0)`)
   return `rgb(${red}, ${green}, 0)`
 }
 
@@ -28,11 +28,12 @@ function TimeSlider() {
 
   // Define state to hold the value of the slider
   const [sliderValue, setSliderValue] = useState(50);
+  const dispatch = useDispatch()
 
   // Update the state when the slider value changes
   const handleSliderChange = (event) => {
     setSliderValue(event.target.value);
-    document.body.style.backgroundColor = getColor(event.target.value)
+    dispatch(setLatency(getColor(event.target.value, 100)))
   };
 
   return (
@@ -40,7 +41,7 @@ function TimeSlider() {
       <input 
         type="range" 
         min="1" 
-        max="7" 
+        max="100" 
         value={sliderValue} 
         className="slider" 
         onChange={handleSliderChange}
