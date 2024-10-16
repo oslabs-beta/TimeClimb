@@ -176,8 +176,6 @@ function FlowChartView() {
 
   function createFlowchart(g, data) {
     function createGraph(g, subgraph, next?) {
-      console.log('Creating graph for: ', subgraph);
-      console.log(subgraph.States);
       for (const state in subgraph.States) {
         g.setNode(state, { label: state, width: 100, height: 100 });
         if (
@@ -209,7 +207,6 @@ function FlowChartView() {
     const initialNodes = [];
     const initialEdges = [];
     g.nodes().forEach(function (v) {
-      console.log('Node ' + v + ': ' + JSON.stringify(g.node(v)));
       const newNode = {
         id: g.node(v).label,
         type: 'flowChartBubble',
@@ -223,9 +220,7 @@ function FlowChartView() {
     });
 
     g.edges().forEach(function (e) {
-      console.log(
-        'Edge ' + e.v + ' -> ' + e.w + ': ' + JSON.stringify(g.edge(e))
-      );
+      console.log();
       const newEdge = {
         id: `${e.v}->${e.w}`,
         source: e.v,
