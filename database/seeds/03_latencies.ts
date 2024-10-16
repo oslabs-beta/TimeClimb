@@ -54,6 +54,95 @@ export async function seed(knex: Knex): Promise<void> {
         `Inserted ${data.step_function_latencies.length} rows in step_function_latences`
       );
     });
+
+    const helloWorldSteps = [
+      {
+        step_id: 4,
+        averageRange: 0.25,
+        averageOffset: 0.001,
+        executionOffset: 50,
+        executionRange: 30,
+      },
+      {
+        step_id: 5,
+        averageRange: 0.8,
+        averageOffset: 0.2,
+        executionOffset: 50,
+        executionRange: 3000,
+      },
+      {
+        step_id: 6,
+        averageRange: 1,
+        averageOffset: 0.05,
+        executionOffset: 50,
+        executionRange: 30,
+      },
+      {
+        step_id: 7,
+        averageRange: 3,
+        averageOffset: 0.5,
+        executionOffset: 5000,
+        executionRange: 3000,
+      },
+      {
+        step_id: 8,
+        averageRange: 1,
+        averageOffset: 20,
+        executionOffset: 5000,
+        executionRange: 3000,
+      },
+      {
+        step_id: 9,
+        averageRange: 10,
+        averageOffset: 2,
+        executionOffset: 50,
+        executionRange: 30,
+      },
+      {
+        step_id: 10,
+        averageRange: 4.5,
+        averageOffset: 0.25,
+        executionOffset: 50,
+        executionRange: 30,
+      },
+      {
+        step_id: 11,
+        averageRange: 2,
+        averageOffset: 0.2,
+        executionOffset: 50,
+        executionRange: 30,
+      },
+      {
+        step_id: 12,
+        averageRange: 0.3,
+        averageOffset: 0.001,
+        executionOffset: 50,
+        executionRange: 30,
+      },
+    ];
+
+    const data2 = await latenciesGenerator(helloWorldSteps, 2);
+    console.log("Data created");
+
+    await knex.transaction(async (transaction) => {
+      console.log("Inserting data in batches");
+      await knex
+        .batchInsert("step_average_latencies", data2.step_latencies, batchSize)
+        .transacting(transaction);
+      console.log(
+        `Inserted ${data2.step_latencies.length} rows in step_latences`
+      );
+      await knex
+        .batchInsert(
+          "step_function_average_latencies",
+          data2.step_function_latencies,
+          batchSize
+        )
+        .transacting(transaction);
+      console.log(
+        `Inserted ${data2.step_function_latencies.length} rows in step_function_latences`
+      );
+    });
   } catch (error) {
     console.log(`Error inserting latency data: ${error}`);
   }

@@ -1,7 +1,6 @@
 import "dotenv/config";
 import { SFNClient, DescribeStateMachineCommand } from "@aws-sdk/client-sfn";
 import { fromEnv } from "@aws-sdk/credential-providers";
-import { GetStateMachineDetailsFromAWS } from "../../types/stepFunctionDetailsFromAWS";
 import stepFunctionsModel from "../../models/stepFunctionsModel";
 import type { Request, Response, NextFunction } from "express";
 import type { StepFunctionsTable } from "../../models/types";

@@ -11,7 +11,6 @@ const getLatenciesBetweenTimes = async (
       .select("step_id", "average", "start_time")
       .whereIn("step_id", stepIds)
       .whereBetween("start_time", [startTime, endTime])
-      // .groupBy(["step_id", "start_time", "average"])
       .orderBy(["start_time", "step_id"]);
     return rows;
   } catch (err) {
