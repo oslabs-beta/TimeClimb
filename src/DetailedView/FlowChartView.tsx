@@ -32,7 +32,7 @@ type NodesAndEdges = {
   edges: FlowChartEdge[];
 };
 
-function FlowChartView({ height, width }) {
+function FlowChartView({ height, width, definition }) {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
   // const [initialNodes, setInitialNodes] = useState<FlowChartNode[]>([]);
   // const [initialEdges, setInitialEdges] = useState<FlowChartEdge[]>([]);
@@ -238,8 +238,7 @@ function FlowChartView({ height, width }) {
   const stepfunction = useSelector(
     (state: RootState) => state.data.currentFunction
   );
-
-  const results = createFlowchart(g, stepfunction);
+  const results = createFlowchart(g, definition);
   const initialNodes = results.nodes;
   const initialEdges = results.edges;
 

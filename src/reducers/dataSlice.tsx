@@ -10,13 +10,13 @@ type stepfunction = {
 
 interface dataState {
   stepfunctions: stepfunction[];
-  currentFunction: stepfunction;
+  currentDefinition: object;
   latency: string[];
 }
 
 const initialState: dataState = {
   stepfunctions: [],
-  currentFunction: { definition: undefined },
+  currentDefinition: {},
   latency: [],
 };
 
@@ -28,11 +28,11 @@ export const dataSlice = createSlice({
       state.latency = action.payload;
     },
     setStepFunction: (state, action) => {
-      state.currentFunction = action.payload;
+      state.currentDefinition = action.payload;
     },
     getStepFunctions: (state, action) => {
       state.stepfunctions = action.payload;
-      if (state.stepfunctions) state.currentFunction = state.stepfunctions[0];
+      //if (state.stepfunctions) state.currentFunction = state.stepfunctions[0];
     },
     appendStepFunction: (state, action) => {
       state.stepfunctions.push(action.payload);
