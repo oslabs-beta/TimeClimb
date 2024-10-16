@@ -7,7 +7,6 @@ import { useState } from 'react';
 function DetailedView() {
   //const [function, setFunction] = useState({});
   function onclick() {
-    console.log('Sending for help');
     fetch('/api/step-functions/addStepFunction', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,10 +19,18 @@ function DetailedView() {
       })
       .then((data) => console.log(data));
   }
+  function getall() {
+    fetch('api/step-functions')
+      .then((data) => {
+        return data.json();
+      })
+      .then((data) => console.log(data));
+  }
   return (
     <div>
       This is the detailed view
-      <button onClick={onclick}>Send help</button>
+      <button onClick={onclick}>Get one</button>
+      <button onClick={getall}>Get all</button>
       <DetailedViewUI />
       <FlowChart />
       <DataContainer />
