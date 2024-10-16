@@ -43,7 +43,7 @@ export interface StepFunctionAverageLatenciesTable {
 }
 
 export interface StepFunctionMonitoringTable {
-  id?: number;
+  id: number;
   step_function_id: number;
   newest_update: string;
   oldest_update: string;
@@ -53,7 +53,7 @@ export interface StepFunctionMonitoringTable {
 }
 
 export interface StepFunctionAliasesTable {
-  alias_id?: number;
+  alias_id: number;
   name: string;
   arn: string;
   region: string;
@@ -64,4 +64,12 @@ export interface AliasRoutesTable {
   alias_id: number;
   step_function_id: number;
   weight: number;
+}
+
+export interface StepTimeData {
+  step_id: number;
+  averageRange: number;
+  averageOffset: number;
+  executionOffset: number;
+  executionRange: number;
 }
