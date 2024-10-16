@@ -2,7 +2,7 @@ import "dotenv/config";
 import { SFNClient, DescribeStateMachineCommand } from "@aws-sdk/client-sfn";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import { GetStateMachineDetailsFromAWS } from "../../types/stepFunctionDetailsFromAWS";
-import  stepFunctionsModel from "/Users/alexstewart/gh-repos/timeClimb/TimeClimb/server/models/stepFunctionsModel"
+import  stepFunctionsModel from "../../../server/models/stepFunctionsModel"
 import type { Request, Response, NextFunction } from "express";
 import type { StepFunctionsTable } from "../../models/types";
 import db from "../../models/db";

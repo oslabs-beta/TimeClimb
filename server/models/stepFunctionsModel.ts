@@ -9,7 +9,6 @@ const selectAllStepFunctions = async () => {
       "step_function_id",
       "name",
       "definition",
-      "comment",
       "description"
     );
     return rows;

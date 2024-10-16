@@ -20,10 +20,18 @@ git.
       <li><code>PGPASSWORD='your_users_password'</code></li>
     </ul>
   </li>
-<li><code>npm run setup:database</code> to create the initial database called `time_climb`.
+<li><code>npm run setup:database</code> to create the initial database called <code>time_climb</code>.
 </li>
 <li><code>npm run migrate:latest</code> to update the database with the latest schema.
 </ol>
+
+Updating to the latest migration will typically erase all data in your database
+unless the migration script specifically is set up to migrate your data, which
+it currently is not.
+
+### Populating with Seed Data
+
+`npm run seed:data` will populate the database with test data. This will erase any existing data you might have in your database.
 
 ## Knex Detailed Usage
 
