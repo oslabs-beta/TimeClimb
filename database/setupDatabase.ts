@@ -1,10 +1,10 @@
-import "dotenv/config";
-import pg from "pg";
+import 'dotenv/config';
+import pg from 'pg';
 const { Client } = pg;
 
 async function setupDatabase() {
   const client = new Client({
-    database: "postgres",
+    database: 'postgres',
     host: process.env.PGHOST,
     user: process.env.PGUSER,
     password: process.env.PGPASSWORD,
@@ -19,16 +19,16 @@ async function setupDatabase() {
     if (result.rowCount === 0) {
       console.log(`Creating database: time_climb`);
       await client.query(
+        //LOCALE_PROVIDER = 'libc'
+        /*ENCODING = 'UTF8'
+            LC_COLLATE = 'C'
+            LC_CTYPE = 'C'*/
         `CREATE DATABASE time_climb
           WITH
-            ENCODING = 'UTF8'
-            LC_COLLATE = 'C'
-            LC_CTYPE = 'C'
-            LOCALE_PROVIDER = 'libc'
             TABLESPACE = pg_default
             IS_TEMPLATE = False;`
       );
-      console.log("Database created");
+      console.log('Database created');
     } else {
       console.log(`Database time_climb already exists`);
     }

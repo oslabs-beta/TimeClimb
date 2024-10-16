@@ -4,6 +4,7 @@ import { RootState } from '../../store.tsx';
 
 export interface card {
     name: string,
+    region: string,
     visual: string,
     view: string,
     remove: string,//dom.element or react.element?
@@ -16,19 +17,21 @@ interface cardState {
     error: string | null,
     addCardform: boolean,
     currentLink: string,
-    currentName: string
+    currentName: string,
+    currentRegion: string
 }
 
 const initialState:cardState = {
     allCards: [
-        { name: 'Card 1', visual: 'Flowchart 1', view: 'View', remove: 'Delete'},
-        { name: 'Card 2', visual: 'Flowchart 2', view: 'View', remove: 'Delete'}
+        { name: 'Card 1', region: 'US', visual: 'Flowchart 1', view: 'View', remove: 'Delete'},
+        { name: 'Card 2', region: 'US', visual: 'Flowchart 2', view: 'View', remove: 'Delete'}
     ],
     status: 'idle',
     error: '',
     addCardform: false,
     currentLink: '',
-    currentName: ''
+    currentName: '',
+    currentRegion: ''
 }
 
 export const fetchCards = createAsyncThunk(
@@ -77,6 +80,9 @@ export const cardSlice = createSlice({
         setCardName: (state, action) => {
             state.currentName = action.payload
         },
+        setCardRegion: (state, action) => {
+            state.currentRegion = action.payload  
+        },
         addCard: (state) => {
             const exists = state.allCards.some((card)=> card.name === state.currentName)
             if (exists) {
@@ -85,6 +91,7 @@ export const cardSlice = createSlice({
             }
             const newCard: card = {
                 name: state.currentName,
+                region: state.currentRegion,
                 visual: 'chart',
                 view: 'View',
                 remove: 'delete',
@@ -92,7 +99,7 @@ export const cardSlice = createSlice({
             }
             state.allCards.push(newCard)
             state.currentName = '';
-            // state.currentLink = '',
+            state.currentLink = '';
             state.error = ''
         },
         deleteCard: (state, action) => {
@@ -123,7 +130,8 @@ export const {
     setCardLink,
     setCardName,
     addCard,
-    deleteCard
+    deleteCard,
+    setCardRegion
 } = cardSlice.actions
 
 export const selectCard = (state:RootState) => state.card
