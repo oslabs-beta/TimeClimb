@@ -26,19 +26,19 @@ const averageLatenciesModel = {
   getStepFunctionLatencies,
 };
 
-const now = moment.utc();
-const startOfDay = moment.utc().startOf("day");
+// const endOfYesterday = moment.utc().subtract(1, 'day').endOf("day");
+// const startOfYesterday = moment.utc().subtract(1, 'day').startOf("day");
 
-async function whatever() {
-  console.log(
-    await averageLatenciesModel.getStepFunctionLatencies(
-      1,
-      startOfDay.toISOString(),
-      now.toISOString()
-    )
-  );
-}
-whatever();
+// async function whatever() {
+//   console.log(
+//     await averageLatenciesModel.getStepFunctionLatencies(
+//       1,
+//       startOfYesterday.toISOString(),
+//       endOfYesterday.toISOString()
+//     )
+//   );
+// }
+//whatever();
 export default averageLatenciesModel;
 
 // export interface StepFunctionAverageLatenciesTable {

@@ -4,10 +4,10 @@ import averageLatenciesApiController from "../../controllers/api/averageLatencie
 const averageLatenciesRouter = express.Router();
 
 averageLatenciesRouter.get(
-  "/average-latencies/:step_function_id",
+  "/:step_function_id",
   averageLatenciesApiController.getAverageLatencies,
   (req: Request, res: Response): void => {
-    res.status(200).json();
+    res.status(200).json(res.locals.latencyAverages);
     return;
   }
 );
