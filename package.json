@@ -19,8 +19,8 @@
     "seed:make": "npx tsx ./node_modules/.bin/knex seed:make"
   },
   "dependencies": {
-    "@aws-sdk/client-sfn": "^3.666.0",
-    "@aws-sdk/credential-providers": "^3.666.0",
+    "@aws-sdk/client-sfn": "^3.670.0",
+    "@aws-sdk/credential-providers": "^3.670.0",
     "@dagrejs/dagre": "^1.1.4",
     "@reduxjs/toolkit": "^2.2.8",
     "@xyflow/react": "^12.3.1",
@@ -29,6 +29,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "grafana": "^1.0.1",
     "knex": "^3.1.0",
     "pg": "^8.13.0",
     "react": "^18.3.1",
