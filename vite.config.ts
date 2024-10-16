@@ -1,17 +1,11 @@
-<<<<<<< HEAD
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-=======
 /// <reference types="vitest/config" />
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
->>>>>>> 5fcdd4885ad5cbc6ca57266b8c05e5c92f756a7a
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-<<<<<<< HEAD
   server: {
     proxy: {
       '/api': {
@@ -20,17 +14,12 @@ export default defineConfig({
       },
     },
   },
-});
-=======
   test: {
-    include: ["./test/test.jsx"],
-    environment: 'jsdom', 
+    include: ['./test/test.jsx'],
+    environment: 'jsdom',
     globals: true,
     css: true,
     // setupFiles: ['./setupTests.js'],
     // setupFiles: "./test/test.ts"
   },
-})
-
-
->>>>>>> 5fcdd4885ad5cbc6ca57266b8c05e5c92f756a7a
+});

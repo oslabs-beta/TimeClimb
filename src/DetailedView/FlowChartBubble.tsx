@@ -8,15 +8,15 @@ type BubbleProps = {
 };
 
 function FlowChartBubble({ data }: BubbleProps) {
-  const red = data.metric;
-  const green = 255 - data.metric;
+  // const red = data.metric;
+  // const green = 255 - data.metric;
   function handleClick() {
     console.log('Click');
   }
   return (
     <button
       className='chartBubble'
-      style={{ backgroundColor: `rgb(${red}, ${green}, 0)` }}
+      style={{ backgroundColor: data.metric }}
       onClick={handleClick}
     >
       <Handle type='target' position={Position.Top} />
