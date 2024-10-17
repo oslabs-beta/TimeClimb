@@ -1,3 +1,5 @@
+
+
 .chartBubble {
   height: 50px;
   width: 100px;
@@ -9,12 +11,16 @@
   border-radius: 5px;
 }
 html, body {
+  --main-black: rgb(20, 20, 20);
+  --main-white: rgb(235, 235, 235);
+  --main-blue:  #4e77ff;
   height: 100%;
   margin: 0;
-  color: 
-  background-color: rgb(36, 36, 36);
+  color: var(--main-white);
+  background-color: var(--main-black);
   /* background-color: rgb(247, 247, 247); */
 }
+
 .landingPage {
   display: flex;
   height: 75vw;
@@ -24,32 +30,47 @@ html, body {
 .navBar {
   display: flex;
   flex-direction: column;
-  
+  color: var(--main-white);
+  /* background-color: #04AA6D; */
   border: 1px solid black;
   border-radius: 5px;
   width: fit-content;
   height: 500px;
   margin: 20px;
   padding: 10px;
+  background-color: rgb(42, 42, 42);
   justify-content: space-between;
 }
 
+
 .about a, .contact a, .home a, .logout a {
   text-decoration: none;
-  color: black;
+  color: var(--main-white);
   margin: 200px 5px;
 }
+
+.about a:hover, .contact a:hover, .home a:hover, .logout a:hover{
+  color: var(--main-blue);
+}
+
 
 .addCard {
   display: flex;
   width: fit-content;
   margin: 20px;
+  background-color: var(--main-black);
 }
 
 .addCard .add {
   height: 100px;
   width: 100px;
+  background-color: var(--main-blue);
+  opacity: 0.9;
   border-radius: 5px;
+}
+
+.add:hover{
+  opacity: 1;
 }
 
 .functionCards{
@@ -135,7 +156,7 @@ html, body {
 }
 
 .dv-btn{
-  background-color: #4e77ff;
+  background-color: var(--main-blue);
   opacity: 0.9;
   height: 30px;
   width:60px;

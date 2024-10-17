@@ -29,7 +29,7 @@ function LandingPage() {
       <AddCard />
       {/* <StepFunctionInput /> */}
       <AllCard />
-      This is the Landing Page
+      {/* This is the Landing Page */}
     </div>
   );
 }
