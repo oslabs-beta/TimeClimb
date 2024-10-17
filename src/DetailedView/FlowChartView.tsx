@@ -32,7 +32,7 @@ type NodesAndEdges = {
   edges: FlowChartEdge[];
 };
 
-function FlowChartView({ height, width }) {
+function FlowChartView({ height, width, definition }) {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
   // const [initialNodes, setInitialNodes] = useState<FlowChartNode[]>([]);
   // const [initialEdges, setInitialEdges] = useState<FlowChartEdge[]>([]);
@@ -176,10 +176,10 @@ function FlowChartView({ height, width }) {
     return {};
   });
   const latency = useSelector((state: RootState) => state.data.latency);
-  //console.log(latency);
+  // console.log(latency);
 
   function createFlowchart(g, data) {
-    if (!data.definition) return { nodes: [], edges: [] };
+    if (!data) return { nodes: [], edges: [] };
     function createGraph(g, subgraph, next?) {
       for (const state in subgraph.States) {
         g.setNode(state, { label: state, width: 100, height: 100 });
@@ -188,6 +188,12 @@ function FlowChartView({ height, width }) {
           !(subgraph.States[state].Type === 'Parallel')
         )
           g.setEdge(state, subgraph.States[state].Next);
+
+        if (subgraph.States[state].Catch) {
+          subgraph.States[state].Catch.forEach((ele) => {
+            g.setEdge(state, ele.Next);
+          });
+        }
 
         if (subgraph.States[state].Type === 'Choice') {
           subgraph.States[state].Choices.forEach((ele) => {
@@ -205,7 +211,7 @@ function FlowChartView({ height, width }) {
         }
       }
     }
-    createGraph(g, data.definition);
+    createGraph(g, data);
 
     dagre.layout(g);
 
@@ -236,10 +242,10 @@ function FlowChartView({ height, width }) {
   }
 
   const stepfunction = useSelector(
-    (state: RootState) => state.data.currentFunction
+    (state: RootState) => state.data.currentDefinition
   );
 
-  const results = createFlowchart(g, stepfunction);
+  const results = createFlowchart(g, definition);
   const initialNodes = results.nodes;
   const initialEdges = results.edges;
 

@@ -10,13 +10,15 @@ type stepfunction = {
 
 interface dataState {
   stepfunctions: stepfunction[];
-  currentFunction: stepfunction;
-  latency: string[];
+  currentDefinition: object | undefined;
+  latencies: object[];
+  latency: object;
 }
 
 const initialState: dataState = {
   stepfunctions: [],
-  currentFunction: { definition: undefined },
+  currentDefinition: {},
+  latencies: [],
   latency: [],
 };
 
@@ -24,15 +26,19 @@ export const dataSlice = createSlice({
   name: 'data',
   initialState,
   reducers: {
+    setLatencies: (state, action) => {
+      state.latencies = action.payload;
+    },
     setLatency: (state, action) => {
       state.latency = action.payload;
     },
     setStepFunction: (state, action) => {
-      state.currentFunction = action.payload;
+      state.currentDefinition = action.payload;
     },
     getStepFunctions: (state, action) => {
       state.stepfunctions = action.payload;
-      if (state.stepfunctions) state.currentFunction = state.stepfunctions[0];
+      // if (state.stepfunctions)
+      //   state.currentDefinition = state.stepfunctions[0].definition;
     },
     appendStepFunction: (state, action) => {
       state.stepfunctions.push(action.payload);
@@ -48,9 +54,19 @@ export const getStepFunctionList = createAsyncThunk(
       throw new Error('Cannot fetch stepfunctions');
     }
     const stepfunctions: stepfunction[] = await res.json();
+    console.log('GettingStepfunctions:', stepfunctions);
     return stepfunctions;
   }
 );
+
+export const getLatencies = createAsyncThunk('data/getLatencies', async () => {
+  const res = await fetch('/api/average-latencies/1');
+  if (!res.ok) {
+    throw new Error('Cannot fetch stepfunctions');
+  }
+  const latencies = await res.json();
+  return latencies;
+});
 
 export const addStepFunction = createAsyncThunk(
   'data/addStepFunction',
@@ -75,6 +91,7 @@ export const {
   setStepFunction,
   getStepFunctions,
   appendStepFunction,
+  setLatencies
 } = dataSlice.actions;
 
 export const selectData = (state: RootState) => {
