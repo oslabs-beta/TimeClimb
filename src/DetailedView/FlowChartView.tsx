@@ -217,13 +217,15 @@ function FlowChartView({ height, width, definition }) {
 
     const initialNodes = [];
     const initialEdges = [];
+
     g.nodes().forEach(function (v) {
+      let data = 0;
       const newNode = {
         id: g.node(v).label,
         type: 'flowChartBubble',
         position: { x: g.node(v).x, y: g.node(v).y },
         data: {
-          metric: latency, //Math.floor(Math.random() * 255),
+          metric: data, //latency, //Math.floor(Math.random() * 255),
           name: g.node(v).label,
         },
       };
@@ -241,10 +243,7 @@ function FlowChartView({ height, width, definition }) {
     return { nodes: initialNodes, edges: initialEdges };
   }
 
-  const stepfunction = useSelector(
-    (state: RootState) => state.data.currentDefinition
-  );
-
+  const actionLatencies = useSelector((state: RootState) => state.data.latency);
   const results = createFlowchart(g, definition);
   const initialNodes = results.nodes;
   const initialEdges = results.edges;

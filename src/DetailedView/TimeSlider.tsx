@@ -11,7 +11,7 @@ const getColor = (num: number, max: number = 100): string => {
   let halfRatio: number;
   //red starts at zero and increases to the half way point remains at 255
   //green starts a 255, starts decreaseing at the half way point
-  const latencies = useSelector((state: RootState) => state.data.latencies);
+  //const latencies = useSelector((state: RootState) => state.data.latencies);
   if (num <= max / 2) {
     halfRatio = num / (max / 2);
     console.log(halfRatio);
@@ -34,21 +34,22 @@ function TimeSlider() {
   // Update the state when the slider value changes
   const handleSliderChange = (event) => {
     setSliderValue(event.target.value);
-    dispatch(setLatency(getColor(event.target.value, 100)));
+    dispatch(setLatency(event.target.value));
+    //dispatch(setLatency(getColor(event.target.value, 100)));
   };
 
   return (
     <div className='slidecontainer'>
       <input
         type='range'
-        min='1'
-        max='24'
+        min='0'
+        max='23'
         value={sliderValue}
         className='slider'
         onChange={handleSliderChange}
       />
       <p>
-        Value: <span>{sliderValue}</span>
+        Hour: <span>{sliderValue}</span>
       </p>
     </div>
   );

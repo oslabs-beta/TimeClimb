@@ -5,7 +5,7 @@ import TimeSlice from './TimeSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
-import { getLatencies, setLatency } from '../reducers/dataSlice';
+import { getLatencies, setLatencies, setLatency } from '../reducers/dataSlice';
 
 function DetailedView() {
   //const [function, setFunction] = useState({});
@@ -34,9 +34,9 @@ function DetailedView() {
   useEffect(() => {
     dispatch(getLatencies())
       .unwrap()
-      .then((data) => console.log(data))
-      .then((data) => dispatch(setLatency(data)));
-  });
+      //.then((data) => console.log(data))
+      .then((data) => dispatch(setLatencies(data)));
+  }, []);
   return (
     <div>
       This is the detailed view

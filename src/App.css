@@ -1,14 +1,16 @@
 .chartBubble {
-  height: 50px;
-  width: 100px;
+  height: 100px;
+  width: 150px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   border: 1px solid #eee;
   padding: 5px;
   border-radius: 5px;
 }
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   /* background-color: aquamarine; */
@@ -22,7 +24,7 @@ html, body {
 .navBar {
   display: flex;
   flex-direction: column;
-  
+
   border: 1px solid black;
   border-radius: 5px;
   width: fit-content;
@@ -32,7 +34,10 @@ html, body {
   justify-content: space-between;
 }
 
-.about a, .contact a, .home a, .logout a {
+.about a,
+.contact a,
+.home a,
+.logout a {
   text-decoration: none;
   color: black;
   margin: 200px 5px;
@@ -50,14 +55,14 @@ html, body {
   border-radius: 5px;
 }
 
-.functionCards{
+.functionCards {
   border: 1px solid black;
   margin: 20px;
   border-radius: 5px;
 }
 
 .stepFunc {
-  position: fixed; 
+  position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
@@ -66,7 +71,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.1); 
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .stepFunc form {
@@ -78,11 +83,14 @@ html, body {
   background-color: white;
 }
 
-.stepFunc form label, .stepFunc form input, .stepFunc form button {
+.stepFunc form label,
+.stepFunc form input,
+.stepFunc form button {
   margin: 5px 20px;
 }
 
-.stepFunc form label, .stepFunc form button {
+.stepFunc form label,
+.stepFunc form button {
   border-radius: 5px;
 }
 
@@ -98,8 +106,8 @@ html, body {
   background: #d3d3d3;
   outline: none;
   opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
   border-radius: 25px;
 }
 
@@ -120,6 +128,6 @@ html, body {
 .slider::-moz-range-thumb {
   width: 25px;
   height: 25px;
-  background: #04AA6D;
+  background: #04aa6d;
   cursor: pointer;
 }

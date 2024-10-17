@@ -12,7 +12,7 @@ interface dataState {
   stepfunctions: stepfunction[];
   currentDefinition: object | undefined;
   latencies: object[];
-  latency: object;
+  latency: any;
 }
 
 const initialState: dataState = {
@@ -27,10 +27,13 @@ export const dataSlice = createSlice({
   initialState,
   reducers: {
     setLatencies: (state, action) => {
+      console.log(action.payload);
       state.latencies = action.payload;
+      if (state.latencies.length > 1) state.latency = state.latencies[0];
     },
     setLatency: (state, action) => {
-      state.latency = action.payload;
+      if (state.latencies.length > 0)
+        state.latency = state.latencies[action.payload];
     },
     setStepFunction: (state, action) => {
       state.currentDefinition = action.payload;
@@ -87,6 +90,7 @@ export const addStepFunction = createAsyncThunk(
 
 export const {
   setLatency,
+  setLatencies,
   setStepFunction,
   getStepFunctions,
   appendStepFunction,
