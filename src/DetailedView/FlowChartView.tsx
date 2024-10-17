@@ -175,8 +175,8 @@ function FlowChartView({ height, width, definition }) {
   g.setDefaultEdgeLabel(function () {
     return {};
   });
-  const latency = useSelector((state: RootState) => state.data.latencies);
-  //console.log(latency);
+  const latency = useSelector((state: RootState) => state.data.latency);
+  // console.log(latency);
 
   function createFlowchart(g, data) {
     if (!data) return { nodes: [], edges: [] };

@@ -131,3 +131,8 @@ body {
   background: #04aa6d;
   cursor: pointer;
 }
+
+.rightSideLineGraph {
+  height: 500px;
+  width: 500px;
+}

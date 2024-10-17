@@ -1,11 +1,19 @@
 import { Handle, Position } from '@xyflow/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { useDispatch } from 'react-redux';
+// import DataVisualization from './DataVisualization';
+import { setChartLatencies } from '../reducers/dataSlice';
+import { AppDispatch } from '../../store.tsx';
+// import { setAddCardForm } from '../reducers/cardSlice';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { selectCard } from '../reducers/cardSlice.tsx'
 
 type BubbleProps = {
   data: {
     metric: number;
     name: string;
+    latency: number[];
   };
 };
 
@@ -34,12 +42,26 @@ function FlowChartBubble({ data }: BubbleProps) {
     }
     return `rgb(${red}, ${green}, 0)`;
   };
-  function handleClick() {
+  // function handleClick() {
+  // const red = data.metric;
+  // const green = 255 - data.metric;
+
+  // const [popup , setPopup] = useState(false)
+
+  const dispatch: AppDispatch = useDispatch();
+  // const chart = useSelector(selectCard)
+
+  function handleClick(e: React.FormEvent) {
     console.log('Click');
+    e.preventDefault();
+    dispatch(setChartLatencies(data.name));
+    // console.log(data.metric)
+    // setPopup(true)
+    // dispatch(setAddCardForm())
   }
   const latency = useSelector((state: RootState) => state.data.latency);
   let average = 0;
-  let color = 'white';
+  let color = 'gray';
   if (latency) {
     if (latency.hasOwnProperty('steps')) {
       average = latency.steps[data.name].average;
@@ -57,6 +79,20 @@ function FlowChartBubble({ data }: BubbleProps) {
       <span>{average}</span>
       <Handle type='source' position={Position.Bottom} />
     </button>
+    // <div>
+    //   <button
+    //     className='chartBubble'
+    //     style={{ backgroundColor: `rgb(${red}, ${green}, 0)` }}
+    //     onClick={handleClick}
+    //   >
+    //     <Handle type='target' position={Position.Top} />
+    //     <div>{data.name}</div>
+    //     <Handle type='source' position={Position.Bottom} />
+    //   </button>
+
+    //   {/* {popup && <DataVisualization latency={[...data.latency]}/>} */}
+
+    // </div>
   );
 }
 

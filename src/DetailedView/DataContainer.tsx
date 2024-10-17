@@ -1,5 +1,6 @@
 import TimePeriodToggle from './TimePeriodToggle';
 import DataVisualization from './DataVisualization';
+import StepDataVisualization from './StepDataVisualization';
 
 function DataContainer() {
   return (
@@ -7,6 +8,7 @@ function DataContainer() {
       This is the Data Container
       <TimePeriodToggle />
       <DataVisualization />
+      <StepDataVisualization />
     </div>
   );
 }

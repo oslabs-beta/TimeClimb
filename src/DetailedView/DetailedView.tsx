@@ -17,26 +17,28 @@ function DetailedView() {
       body: JSON.stringify({
         arn: 'arn:aws:states:us-west-2:703671926773:stateMachine:BasicsHelloWorldStateMachine',
       }),
-    })
-      .then((data) => {
-        return data.json();
-      })
-      .then((data) => console.log(data));
+    }).then((data) => {
+      return data.json();
+    });
+    // .then((data) => console.log(data));
   }
   function getall() {
-    fetch('api/step-functions')
-      .then((data) => {
-        return data.json();
-      })
-      .then((data) => console.log(data));
+    fetch('api/step-functions').then((data) => {
+      return data.json();
+    });
+    // .then((data) => console.log(data));
   }
 
   useEffect(() => {
     dispatch(getLatencies())
       .unwrap()
-      //.then((data) => console.log(data))
+      .then((data) => {
+        console.log(data);
+        return data;
+      })
       .then((data) => dispatch(setLatencies(data)));
-  }, []);
+  }, [dispatch]);
+
   return (
     <div>
       This is the detailed view

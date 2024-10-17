@@ -11,15 +11,25 @@ type stepfunction = {
 interface dataState {
   stepfunctions: stepfunction[];
   currentDefinition: object | undefined;
-  latencies: object[];
+  latencies: [
+    {
+      steps: any;
+    }
+  ];
   latency: any;
+  chartLatencies: number[];
 }
 
 const initialState: dataState = {
   stepfunctions: [],
   currentDefinition: {},
-  latencies: [],
+  latencies: [
+    {
+      steps: null,
+    },
+  ],
   latency: {},
+  chartLatencies: [],
 };
 
 export const dataSlice = createSlice({
@@ -29,9 +39,10 @@ export const dataSlice = createSlice({
     setLatencies: (state, action) => {
       console.log(action.payload);
       state.latencies = action.payload;
-      if (state.latencies.length > 1) state.latency = state.latencies[0];
+      if (state.latencies.length > 0) state.latency = state.latencies[0];
     },
     setLatency: (state, action) => {
+      console.log('Setting new latency', action.payload);
       if (state.latencies.length > 0)
         state.latency = state.latencies[action.payload];
     },
@@ -45,6 +56,16 @@ export const dataSlice = createSlice({
     },
     appendStepFunction: (state, action) => {
       state.stepfunctions.push(action.payload);
+    },
+    setChartLatencies: (state, action) => {
+      if (action.payload) {
+        const newChart: number[] = [];
+        state.latencies.forEach((ele) => {
+          //console.log(ele);
+          newChart.push(ele.steps[action.payload].average);
+        });
+        state.chartLatencies = newChart;
+      }
     },
   },
 });
@@ -94,6 +115,7 @@ export const {
   setStepFunction,
   getStepFunctions,
   appendStepFunction,
+  setChartLatencies,
 } = dataSlice.actions;
 
 export const selectData = (state: RootState) => {
