@@ -175,15 +175,11 @@ function FlowChartView({ height, width, definition }) {
   g.setDefaultEdgeLabel(function () {
     return {};
   });
-  const latency = useSelector((state: RootState) => state.data.latencies);
-  //console.log(latency);
+  const latency = useSelector((state: RootState) => state.data.latency);
+  // console.log(latency);
 
   function createFlowchart(g, data) {
-<<<<<<< HEAD
-    //if (!data.definition) return { nodes: [], edges: [] };
-=======
     if (!data) return { nodes: [], edges: [] };
->>>>>>> Frontend
     function createGraph(g, subgraph, next?) {
       for (const state in subgraph.States) {
         g.setNode(state, { label: state, width: 100, height: 100 });
@@ -229,7 +225,6 @@ function FlowChartView({ height, width, definition }) {
         data: {
           metric: latency, //Math.floor(Math.random() * 255),
           name: g.node(v).label,
-          latency: [Math.floor(Math.random() * 10),Math.floor(Math.random() * 10),Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)]////////////////////////added this
         },
       };
       initialNodes.push(newNode);
@@ -249,13 +244,8 @@ function FlowChartView({ height, width, definition }) {
   const stepfunction = useSelector(
     (state: RootState) => state.data.currentDefinition
   );
-<<<<<<< HEAD
-  console.log(stepfunction);
-  const results = createFlowchart(g, exampleFunction);
-=======
 
   const results = createFlowchart(g, definition);
->>>>>>> Frontend
   const initialNodes = results.nodes;
   const initialEdges = results.edges;
 

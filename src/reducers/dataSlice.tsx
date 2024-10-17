@@ -19,7 +19,7 @@ const initialState: dataState = {
   stepfunctions: [],
   currentDefinition: {},
   latencies: [],
-  latency: {},
+  latency: [],
 };
 
 export const dataSlice = createSlice({
@@ -91,6 +91,7 @@ export const {
   setStepFunction,
   getStepFunctions,
   appendStepFunction,
+  setLatencies
 } = dataSlice.actions;
 
 export const selectData = (state: RootState) => {
