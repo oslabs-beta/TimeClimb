@@ -1,6 +1,6 @@
 import FunctionCards from './functionCards.tsx';
 import { RootState } from '../../store.tsx';
-import { card, selectCard } from '../reducers/cardSlice.tsx';
+import { addCard, card, selectCard } from '../reducers/cardSlice.tsx';
 // import { selectUser } from '../reducers/userSlice.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCards } from '../reducers/cardSlice.tsx';
@@ -23,7 +23,6 @@ function AllCards() {
 
   // console.log('card', cards)
   useEffect(() => {
-    console.log(stepFunctionList);
     // stepFunctionList.forEach((el) => {
     //   desMap.set(el.name, el.description);
     // });
@@ -45,13 +44,16 @@ function AllCards() {
 
   // Log descriptions of each step function
   useEffect(() => {
+    if (!stepfunctions) return;
     stepfunctions.forEach((sf) => {
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
-      console.log(sf.name);
-      console.log(sf.definition); // Adjust 'description' based on your actual data
+      // Adjust 'description' based on your actual data
+
+      dispatch(addCard(sf));
     });
   }, [stepfunctions]);
   //end
+
+  ('');
 
   //not sure how we are continually fetching data yet
   //this gives 'Unexpected token '<', "<!doctype "... is not valid JSON' error
@@ -68,6 +70,7 @@ function AllCards() {
   } else filteredCards = cards;
 
   // console.log('filter', filteredCards)
+  //if (filteredCards.length > 0) console.log(filteredCards);
 
   return (
     <div className='allFunctionCards'>
@@ -79,7 +82,7 @@ function AllCards() {
           visual={card.visual}
           remove={card.remove}
           view={card.view}
-          // description={}
+          definition={card.definition}
         />
       ))}
     </div>

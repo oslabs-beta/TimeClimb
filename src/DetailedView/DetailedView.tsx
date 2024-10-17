@@ -2,10 +2,14 @@ import DetailedViewUI from './DetailedViewUI';
 import FlowChart from './FlowChart';
 import DataContainer from './DataContainer';
 import TimeSlice from './TimeSlice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store';
+import { getLatencies, setLatency } from '../reducers/dataSlice';
 
 function DetailedView() {
   //const [function, setFunction] = useState({});
+  const dispatch: AppDispatch = useDispatch();
   function onclick() {
     fetch('/api/step-functions/addStepFunction', {
       method: 'POST',
@@ -26,6 +30,13 @@ function DetailedView() {
       })
       .then((data) => console.log(data));
   }
+
+  useEffect(() => {
+    dispatch(getLatencies())
+      .unwrap()
+      .then((data) => console.log(data))
+      .then((data) => dispatch(setLatency(data)));
+  });
   return (
     <div>
       This is the detailed view
