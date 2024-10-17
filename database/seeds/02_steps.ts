@@ -82,4 +82,8 @@ export async function seed(knex: Knex): Promise<void> {
       type: "Pass",
     },
   ]);
+
+  await knex.raw(`
+    SELECT setval('steps_step_id_seq', 12, true);
+  `);
 }

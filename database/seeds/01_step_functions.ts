@@ -34,4 +34,8 @@ export async function seed(knex: Knex): Promise<void> {
       revision_id: "afq0c4c8a0b503b8059f2b9f876egg56",
     },
   ]);
+
+  await knex.raw(`
+    SELECT setval('step_functions_step_function_id_seq', 2, true);
+  `);
 }
