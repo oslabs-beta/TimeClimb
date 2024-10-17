@@ -23,7 +23,6 @@ app.get('/home', (req: Request, res: Response) => {
 app.get('/src/main.tsx', (req: Request, res: Response) => {
   return res.status(200).sendFile('/home/pauluhlenkott/TimeClimb/src/main.js');
 });
-
 // API router
 app.use("/api", apiRouter);
 
@@ -38,9 +37,9 @@ app.use(
     next: NextFunction
   ): void => {
     const errObj = {
-      log: "Error caught by global error handler",
+      log: 'Error caught by global error handler',
       status: 500,
-      message: "Error caught by global error handler",
+      message: 'Error caught by global error handler',
     };
     const newErrObj = Object.assign({}, errObj, err);
     res.status(newErrObj.status).json(newErrObj.message);
