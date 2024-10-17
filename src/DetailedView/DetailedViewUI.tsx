@@ -2,8 +2,8 @@ import BackButton from './BackButton';
 
 function DetailedViewUI() {
   return (
-    <div>
-      this is the detailed view UI
+    <div id="detailed-view">
+      {/* this is the detailed view UI */}
       <BackButton />
     </div>
   );

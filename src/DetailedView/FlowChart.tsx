@@ -11,8 +11,8 @@ function FlowChart() {
   );
   return (
     <div>
-      This is the flow chart
-      <FlowChartView definition={definition} />
+      {/* This is the flow chart */}
+      <FlowChartView />
       <FlowChartDataSelector />
       <StepFunctionSelector />
     </div>

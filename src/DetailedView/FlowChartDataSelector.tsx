@@ -7,7 +7,7 @@ function FlowChartDataSelector() {
   return (
     <div>
       {cardName}
-      This is the flow chart data selector
+      {/* This is the flow chart data selector */}
     </div>
   )
 }
