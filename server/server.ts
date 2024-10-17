@@ -1,11 +1,13 @@
-import express from 'express';
-import type { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import path from 'path';
-import logData from './models/controllers';
-import stepFunctionController from './controllers/stepFunctionController';
-import apiRouter from './routes/api/index';
-import clientRouter from './routes/client/index';
+import express from "express";
+import type {
+  Request,
+  Response,
+  NextFunction,
+  ErrorRequestHandler,
+} from "express";
+import cors from "cors";
+import apiRouter from "./routes/api/index";
+import clientRouter from "./routes/client/index";
 
 const PORT = 3000;
 const app = express();
@@ -23,46 +25,29 @@ app.get('/src/main.tsx', (req: Request, res: Response) => {
 });
 
 // API router
-app.use('/api', apiRouter);
+app.use("/api", apiRouter);
 
-app.get(
-  '/getStateMachines-aws',
-  stepFunctionController.listStateMachines,
-  (req: Request, res: Response) => {
-    res.status(200).json(res.locals.stateMachines);
-  }
-);
-
-// for react app
+// for react app - not yet implemented
 app.use(clientRouter);
 
-app.use('/*', (req: Request, res: Response) => {
-  res.status(404).send('404 not found');
-});
-
-app.use((err, req, res, next) => {
-  const errObj = {
-    log: 'Error caught by global error handler',
-    status: 500,
-    message: err,
-  };
-  const newErrObj = Object.assign({}, errObj, err);
-  res.status(newErrObj.status).json(newErrObj.message);
-});
+app.use(
+  (
+    err: ErrorRequestHandler,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): void => {
+    const errObj = {
+      log: "Error caught by global error handler",
+      status: 500,
+      message: "Error caught by global error handler",
+    };
+    const newErrObj = Object.assign({}, errObj, err);
+    res.status(newErrObj.status).json(newErrObj.message);
+    return;
+  }
+);
 
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
 });
-// import { Application, Request, Response } from 'express';
-
-// const app: Application = express();
-
-// const PORT = 3000;
-
-// try {
-//   app.listen(PORT, (): void => {
-//     console.log(`Connected successfully on port ${PORT}`);
-//   });
-// } catch (error: any) {
-//   console.error(`Error occured: ${error.message}`);
-// }
