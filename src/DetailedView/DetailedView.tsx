@@ -3,8 +3,8 @@ import FlowChart from './FlowChart';
 import DataContainer from './DataContainer';
 import TimeSlice from './TimeSlice';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store';
 import { getLatencies, setLatencies, setLatency } from '../reducers/dataSlice';
 
 function DetailedView() {
@@ -28,21 +28,24 @@ function DetailedView() {
     });
     // .then((data) => console.log(data));
   }
-
+  const definitionID = useSelector(
+    (state: RootState) => state.data.currentDefinitionID
+  );
   useEffect(() => {
-    dispatch(getLatencies())
+    dispatch(getLatencies(definitionID))
       .unwrap()
-      .then((data) => {
-        console.log(data);
-        return data;
-      })
+      // .then((data) => {
+      //   console.log(data);
+      //   return data;
+      // })
       .then((data) => dispatch(setLatencies(data)));
   }, [dispatch]);
 
   return (
-    <div>
+    <div className='detailedView'>
       {/* This is the detailed view */}
-      <DetailedViewUI />{/* this is just the back button */}
+      <DetailedViewUI />
+      {/* this is just the back button */}
       {/* <button className="dv-btn" onClick={onclick}>Get one</button>
       <button className="dv-btn" onClick={getall}>Get all</button> */}
       <FlowChart />

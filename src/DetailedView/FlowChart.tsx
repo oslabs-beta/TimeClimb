@@ -12,7 +12,7 @@ function FlowChart() {
   return (
     <div>
       {/* This is the flow chart */}
-      <FlowChartView />
+      <FlowChartView definition={definition} />
       <FlowChartDataSelector />
       <StepFunctionSelector />
     </div>

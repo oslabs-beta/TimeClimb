@@ -11,6 +11,7 @@ type stepfunction = {
 interface dataState {
   stepfunctions: stepfunction[];
   currentDefinition: object | undefined;
+  currentDefinitionID: number;
   latencies: [
     {
       steps: any;
@@ -23,6 +24,7 @@ interface dataState {
 const initialState: dataState = {
   stepfunctions: [],
   currentDefinition: {},
+  currentDefinitionID: 0,
   latencies: [
     {
       steps: null,
@@ -37,17 +39,21 @@ export const dataSlice = createSlice({
   initialState,
   reducers: {
     setLatencies: (state, action) => {
-      console.log(action.payload);
+      //console.log(action.payload);
       state.latencies = action.payload;
       if (state.latencies.length > 0) state.latency = state.latencies[0];
     },
     setLatency: (state, action) => {
-      console.log('Setting new latency', action.payload);
       if (state.latencies.length > 0)
         state.latency = state.latencies[action.payload];
     },
     setStepFunction: (state, action) => {
+      console.log('Adding step function definion');
       state.currentDefinition = action.payload;
+      console.log(state.currentDefinition);
+    },
+    setDefinitionID: (state, action) => {
+      state.currentDefinitionID = action.payload;
     },
     getStepFunctions: (state, action) => {
       state.stepfunctions = action.payload;
@@ -55,6 +61,7 @@ export const dataSlice = createSlice({
       //   state.currentDefinition = state.stepfunctions[0].definition;
     },
     appendStepFunction: (state, action) => {
+      console.log('Appending step function');
       state.stepfunctions.push(action.payload);
     },
     setChartLatencies: (state, action) => {
@@ -82,14 +89,18 @@ export const getStepFunctionList = createAsyncThunk(
   }
 );
 
-export const getLatencies = createAsyncThunk('data/getLatencies', async () => {
-  const res = await fetch('/api/average-latencies/1');
-  if (!res.ok) {
-    throw new Error('Cannot fetch stepfunctions');
+export const getLatencies = createAsyncThunk(
+  'data/getLatencies',
+  async (id: number) => {
+    console.log(`Geeting latency for id: ${id}`);
+    const res = await fetch(`/api/average-latencies/${id}`);
+    if (!res.ok) {
+      throw new Error('Cannot fetch stepfunctions');
+    }
+    const latencies = await res.json();
+    return latencies;
   }
-  const latencies = await res.json();
-  return latencies;
-});
+);
 
 export const addStepFunction = createAsyncThunk(
   'data/addStepFunction',
@@ -113,6 +124,7 @@ export const {
   setLatency,
   setLatencies,
   setStepFunction,
+  setDefinitionID,
   getStepFunctions,
   appendStepFunction,
   setChartLatencies,

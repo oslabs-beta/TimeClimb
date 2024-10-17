@@ -47,7 +47,6 @@ function AllCards() {
     if (!stepfunctions) return;
     stepfunctions.forEach((sf) => {
       // Adjust 'description' based on your actual data
-
       dispatch(addCard(sf));
     });
   }, [stepfunctions]);
@@ -83,6 +82,7 @@ function AllCards() {
           remove={card.remove}
           view={card.view}
           definition={card.definition}
+          id={index + 1}
         />
       ))}
     </div>

@@ -175,8 +175,6 @@ function FlowChartView({ height, width, definition }) {
   g.setDefaultEdgeLabel(function () {
     return {};
   });
-  const latency = useSelector((state: RootState) => state.data.latency);
-  // console.log(latency);
 
   function createFlowchart(g, data) {
     if (!data) return { nodes: [], edges: [] };
@@ -243,13 +241,12 @@ function FlowChartView({ height, width, definition }) {
     return { nodes: initialNodes, edges: initialEdges };
   }
 
-  const actionLatencies = useSelector((state: RootState) => state.data.latency);
   const results = createFlowchart(g, definition);
   const initialNodes = results.nodes;
   const initialEdges = results.edges;
 
   return (
-    <div id="graph-style" style={{ width: 500, height: 500}}>
+    <div id='graph-style' style={{ width: 500, height: 500 }}>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}

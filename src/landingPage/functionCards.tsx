@@ -5,7 +5,7 @@ import { AppDispatch } from '../../store.tsx';
 import { card, deleteCard } from '../reducers/cardSlice';
 import { useNavigate } from 'react-router-dom';
 import FlowChartView from '../DetailedView/FlowChartView.tsx';
-import { setStepFunction } from '../reducers/dataSlice.tsx';
+import { setDefinitionID, setStepFunction } from '../reducers/dataSlice.tsx';
 
 function FunctionCards({
   name,
@@ -14,6 +14,7 @@ function FunctionCards({
   view,
   remove,
   definition,
+  id,
 }: card) {
   // const username = useSelecor(selectUser);
   const dispatch: AppDispatch = useDispatch();
@@ -27,7 +28,7 @@ function FunctionCards({
   const handleView = (name: string) => {
     navigate(`/expandView`, { state: { cardName: name } });
     dispatch(setStepFunction(definition));
-    console.log(definition);
+    dispatch(setDefinitionID(id));
   };
   // function changeView(){
   //     navigate("/expandView")
