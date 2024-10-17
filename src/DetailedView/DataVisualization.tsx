@@ -1,17 +1,18 @@
 import React, { useRef, useEffect } from 'react';
 import { Chart, registerables } from 'chart.js';
-import { Handle } from '@xyflow/react';
+import { useSelector } from 'react-redux';
+// import { selectData } from '../reducers/dataSlice';
 
-function DataVisualization({latency}) {
+function DataVisualization() {
   const canvasRef = useRef(null);
   let chartInstance = useRef(null); 
+  const latency = useSelector((state) => state.data.latency)
+
+  const dateLabels: string[] = []
 
   Chart.register(...registerables);
 
   useEffect(() => {
-    const data = latency;
-    const labels = [2010, 2011, 2012, 2013, 2014, 2015, 2016];
-
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
@@ -19,10 +20,10 @@ function DataVisualization({latency}) {
     chartInstance.current = new Chart(canvasRef.current, {
       type: 'line',
       data: {
-        labels,
+        labels: dateLabels,
         datasets: [{
           label: 'Acquisitions by year',
-          data
+          data: latency
         }]
       }
     });

@@ -179,7 +179,7 @@ function FlowChartView({ height, width }) {
   //console.log(latency);
 
   function createFlowchart(g, data) {
-    if (!data.definition) return { nodes: [], edges: [] };
+    //if (!data.definition) return { nodes: [], edges: [] };
     function createGraph(g, subgraph, next?) {
       for (const state in subgraph.States) {
         g.setNode(state, { label: state, width: 100, height: 100 });
@@ -205,7 +205,7 @@ function FlowChartView({ height, width }) {
         }
       }
     }
-    createGraph(g, data.definition);
+    createGraph(g, data);
 
     dagre.layout(g);
 
@@ -239,8 +239,8 @@ function FlowChartView({ height, width }) {
   const stepfunction = useSelector(
     (state: RootState) => state.data.currentFunction
   );
-
-  const results = createFlowchart(g, stepfunction);
+  console.log(stepfunction);
+  const results = createFlowchart(g, exampleFunction);
   const initialNodes = results.nodes;
   const initialEdges = results.edges;
 

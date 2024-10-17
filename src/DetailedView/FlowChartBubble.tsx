@@ -1,7 +1,8 @@
 import { Handle, Position } from '@xyflow/react';
-import { useState } from 'react';
-import DataVisualization from './DataVisualization';
-// import { AppDispatch } from "../../store.tsx";
+import { useDispatch } from 'react-redux';
+// import DataVisualization from './DataVisualization';
+import { setLatency } from '../reducers/dataSlice';
+import { AppDispatch } from "../../store.tsx";
 // import { setAddCardForm } from '../reducers/cardSlice';
 // import { useDispatch, useSelector } from 'react-redux';
 // import { selectCard } from '../reducers/cardSlice.tsx'
@@ -19,15 +20,16 @@ function FlowChartBubble({ data }: BubbleProps) {
   const red = data.metric;
   const green = 255 - data.metric;
 
-  const [popup , setPopup] = useState(false)
+  // const [popup , setPopup] = useState(false)
 
-  // const dispatch:AppDispatch = useDispatch()
+  const dispatch:AppDispatch = useDispatch()
   // const chart = useSelector(selectCard)
 
   function handleClick(e:React.FormEvent) {
     console.log('Click');
     e.preventDefault()
-    setPopup(true)
+    dispatch(setLatency(data.latency))
+    // setPopup(true)
     // dispatch(setAddCardForm())
   }
   return (
@@ -42,7 +44,7 @@ function FlowChartBubble({ data }: BubbleProps) {
         <Handle type='source' position={Position.Bottom} />
       </button>
 
-      {popup && <DataVisualization latency={[...data.latency]}/>}
+      {/* {popup && <DataVisualization latency={[...data.latency]}/>} */}
 
     </div>
   );

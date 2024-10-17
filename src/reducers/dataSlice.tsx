@@ -48,6 +48,7 @@ export const getStepFunctionList = createAsyncThunk(
       throw new Error('Cannot fetch stepfunctions');
     }
     const stepfunctions: stepfunction[] = await res.json();
+    console.log('GettingStepfunctions:', stepfunctions);
     return stepfunctions;
   }
 );
