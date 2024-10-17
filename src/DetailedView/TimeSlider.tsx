@@ -48,9 +48,7 @@ function TimeSlider() {
         className='slider'
         onChange={handleSliderChange}
       />
-      <p>
-        Hour: <span>{sliderValue}</span>
-      </p>
+      {/* <p>Value: <span>{sliderValue}</span></p> */}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+
+
 .chartBubble {
   height: 100px;
   width: 150px;
@@ -9,12 +11,22 @@
   padding: 5px;
   border-radius: 5px;
 }
+<<<<<<< HEAD
 html,
 body {
+=======
+html, body {
+  --main-black: rgb(20, 20, 20);
+  --main-white: rgb(235, 235, 235);
+  --main-blue:  #4e77ff;
+>>>>>>> 7a20cc21c720c852e780a3cbcf1dffcb1b5bc563
   height: 100%;
   margin: 0;
-  /* background-color: aquamarine; */
+  color: var(--main-white);
+  background-color: var(--main-black);
+  /* background-color: rgb(247, 247, 247); */
 }
+
 .landingPage {
   display: flex;
   height: 75vw;
@@ -24,38 +36,65 @@ body {
 .navBar {
   display: flex;
   flex-direction: column;
+<<<<<<< HEAD
 
+=======
+  color: var(--main-white);
+  /* background-color: #04AA6D; */
+>>>>>>> 7a20cc21c720c852e780a3cbcf1dffcb1b5bc563
   border: 1px solid black;
   border-radius: 5px;
   width: fit-content;
   height: 500px;
   margin: 20px;
   padding: 10px;
+  background-color: rgb(42, 42, 42);
   justify-content: space-between;
 }
 
+<<<<<<< HEAD
 .about a,
 .contact a,
 .home a,
 .logout a {
+=======
+
+.about a, .contact a, .home a, .logout a {
+>>>>>>> 7a20cc21c720c852e780a3cbcf1dffcb1b5bc563
   text-decoration: none;
-  color: black;
+  color: var(--main-white);
   margin: 200px 5px;
 }
+
+.about a:hover, .contact a:hover, .home a:hover, .logout a:hover{
+  color: var(--main-blue);
+}
+
 
 .addCard {
   display: flex;
   width: fit-content;
   margin: 20px;
+  background-color: var(--main-black);
 }
 
 .addCard .add {
   height: 100px;
   width: 100px;
+  background-color: var(--main-blue);
+  opacity: 0.9;
   border-radius: 5px;
 }
 
+<<<<<<< HEAD
 .functionCards {
+=======
+.add:hover{
+  opacity: 1;
+}
+
+.functionCards{
+>>>>>>> 7a20cc21c720c852e780a3cbcf1dffcb1b5bc563
   border: 1px solid black;
   margin: 20px;
   border-radius: 5px;
@@ -96,7 +135,9 @@ body {
 
 /* slider */
 .slidecontainer {
-  width: 100%;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .slider {
@@ -136,3 +177,28 @@ body {
   height: 500px;
   width: 500px;
 }
+#graph-style{
+  margin-left: auto;
+  margin-right: auto;
+  border: solid black;
+}
+
+.dv-btn{
+  background-color: var(--main-blue);
+  opacity: 0.9;
+  height: 30px;
+  width:60px;
+  margin: 5px;
+  box-shadow: 3px 3px 0px 0px black;
+}
+
+.dv-btn:hover{
+  opacity: 1;
+  /* width: 100px;
+  height: 50px; */
+}
+/* #detailed-view{
+
+  width: 40%;
+  background-color: blue;
+} */
