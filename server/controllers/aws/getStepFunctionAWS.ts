@@ -37,7 +37,10 @@ const getStateMachineDetails = async (
     // sfn.config.region = stateMachineArn.split(":")
     const response = await sfn.send(describeStateMachine);
     // console.log("getStateMachineDetails response", response);
-    const addStepFunction = stepFunctionsModel.addToStepFunctionTable(response);
+    const addStepFunction = await stepFunctionsModel.addToStepFunctionTable(
+      response
+    );
+
     res.locals.newTable = addStepFunction;
     return next();
   } catch (error) {
