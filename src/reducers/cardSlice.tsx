@@ -9,6 +9,7 @@ export interface card {
   remove: string; //dom.element or react.element?
   // link?: string //how are we validating step functions when we are adding new function cards?
   definition: any;
+  id: number;
 }
 
 interface cardState {
@@ -93,9 +94,15 @@ export const cardSlice = createSlice({
       state.currentRegion = action.payload;
     },
     addCard: (state, action) => {
-      const exists = state.allCards.some(
-        (card) => card.name === state.currentName
-      );
+      let exists = false;
+      state.allCards.forEach((card) => {
+        if (card.name === action.payload.name) {
+          exists = true;
+        }
+      });
+
+      const newCards = [];
+      //console.log(exists);
       if (exists) {
         state.error = 'name already exists';
         return;
@@ -108,6 +115,7 @@ export const cardSlice = createSlice({
         remove: 'delete',
         //link: state.currentLink
         definition: action.payload.definition,
+        id: 0,
       };
       state.allCards.push(newCard);
       state.currentName = '';

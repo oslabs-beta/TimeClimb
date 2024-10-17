@@ -175,8 +175,6 @@ function FlowChartView({ height, width, definition }) {
   g.setDefaultEdgeLabel(function () {
     return {};
   });
-  const latency = useSelector((state: RootState) => state.data.latency);
-  // console.log(latency);
 
   function createFlowchart(g, data) {
     if (!data) return { nodes: [], edges: [] };
@@ -217,13 +215,15 @@ function FlowChartView({ height, width, definition }) {
 
     const initialNodes = [];
     const initialEdges = [];
+
     g.nodes().forEach(function (v) {
+      let data = 0;
       const newNode = {
         id: g.node(v).label,
         type: 'flowChartBubble',
         position: { x: g.node(v).x, y: g.node(v).y },
         data: {
-          metric: latency, //Math.floor(Math.random() * 255),
+          metric: data, //latency, //Math.floor(Math.random() * 255),
           name: g.node(v).label,
         },
       };
@@ -241,16 +241,12 @@ function FlowChartView({ height, width, definition }) {
     return { nodes: initialNodes, edges: initialEdges };
   }
 
-  const stepfunction = useSelector(
-    (state: RootState) => state.data.currentDefinition
-  );
-
   const results = createFlowchart(g, definition);
   const initialNodes = results.nodes;
   const initialEdges = results.edges;
 
   return (
-    <div id="graph-style" style={{ width: 500, height: 500}}>
+    <div id='graph-style' style={{ width: 500, height: 500 }}>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}

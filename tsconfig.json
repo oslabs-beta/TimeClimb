@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "types": ["vitest/globals"],
+    "typeRoots": ["./node_modules/@types"]
   },
   "files": [],
   "references": [
@@ -8,8 +9,5 @@
     { "path": "./tsconfig.server.json" },
     { "path": "./tsconfig.knex.json" },
     { "path": "./tsconfig.app.json" }
-  ],
-  "compilerOptions": {
-    "typeRoots": ["./node_modules/@types"]
-  }
+  ]
 }
