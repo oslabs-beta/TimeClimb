@@ -1,13 +1,13 @@
-import express from 'express';
+import express from "express";
 import type {
   Request,
   Response,
   NextFunction,
   ErrorRequestHandler,
-} from 'express';
-import cors from 'cors';
-import apiRouter from './routes/api/index';
-import clientRouter from './routes/client/index';
+} from "express";
+import cors from "cors";
+import apiRouter from "./routes/api/index";
+import clientRouter from "./routes/client/index";
 
 const PORT = 3000;
 const app = express();
@@ -24,7 +24,7 @@ app.get('/src/main.tsx', (req: Request, res: Response) => {
   return res.status(200).sendFile('/home/pauluhlenkott/TimeClimb/src/main.js');
 });
 // API router
-app.use('/api', apiRouter);
+app.use("/api", apiRouter);
 
 // for react app - not yet implemented
 app.use(clientRouter);

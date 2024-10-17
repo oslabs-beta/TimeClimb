@@ -19,7 +19,7 @@ const initialState: dataState = {
   stepfunctions: [],
   currentDefinition: {},
   latencies: [],
-  latency: {},
+  latency: [],
 };
 
 export const dataSlice = createSlice({
@@ -54,6 +54,7 @@ export const getStepFunctionList = createAsyncThunk(
       throw new Error('Cannot fetch stepfunctions');
     }
     const stepfunctions: stepfunction[] = await res.json();
+    console.log('GettingStepfunctions:', stepfunctions);
     return stepfunctions;
   }
 );
@@ -90,6 +91,7 @@ export const {
   setStepFunction,
   getStepFunctions,
   appendStepFunction,
+  setLatencies
 } = dataSlice.actions;
 
 export const selectData = (state: RootState) => {
