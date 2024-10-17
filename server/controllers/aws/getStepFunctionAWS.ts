@@ -1,22 +1,10 @@
-<<<<<<< HEAD
 import 'dotenv/config';
 import { SFNClient, DescribeStateMachineCommand } from '@aws-sdk/client-sfn';
 import { fromEnv } from '@aws-sdk/credential-providers';
-import { GetStateMachineDetailsFromAWS } from '../../types/stepFunctionDetailsFromAWS';
 import stepFunctionsModel from '../../models/stepFunctionsModel';
-// import  stepFunctionsModel from "/Users/alexstewart/gh-repos/timeClimb/TimeClimb/server/models/stepFunctionsModel"
 import type { Request, Response, NextFunction } from 'express';
 import type { StepFunctionsTable } from '../../models/types';
 import db from '../../models/db';
-=======
-import "dotenv/config";
-import { SFNClient, DescribeStateMachineCommand } from "@aws-sdk/client-sfn";
-import { fromEnv } from "@aws-sdk/credential-providers";
-import stepFunctionsModel from "../../models/stepFunctionsModel";
-import type { Request, Response, NextFunction } from "express";
-import type { StepFunctionsTable } from "../../models/types";
-import db from "../../models/db";
->>>>>>> ace0c2c7eef7ccf0bdb477c4bd0d0b8423c53099
 
 const getStateMachineDetails = async (
   req: Request,
@@ -25,11 +13,7 @@ const getStateMachineDetails = async (
 ) => {
   try {
     //first check it state machine exists in database
-<<<<<<< HEAD
     const result = await db<StepFunctionsTable>('step_functions')
-=======
-    const result = await db<StepFunctionsTable>("step_functions")
->>>>>>> ace0c2c7eef7ccf0bdb477c4bd0d0b8423c53099
       .where({ arn: req.body.arn })
       .first();
     if (result) {
@@ -47,11 +31,7 @@ const getStateMachineDetails = async (
     });
     //create new instance of sfn
     const sfn = new SFNClient({
-<<<<<<< HEAD
       region: stateMachineArn.split(':')[3],
-=======
-      region: stateMachineArn.split(":")[3],
->>>>>>> ace0c2c7eef7ccf0bdb477c4bd0d0b8423c53099
       credentials: fromEnv(),
     });
     // sfn.config.region = stateMachineArn.split(":")

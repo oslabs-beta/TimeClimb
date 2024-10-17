@@ -23,7 +23,6 @@ function AllCards() {
 
   // console.log('card', cards)
   useEffect(() => {
-    console.log(stepFunctionList);
     // stepFunctionList.forEach((el) => {
     //   desMap.set(el.name, el.description);
     // });
@@ -45,10 +44,10 @@ function AllCards() {
 
   // Log descriptions of each step function
   useEffect(() => {
+    if (!stepfunctions) return;
     stepfunctions.forEach((sf) => {
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
-      console.log(sf.name);
-      console.log(sf.definition); // Adjust 'description' based on your actual data
+      // Adjust 'description' based on your actual data
+
       dispatch(addCard(sf));
     });
   }, [stepfunctions]);
@@ -71,6 +70,7 @@ function AllCards() {
   } else filteredCards = cards;
 
   // console.log('filter', filteredCards)
+  //if (filteredCards.length > 0) console.log(filteredCards);
 
   return (
     <div className='allFunctionCards'>

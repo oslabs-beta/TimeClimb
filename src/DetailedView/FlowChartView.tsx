@@ -175,11 +175,11 @@ function FlowChartView({ height, width, definition }) {
   g.setDefaultEdgeLabel(function () {
     return {};
   });
-  const latency = useSelector((state: RootState) => state.data.latency);
+  const latency = useSelector((state: RootState) => state.data.latencies);
   //console.log(latency);
 
   function createFlowchart(g, data) {
-    if (!data.definition) return { nodes: [], edges: [] };
+    if (!data) return { nodes: [], edges: [] };
     function createGraph(g, subgraph, next?) {
       for (const state in subgraph.States) {
         g.setNode(state, { label: state, width: 100, height: 100 });
@@ -188,6 +188,12 @@ function FlowChartView({ height, width, definition }) {
           !(subgraph.States[state].Type === 'Parallel')
         )
           g.setEdge(state, subgraph.States[state].Next);
+
+        if (subgraph.States[state].Catch) {
+          subgraph.States[state].Catch.forEach((ele) => {
+            g.setEdge(state, ele.Next);
+          });
+        }
 
         if (subgraph.States[state].Type === 'Choice') {
           subgraph.States[state].Choices.forEach((ele) => {
@@ -205,7 +211,7 @@ function FlowChartView({ height, width, definition }) {
         }
       }
     }
-    createGraph(g, data.definition);
+    createGraph(g, data);
 
     dagre.layout(g);
 
@@ -236,8 +242,9 @@ function FlowChartView({ height, width, definition }) {
   }
 
   const stepfunction = useSelector(
-    (state: RootState) => state.data.currentFunction
+    (state: RootState) => state.data.currentDefinition
   );
+
   const results = createFlowchart(g, definition);
   const initialNodes = results.nodes;
   const initialEdges = results.edges;

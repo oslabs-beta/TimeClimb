@@ -15,9 +15,10 @@ function FunctionCards({
   remove,
   definition,
 }: card) {
-  // const username = useSelector(selectUser);
+  // const username = useSelecor(selectUser);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  //console.log(definition);
 
   const handleDelete = (name: string) => {
     dispatch(deleteCard(name));

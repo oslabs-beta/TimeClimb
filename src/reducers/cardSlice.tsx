@@ -8,7 +8,7 @@ export interface card {
   view: string;
   remove: string; //dom.element or react.element?
   // link?: string //how are we validating step functions when we are adding new function cards?
-  definition: object;
+  definition: any;
 }
 
 interface cardState {
@@ -107,7 +107,7 @@ export const cardSlice = createSlice({
         view: 'View',
         remove: 'delete',
         //link: state.currentLink
-        definition: action.payload.definiton,
+        definition: action.payload.definition,
       };
       state.allCards.push(newCard);
       state.currentName = '';
