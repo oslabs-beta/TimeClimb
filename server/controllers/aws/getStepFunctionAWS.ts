@@ -4,7 +4,7 @@ import { fromEnv } from "@aws-sdk/credential-providers";
 import stepFunctionsModel from "../../models/stepFunctionsModel";
 import type { Request, Response, NextFunction } from "express";
 import type { StepFunctionsTable } from "../../models/types";
-import db from "../../models/db";
+
 
 const getStateMachineDetails = async (
   req: Request,
@@ -12,10 +12,9 @@ const getStateMachineDetails = async (
   next: NextFunction
 ) => {
   try {
+    const stateMachineArn = req.body.arn;
     //first check it state machine exists in database
-    const result = await db<StepFunctionsTable>("step_functions")
-      .where({ arn: req.body.arn })
-      .first();
+   const result = await stepFunctionsModel.checkStepFunctionsTable(stateMachineArn)
     if (result) {
       res.locals.newTable = {
         name: result.name,
@@ -25,7 +24,6 @@ const getStateMachineDetails = async (
       return next();
     }
     //otherwise, retrieve state machine from AWS, add it to database, and retrieve from database
-    const stateMachineArn = req.body.arn;
     const describeStateMachine = new DescribeStateMachineCommand({
       stateMachineArn,
     });

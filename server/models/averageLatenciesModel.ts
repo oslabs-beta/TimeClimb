@@ -2,6 +2,7 @@ import db from "./db";
 import moment from "moment";
 import { StepFunctionAverageLatenciesTable } from "./types";
 
+//hourly latencies
 const getStepFunctionLatencies = async (
   step_function_id: number,
   start_time: string,
@@ -21,9 +22,16 @@ const getStepFunctionLatencies = async (
   }
 };
 
+//daily latencies
+const getStepFunctionLatenciesDaily;
+
+
+
+
 const averageLatenciesModel = {
   // methods
   getStepFunctionLatencies,
+  getStepFunctionLatenciesDaily,
 };
 
 // const endOfYesterday = moment.utc().subtract(1, 'day').endOf("day");
