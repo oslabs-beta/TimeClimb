@@ -31,9 +31,9 @@ function StepFunctionInput() {
 
     dispatch(setCardRegion(region));
 
-    dispatch(addCard());
+    //dispatch(addCard());
 
-    dispatch(addStepFunction())
+    dispatch(addStepFunction(link))
       .unwrap()
       .then((data) => dispatch(appendStepFunction(data)));
 

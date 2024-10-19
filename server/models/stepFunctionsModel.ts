@@ -1,7 +1,7 @@
 // functions with queries specific for step funtions table can go here
 // and imported into controllers where necessary
 import db from "./db";
-import type { StepFunctionDetails, StepFunctionsTable } from "./types";
+import type { StepFunctionsTable } from "./types";
 
 const selectAllStepFunctions = async () => {
   try {
@@ -21,9 +21,7 @@ const selectAllStepFunctions = async () => {
 //add to step_functions table
 const addToStepFunctionTable = async (detailObj) => {
   try {
-    const [step_function_id, name, definition] = await db<StepFunctionsTable>(
-      "step_functions"
-    )
+    const [rowInserted] = await db<StepFunctionsTable>("step_functions")
       .insert({
         name: detailObj.name,
         arn: detailObj.stateMachineArn,
@@ -35,7 +33,8 @@ const addToStepFunctionTable = async (detailObj) => {
         has_versions: false, //can't remember how we determine this
       })
       .returning(["step_function_id", "name", "definition"]);
-    return { step_function_id, name, definition };
+
+    return rowInserted;
   } catch (error) {
     console.log("Error:", error);
     return;
