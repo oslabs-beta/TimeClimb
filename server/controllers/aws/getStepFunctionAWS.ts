@@ -1,10 +1,10 @@
-import "dotenv/config";
-import { SFNClient, DescribeStateMachineCommand } from "@aws-sdk/client-sfn";
-import { fromEnv } from "@aws-sdk/credential-providers";
-import stepFunctionsModel from "../../models/stepFunctionsModel";
-import type { Request, Response, NextFunction } from "express";
-import type { StepFunctionsTable } from "../../models/types";
-import db from "../../models/db";
+import 'dotenv/config';
+import { SFNClient, DescribeStateMachineCommand } from '@aws-sdk/client-sfn';
+import { fromEnv } from '@aws-sdk/credential-providers';
+import stepFunctionsModel from '../../models/stepFunctionsModel';
+import type { Request, Response, NextFunction } from 'express';
+import type { StepFunctionsTable } from '../../models/types';
+import db from '../../models/db';
 
 const getStateMachineDetails = async (
   req: Request,
@@ -13,7 +13,7 @@ const getStateMachineDetails = async (
 ) => {
   try {
     //first check it state machine exists in database
-    const result = await db<StepFunctionsTable>("step_functions")
+    const result = await db<StepFunctionsTable>('step_functions')
       .where({ arn: req.body.arn })
       .first();
     if (result) {
@@ -31,13 +31,16 @@ const getStateMachineDetails = async (
     });
     //create new instance of sfn
     const sfn = new SFNClient({
-      region: stateMachineArn.split(":")[3],
+      region: stateMachineArn.split(':')[3],
       credentials: fromEnv(),
     });
     // sfn.config.region = stateMachineArn.split(":")
     const response = await sfn.send(describeStateMachine);
     // console.log("getStateMachineDetails response", response);
-    const addStepFunction = stepFunctionsModel.addToStepFunctionTable(response);
+    const addStepFunction = await stepFunctionsModel.addToStepFunctionTable(
+      response
+    );
+
     res.locals.newTable = addStepFunction;
     return next();
   } catch (error) {
