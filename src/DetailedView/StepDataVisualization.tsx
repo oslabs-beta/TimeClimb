@@ -16,7 +16,7 @@ function StepDataVisualization() {
     moment(item.startTime).format('HH:mm')
   );
 
-  //   const latencies = latency.map((item) => item.stepFunctionAverageLatency);
+    const latencies = latency.map((item) => item.stepFunctionAverageLatency);
 
   Chart.register(...registerables);
 
