@@ -63,6 +63,7 @@ export const dataSlice = createSlice({
     appendStepFunction: (state, action) => {
       console.log('Appending step function');
       state.stepfunctions.push(action.payload);
+      console.log(state.stepfunctions);
     },
     setChartLatencies: (state, action) => {
       if (action.payload) {
@@ -104,12 +105,12 @@ export const getLatencies = createAsyncThunk(
 
 export const addStepFunction = createAsyncThunk(
   'data/addStepFunction',
-  async () => {
+  async (arn) => {
     const res = await fetch('/api/step-functions/addStepFunction', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        arn: 'arn:aws:states:us-west-2:703671926773:stateMachine:BasicsHelloWorldStateMachine',
+        arn: arn,
       }),
     });
     if (!res.ok) {
