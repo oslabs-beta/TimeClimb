@@ -4,7 +4,7 @@
 
 ### **`http://localhost:3000/api`**
 
-All API requests should be made to http://localhost:3000/api,
+All API requests are be made to http://localhost:3000/api
 
 ## Endpoints
 
@@ -35,7 +35,6 @@ previously stored in the database
   {
     "step_function_id": 0,
     "name": "string",
-    "comment": "string",
     "description": "string",
     "definition": {}
   }
@@ -47,7 +46,7 @@ previously stored in the database
 <details>
 <summary>
 <code>GET</code> <code>/step_functions/{step_function_id}</code> Get details 
-for a specific step function by id
+for a specific step function by id - <b>Not Yet Implemented</b>
 </summary>
 
 ### Parameters
@@ -72,12 +71,12 @@ for a specific step function by id
 {
   "step_function_id": 0,
   "name": "string",
-  "comment": "string",
   "description": "string",
-  "alias": "string",
-  "asl": {} // json definition as an object
+  "definition": {}
 }
 ```
+
+### Not Yet Implemented
 
 #### 400 Invalid Step Function Id
 
@@ -95,7 +94,7 @@ for a specific step function by id
 
 <details>
 <summary>
-<code>POST</code> <code>/step_functions</code> Adds a step function to monitor
+<code>POST</code> <code>/step_functions/addStepFunction</code> Adds a step function to the database.
 </summary>
 
 ### Parameters
@@ -104,7 +103,7 @@ for a specific step function by id
 > | ---- | -------- | --------- | ---------------------------------------------------- |
 > | body | required | object    | the arn that corresponds to a specific state machine |
 
-#### Example Value
+#### Example Body JSON
 
 ```json
 { "arn": "arn:partition:service:region:account-id:resource-type:resource-id" }
@@ -120,18 +119,17 @@ for a specific step function by id
 
 ### Example Responses
 
-#### 200 Successfully added step function for monitoring
+#### 200 Returns the newly added step function
 
 ```json
 {
   "step_function_id": 0,
   "name": "string",
-  "comment": "string",
-  "description": "string",
-  "alias": "string",
-  "asl": {} // json definition as an object
+  "definition": {}
 }
 ```
+
+### Not Yet Implemented
 
 #### 400 Invalid ARN
 
@@ -143,6 +141,48 @@ for a specific step function by id
 
 ```json
 { "error": "Unauthorized to access this arn" }
+```
+
+</details>
+
+### **Average Latencies**
+
+<details>
+<summary>
+<code>GET</code> <code>/average-latencies/{step_function_id}</code> Gets yesterday's latency data per hour for the step function and each step.
+</summary>
+
+### Parameters
+
+> | name             | type     | data type   | description                                  |
+> | ---------------- | -------- | ----------- | -------------------------------------------- |
+> | step_function_id | required | integer > 0 | unique id associated with this step function |
+
+### Responses
+
+> | http code | content-type                     | response |
+> | --------- | -------------------------------- | -------- |
+> | `200`     | `application/json;charset=UTF-8` | JSON     |
+
+### Example Responses
+
+#### 200 Sorted by start_time in hour increments
+
+```json
+[
+  {
+    "step_function_average_latency": 12.345,
+    "start_time": "isoString",
+    "steps": {
+      "step_name": {
+        "average": 54.4123512
+      },
+      "other_step_name": {
+        "average": 54.4123512
+      }
+    }
+  }
+]
 ```
 
 </details>

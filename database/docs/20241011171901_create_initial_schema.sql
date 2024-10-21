@@ -56,19 +56,19 @@ alter table "steps" add constraint "steps_step_function_id_foreign"
   references "step_functions" ("step_function_id") 
     on delete CASCADE;
 
-create table "step_latencies" (
+create table "step_average_latencies" (
   "latency_id" bigserial primary key, 
   "step_id" integer not null, "average" double precision not null, 
   "executions" bigint not null, 
   "start_time" timestamptz not null, 
   "end_time" timestamptz not null);
 
-alter table "step_latencies" add constraint "step_latencies_step_id_foreign" 
+alter table "step_average_latencies" add constraint "step_average_latencies_step_id_foreign" 
   foreign key ("step_id") 
   references "steps" ("step_id") 
     on delete CASCADE;
 
-create table "step_function_latencies" (
+create table "step_function_average_latencies" (
   "latency_id" bigserial primary key, 
   "step_function_id" integer not null, 
   "average" double precision not null, 
@@ -76,8 +76,8 @@ create table "step_function_latencies" (
   "start_time" timestamptz not null, 
   "end_time" timestamptz not null);
 
-alter table "step_function_latencies" 
-  add constraint "step_function_latencies_step_function_id_foreign" 
+alter table "step_function_average_latencies" 
+  add constraint "step_function_average_latencies_step_function_id_foreign" 
     foreign key ("step_function_id") 
     references "step_functions" ("step_function_id") 
       on delete CASCADE;
@@ -101,6 +101,8 @@ alter table "step_function_monitoring"
 drop table if exists "alias_routes"
 drop table if exists "step_function_aliases"
 drop table if exists "step_function_monitoring"
+drop table if exists "step_function_average_latencies"
+drop table if exists "step_average_latencies"
 drop table if exists "step_function_latencies"
 drop table if exists "step_latencies"
 drop table if exists "steps"

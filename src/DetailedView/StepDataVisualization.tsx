@@ -5,17 +5,18 @@ import moment from 'moment';
 import { RootState } from '../../store';
 // import { selectData } from '../reducers/dataSlice';
 
-function DataVisualization() {
+function StepDataVisualization() {
   const canvasRef = useRef(null);
   let chartInstance = useRef(null);
-  const latency = useSelector((state: RootState) => state.data.latencies);
+  const latency = useSelector((state: RootState) => state.data.chartLatencies);
+  const times = useSelector((state: RootState) => state.data.latencies);
   // console.log(latency)
 
-  const startTimes = latency.map((item) =>
+  const startTimes = times.map((item) =>
     moment(item.startTime).format('HH:mm')
   );
 
-  const latencies = latency.map((item) => item.stepFunctionAverageLatency);
+  //   const latencies = latency.map((item) => item.stepFunctionAverageLatency);
 
   Chart.register(...registerables);
 
@@ -31,7 +32,7 @@ function DataVisualization() {
         datasets: [
           {
             label: 'Latency Over One Day',
-            data: latencies,
+            data: latency,
           },
         ],
       },
@@ -54,4 +55,4 @@ function DataVisualization() {
   );
 }
 
-export default DataVisualization;
+export default StepDataVisualization;

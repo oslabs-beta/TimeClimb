@@ -4,7 +4,7 @@ import TimeToggle from './TimeToggle';
 function TimeSlice() {
   return (
     <div>
-      This is the time slice
+      {/* This is the time slice */}
       <TimeSlider />
       <TimeToggle />
     </div>
