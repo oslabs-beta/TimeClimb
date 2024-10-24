@@ -28,17 +28,18 @@ const sfn = new SFNClient({
   credentials: fromEnv(),
 });
 
-const listStateMachines = new ListStateMachinesCommand();
-const response = await sfn.send(listStateMachines);
-console.log("listStateMachines response", response);
+// const listStateMachines = new ListStateMachinesCommand();
+// const response = await sfn.send(listStateMachines);
+// console.log("listStateMachines response", response);
 
 // just getting the details for the first state machine returned
-if (response.stateMachines && response.stateMachines[0].stateMachineArn) {
-  getStateMachineDetails(
-    "arn:aws:states:us-east-1:124355667606:stateMachine:HelloWorldVersions:1"
-  );
-  getStateMachineVersions(response);
-}
+// if (response.stateMachines && response.stateMachines[0].stateMachineArn) {
+getStateMachineDetails(
+  "arn:aws:states:us-east-1:124355667606:stateMachine:HelloWorldTwo"
+  // "arn:aws:states:us-east-1:124355667606:stateMachine:HelloWorldVersions:HelloMars"
+);
+// getStateMachineVersions(response);
+// }
 
 /**
  * get the detailed implementations of a state machine
@@ -52,6 +53,10 @@ async function getStateMachineDetails(
 
   const response = await sfn.send(describeStateMachine);
   console.log("getStateMachineDetails reponse", response);
+  console.log(
+    "getStateMachineDetails response.loggingConfiguration?.destinations",
+    response.loggingConfiguration?.destinations
+  );
 
   return undefined;
 }

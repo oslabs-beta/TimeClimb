@@ -1,12 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "ESNext",
     "module": "CommonJS",
-    "outDir": "./dist/server",
-    "rootDir": "./server",
+    "outDir": "./dist",
+    "rootDir": "./",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["server"],
-  "exclude": ["node_modules"]
+  "include": ["server/**/*", "workers/**/*", "database/migrations"],
+  "exclude": ["node_modules", "src", "database/docs"]
 }

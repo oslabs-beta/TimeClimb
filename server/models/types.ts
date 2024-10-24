@@ -12,7 +12,7 @@ export interface StepFunctionsTable {
   comment?: string | null;
   has_versions: boolean;
   is_version: boolean;
-  revision_id?: number;
+  revision_id?: string;
   parent_id?: number | null;
 }
 
@@ -42,13 +42,16 @@ export interface StepFunctionAverageLatenciesTable {
   end_time: string;
 }
 
-export interface StepFunctionMonitoringTable {
-  id?: number;
+export interface StepFunctionTrackersTable {
+  tracker_id?: number;
   step_function_id: number;
-  newest_update: string;
-  oldest_update: string;
-  start_time: string;
-  end_time?: string | null;
+  newest_stream_time?: string | null;
+  oldest_stream_time?: string | null;
+  newest_stream_name?: string | null;
+  oldest_stream_name?: string | null;
+  tracker_start_time?: string | null;
+  tracker_end_time?: string | null;
+  log_group_arn: string;
   active?: boolean;
 }
 
@@ -64,4 +67,11 @@ export interface AliasRoutesTable {
   alias_id: number;
   step_function_id: number;
   weight: number;
+}
+
+export interface IncompleteStreamsTable {
+  stream_id?: number;
+  step_function_id: number;
+  stream_name: string;
+  log_group_arn: string;
 }

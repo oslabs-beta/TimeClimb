@@ -1,12 +1,14 @@
+import "dotenv/config";
 import { Knex } from "knex";
 import definitions from "./utils/step-function-definitions";
+import { StepFunctionsTable } from "../../server/models/types";
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
   await knex("step_functions").del();
 
   // Inserts seed entries
-  await knex("step_functions").insert([
+  await knex<StepFunctionsTable>("step_functions").insert([
     {
       step_function_id: 1,
       name: "CallbackExample",
@@ -23,10 +25,23 @@ export async function seed(knex: Knex): Promise<void> {
     {
       step_function_id: 2,
       name: "HelloWorld",
-      arn: "arn:aws:states:us-west-2:123456789012:stateMachine:HelloWorld",
-      region: "us-west-2",
+      arn: process.env.HT_STEP_FUNCTION_ARN,
+      region: "us-east-1",
       type: "STANDARD",
       definition: definitions[1],
+      comment:
+        "A Hello World example demonstrating various state types of the Amazon States Language. It is composed of flow control states only, so it does not need resources to run.",
+      has_versions: false,
+      is_version: false,
+      revision_id: "afq0c4c8a0b503b8059f2b9f876egg56",
+    },
+    {
+      step_function_id: 3,
+      name: "HelloTest",
+      arn: process.env.HT_STEP_FUNCTION_ARN,
+      region: "us-east-1",
+      type: "STANDARD",
+      definition: definitions[2],
       comment:
         "A Hello World example demonstrating various state types of the Amazon States Language. It is composed of flow control states only, so it does not need resources to run.",
       has_versions: false,
@@ -36,6 +51,6 @@ export async function seed(knex: Knex): Promise<void> {
   ]);
 
   await knex.raw(`
-    SELECT setval('step_functions_step_function_id_seq', 2, true);
+    SELECT setval('step_functions_step_function_id_seq', 3, true);
   `);
 }

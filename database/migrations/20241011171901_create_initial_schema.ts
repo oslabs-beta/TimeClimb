@@ -1,4 +1,5 @@
 import type { Knex } from "knex";
+import { StepFunctionsTable } from "../seeds/utils/types";
 
 export async function up(knex: Knex): Promise<void> {
   // step_functions table
@@ -89,15 +90,31 @@ export async function up(knex: Knex): Promise<void> {
       .inTable("step_functions")
       .onDelete("CASCADE");
   });
-  // step_function_monitoring table
-  await knex.schema.createTable("step_function_monitoring", (table) => {
-    table.increments("monitor_id").notNullable();
+  // step_function_trackers table
+  await knex.schema.createTable("step_function_trackers", (table) => {
+    table.increments("tracker_id").notNullable();
     table.integer("step_function_id").unsigned().notNullable();
-    table.timestamp("newest_update", { useTz: true });
-    table.timestamp("oldest_update", { useTz: true });
-    table.timestamp("start_time", { useTz: true });
-    table.timestamp("end_time", { useTz: true });
+    table.timestamp("newest_stream_time", { useTz: true });
+    table.timestamp("oldest_stream_time", { useTz: true });
+    table.string("newest_stream_name");
+    table.string("oldest_stream_name");
+    table.timestamp("tracker_start_time", { useTz: true });
+    table.timestamp("tracker_end_time", { useTz: true });
     table.boolean("active").defaultTo(true).notNullable();
+    table.string("log_group_arn");
+    table
+      .foreign("step_function_id")
+      .references("step_function_id")
+      .inTable("step_functions")
+      .onDelete("CASCADE");
+  });
+
+  // step_function_trackers table
+  await knex.schema.createTable("incomplete_streams", (table) => {
+    table.increments("stream_id").notNullable();
+    table.integer("step_function_id").unsigned().notNullable();
+    table.string("stream_name");
+    table.string("log_group_arn");
     table
       .foreign("step_function_id")
       .references("step_function_id")
@@ -108,8 +125,11 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTableIfExists("alias_routes");
+  await knex.schema.dropTableIfExists("incomplete_streams");
   await knex.schema.dropTableIfExists("step_function_aliases");
   await knex.schema.dropTableIfExists("step_function_monitoring");
+  await knex.schema.dropTableIfExists("step_function_monitors");
+  await knex.schema.dropTableIfExists("step_function_trackers");
   await knex.schema.dropTableIfExists("step_average_latencies");
   await knex.schema.dropTableIfExists("step_function_average_latencies");
 
