@@ -32,7 +32,7 @@ type NodesAndEdges = {
   edges: FlowChartEdge[];
 };
 
-function FlowChartView({ height, width, definition }) {
+function FlowChartView({ definition }) {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
   // const [initialNodes, setInitialNodes] = useState<FlowChartNode[]>([]);
   // const [initialEdges, setInitialEdges] = useState<FlowChartEdge[]>([]);

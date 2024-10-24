@@ -1,4 +1,4 @@
-import "dotenv/config";
+import 'dotenv/config';
 import {
   SFNClient,
   ListStateMachinesCommand,
@@ -6,8 +6,8 @@ import {
   ListStateMachineVersionsCommand,
   ListStateMachineVersionsCommandOutput,
   DescribeStateMachineCommand,
-} from "@aws-sdk/client-sfn";
-import { fromEnv } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-sfn';
+import { fromEnv } from '@aws-sdk/credential-providers';
 
 /**
  * Reads access token from these environment variables:
@@ -28,17 +28,17 @@ const sfn = new SFNClient({
   credentials: fromEnv(),
 });
 
-const listStateMachines = new ListStateMachinesCommand();
-const response = await sfn.send(listStateMachines);
-console.log("listStateMachines response", response);
+// const listStateMachines = new ListStateMachinesCommand();
+// const response = await sfn.send(listStateMachines);
+// console.log("listStateMachines response", response);
 
 // just getting the details for the first state machine returned
-if (response.stateMachines && response.stateMachines[0].stateMachineArn) {
-  getStateMachineDetails(
-    "arn:aws:states:us-east-1:124355667606:stateMachine:HelloWorldVersions:1"
-  );
-  getStateMachineVersions(response);
-}
+// if (response.stateMachines && response.stateMachines[0].stateMachineArn) {
+//   getStateMachineDetails(
+//     "arn:aws:states:us-east-1:124355667606:stateMachine:HelloWorldVersions:1"
+//   );
+//   getStateMachineVersions(response);
+// }
 
 /**
  * get the detailed implementations of a state machine
@@ -51,7 +51,7 @@ async function getStateMachineDetails(
   });
 
   const response = await sfn.send(describeStateMachine);
-  console.log("getStateMachineDetails reponse", response);
+  console.log('getStateMachineDetails reponse', response);
 
   return undefined;
 }
@@ -76,13 +76,13 @@ async function getStateMachineVersions(
       const response = await sfn.send(listStateMachineVerions);
       if (response.stateMachineVersions) {
         console.log(
-          "stateMachienVersionObject:",
+          'stateMachienVersionObject:',
           response.stateMachineVersions
         );
       }
       stateMachineVersions.push(response);
     }
   }
-  console.log("listStateMachienVersions", stateMachineVersions);
+  console.log('listStateMachienVersions', stateMachineVersions);
   return undefined;
 }

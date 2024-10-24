@@ -41,8 +41,7 @@ function FunctionCards({
       <div className='cardRegion'>{region}</div>
 
       <div className='cardVisual'>
-        {visual}{' '}
-        <FlowChartView height={200} width={200} definition={definition} />
+        {visual} <FlowChartView definition={definition} />
       </div>
 
       <button id='viewButton' onClick={() => handleView(name)}>

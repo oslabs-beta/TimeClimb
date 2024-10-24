@@ -1,13 +1,14 @@
-import express from "express";
+import express from 'express';
 import type {
   Request,
   Response,
   NextFunction,
   ErrorRequestHandler,
-} from "express";
-import cors from "cors";
-import apiRouter from "./routes/api/index";
-import clientRouter from "./routes/client/index";
+} from 'express';
+import cors from 'cors';
+import apiRouter from './routes/api/index';
+import clientRouter from './routes/client/index';
+import path from 'path';
 
 const PORT = 3000;
 const app = express();
@@ -16,7 +17,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('src'));
+console.log(path.join(__dirname, '../assets'));
+
+app.use(express.static('dist'));
+
+app.get('/', (req: Request, res: Response) => {
+  return res.status(200).sendFile(path.join(__dirname, '../index.html'));
+});
+
 app.get('/home', (req: Request, res: Response) => {
   return res.status(200).sendFile('/home/pauluhlenkott/TimeClimb/index.html');
 });
@@ -24,7 +32,7 @@ app.get('/src/main.tsx', (req: Request, res: Response) => {
   return res.status(200).sendFile('/home/pauluhlenkott/TimeClimb/src/main.js');
 });
 // API router
-app.use("/api", apiRouter);
+app.use('/api', apiRouter);
 
 // for react app - not yet implemented
 app.use(clientRouter);

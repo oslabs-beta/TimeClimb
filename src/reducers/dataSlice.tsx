@@ -15,6 +15,8 @@ interface dataState {
   latencies: [
     {
       steps: any;
+      startTime?: any;
+      stepFunctionAverageLatency?: any;
     }
   ];
   latency: any;
@@ -105,7 +107,7 @@ export const getLatencies = createAsyncThunk(
 
 export const addStepFunction = createAsyncThunk(
   'data/addStepFunction',
-  async (arn) => {
+  async (arn: string) => {
     const res = await fetch('/api/step-functions/addStepFunction', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

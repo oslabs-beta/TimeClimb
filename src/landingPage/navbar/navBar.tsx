@@ -2,7 +2,7 @@ import AboutPage from './aboutPage.tsx';
 import ContactUs from './contactUs.tsx';
 import HomeButton from './homeButton.tsx';
 import Logout from './logout.tsx';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 
 function NavBar() {
   return (
