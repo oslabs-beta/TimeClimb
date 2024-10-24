@@ -1,6 +1,7 @@
 import "dotenv/config";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-import moment = require("moment-timezone");
+
+import stepFunctionTrackersModel from "../server/models/stepFunctionTrackersModel";
 
 import {
   CloudWatchLogsClient,
@@ -11,6 +12,32 @@ import {
 } from "@aws-sdk/client-cloudwatch-logs";
 import { fromEnv } from "@aws-sdk/credential-providers";
 
+const trackerData = {};
+
+const getDatabaseTrackingData = async () => {
+  const rows = await stepFunctionTrackersModel.getAllTrackerDataWithNames();
+  const logGroupName = await getLogGroupName(rows[0]?.log_group_arn);
+  console.log("logGroupName", logGroupName);
+  console.log(rows);
+};
+
+const getLogGroupName = async (logGroupArn: string): Promise<string> => {
+  /** example log group arn:
+   * arn:aws:logs:us-east-1:123456789012:log-group:/aws/states/MyStateMachineLogs:*
+   */
+  let logGroupName = logGroupArn.split("log-group:")[1];
+  // Step function og group arns can sometime end with an :*, but we need
+  // to remove that to query the logs, as this is an invalid arn to
+  // query with
+  if (logGroupName.endsWith(":*")) logGroupName = logGroupName.slice(0, -2);
+
+  console.log("logGroupArn", logGroupArn);
+  return logGroupName;
+};
+
+getDatabaseTrackingData();
+
+/** 
 async function getLogsForFour() {
   const startTime = moment.tz("2024-10-21T16:00:00", "America/New_York").utc();
   const endTime = moment.tz("2024-10-21T17:00:00", "America/New_York").utc();
@@ -115,3 +142,6 @@ async function tryVersion() {
 }
 
 tryVersion();
+
+
+*/
