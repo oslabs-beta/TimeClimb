@@ -13,7 +13,7 @@ import { getStepFunctionList } from '../reducers/dataSlice.tsx';
 // const data = useSelector(getStepFunctions);
 
 function AllCards() {
-  const desMap = new Map();
+  
   const cards = useSelector(
     (state: RootState) => state.card.allCards
   ) as card[];
@@ -21,18 +21,12 @@ function AllCards() {
     (state: RootState) => state.data.stepfunctions
   );
 
-  // console.log('card', cards)
-  useEffect(() => {
-    // stepFunctionList.forEach((el) => {
-    //   desMap.set(el.name, el.description);
-    // });
-  }, [stepFunctionList]);
 
   // const user = useSelector(selectUser);
   const card = useSelector(selectCard);
   const dispatch: AppDispatch = useDispatch();
 
-  //start
+
   const stepfunctions = useSelector(
     (state: RootState) => state.data.stepfunctions
   );

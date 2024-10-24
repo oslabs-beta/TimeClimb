@@ -20,7 +20,7 @@ export default defineConfig({
     stopCoverage: {
       report: ['text', 'html']
     },
-    include: ['./test/test.tsx'],
+    include: ['./__test__/**.tsx'],
     environment: 'jsdom',
     globals: true,
     css: true,
