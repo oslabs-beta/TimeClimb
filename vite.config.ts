@@ -2,6 +2,8 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import { stopCoverage } from 'v8';
+import { report } from 'process';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,7 +17,10 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['./test/test.jsx'],
+    stopCoverage: {
+      report: ['text', 'html']
+    },
+    include: ['./test/test.tsx'],
     environment: 'jsdom',
     globals: true,
     css: true,
