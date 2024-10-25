@@ -1,11 +1,13 @@
 import db from "./db";
 import type { StepAverageLatenciesTable } from "./types";
+import type { StepAverageLatencies } from "./types";
+
 //getting hourly latencies (no averages)
 const getLatenciesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
   endTime: string
-) => {
+):Promise<StepAverageLatencies[]> => {
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id", "average", "start_time")
@@ -15,6 +17,7 @@ const getLatenciesBetweenTimes = async (
     return rows;
   } catch (err) {
     console.log(`Error getting step lantency data between times: ${err}`);
+    return []
   }
 };
 
@@ -22,7 +25,7 @@ const getHourlyLatencyAveragesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
   endTime: string
-) => {
+):Promise<StepAverageLatencies[]> => {
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id")
@@ -36,6 +39,7 @@ const getHourlyLatencyAveragesBetweenTimes = async (
     return rows;
   } catch (err) {
     console.log(`Error getting step lantency data between times: ${err}`);
+    return [];
   }
 };
 
@@ -43,7 +47,7 @@ const getWeeklyLatencyAveragesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
   endTime: string,
-) => {
+):Promise<StepAverageLatencies[]> => {
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id")
@@ -56,7 +60,8 @@ const getWeeklyLatencyAveragesBetweenTimes = async (
      // console.log(rows)
     return rows;
   } catch(err) {
-    console.log(`Error getting step latency between times: ${err}`)
+    console.log(`Error getting step lantency data between times: ${err}`);
+    return []
   }
 }
 
@@ -64,7 +69,7 @@ const getMonthlyLatencyAveragesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
   endTime: string,
-) => {
+):Promise<StepAverageLatencies[]> => {
   try{
   const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
   .select("step_id")
@@ -77,6 +82,7 @@ const getMonthlyLatencyAveragesBetweenTimes = async (
   return rows
   }catch(err){
     console.log(`Error gettting step latency between times: ${err}`)
+  return [];
   }
 }
 

@@ -4,7 +4,7 @@ import stepsModel from "../../models/stepsModel";
 import stepAverageLatenciesModel from "../../models/stepAverageLatenciesModel";
 import moment from "moment";
 import { start } from "repl";
-import {MonthlyAverage} from '../../types/stepFunctionsApi'
+import {MonthlyAverage} from '../../types/stepFunctionLatencyAvgsApi'
 
 
 const getAverageLatencies = async (
@@ -97,13 +97,13 @@ const getAverageLatenciesDaily = async (
         for(let i = 0; i < rows.length; i += stepIDs.length){
           const dailyLatencies = {
             date: dailyStepFunctionLatencies[stepFunctionIndex].date,
-            stepFunctionDailyAvgLatency: dailyStepFunctionLatencies[stepFunctionIndex].avg,
+            stepFunctionAverageLatency: dailyStepFunctionLatencies[stepFunctionIndex].avg,
             steps: {}
           };
             //for each step in this function, add it's averages to dailyLatencies
             for(let j = 0; j < stepIDs.length; j++){
               dailyLatencies.steps[stepRows[j].name] = {
-                average : rows[i + j].avg
+                average : rows[i + j].average
               }
             }
             stepFunctionIndex++;
@@ -144,12 +144,12 @@ const getAverageLatenciesWeekly = async(
    for (let i = 0; i < rows.length; i += stepIDs.length){
     const weeklyLatencies = {
       date: weeklyStepFunctionLatencies[stepFunctionIndex].date,
-      stepFunctionWeeklyAvgLatency: weeklyStepFunctionLatencies[stepFunctionIndex].avg,
+      stepFunctionAverageLatency: weeklyStepFunctionLatencies[stepFunctionIndex].avg,
       steps: {}
     };
       for(let j = 0; j < stepIDs.length; j++){
         weeklyLatencies.steps[stepRows[j].name] = {
-          average : rows[i + j].avg
+          average : rows[i + j].average
         }
       }
       stepFunctionIndex++;
@@ -190,12 +190,12 @@ const getAverageLatenciesMonthly = async (
     for (let i = 0; i < rows.length; i += stepIDs.length){
      const monthlyLatencies = {
        date: monthlyStepFunctionLatencies[stepFunctionIndex].month_start,
-       stepFunctionWeeklyAvgLatency: monthlyStepFunctionLatencies[stepFunctionIndex].avg,
+       stepFunctionAverageLatency: monthlyStepFunctionLatencies[stepFunctionIndex].avg,
        steps: {}
      };
        for(let j = 0; j < stepIDs.length; j++){
          monthlyLatencies.steps[stepRows[j].name] = {
-           average : rows[i + j].avg
+           average : rows[i + j].average
          }
        }
        stepFunctionIndex++;

@@ -66,3 +66,8 @@ export interface AliasRoutesTable {
   weight: number;
 }
 
+export interface StepAverageLatencies {
+  step_id: number;
+  average: number;
+  start_time: string
+}
