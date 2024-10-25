@@ -65,3 +65,4 @@ export interface AliasRoutesTable {
   step_function_id: number;
   weight: number;
 }
+

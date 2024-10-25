@@ -14,3 +14,8 @@ export interface GetStepFunctionResponse {
 export interface PostStepFunctionRequest {
   arn: string;
 }
+
+export interface MonthlyAverage {
+  month_start: string;
+  avg: number;
+}

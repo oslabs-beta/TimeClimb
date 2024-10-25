@@ -60,10 +60,31 @@ const getWeeklyLatencyAveragesBetweenTimes = async (
   }
 }
 
+const getMonthlyLatencyAveragesBetweenTimes = async (
+  stepIds: number[],
+  startTime: string,
+  endTime: string,
+) => {
+  try{
+  const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
+  .select("step_id")
+  .select(db.raw('DATE_TRUNC(\'month\', "start_time") AS month'))
+  .avg("average")
+  .whereIn("step_id", stepIds)
+  .whereBetween("start_time", [startTime, endTime])
+  .groupBy(db.raw("step_id, DATE_TRUNC('month', \"start_time\")"))
+  .orderBy("month", "step_id")
+  return rows
+  }catch(err){
+    console.log(`Error gettting step latency between times: ${err}`)
+  }
+}
+
 const stepAverageLatenciesModel = {
   getLatenciesBetweenTimes,
   getHourlyLatencyAveragesBetweenTimes,
-  getWeeklyLatencyAveragesBetweenTimes
+  getWeeklyLatencyAveragesBetweenTimes,
+  getMonthlyLatencyAveragesBetweenTimes
 };
 
 export default stepAverageLatenciesModel;

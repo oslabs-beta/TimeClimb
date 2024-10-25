@@ -4,6 +4,8 @@ import stepsModel from "../../models/stepsModel";
 import stepAverageLatenciesModel from "../../models/stepAverageLatenciesModel";
 import moment from "moment";
 import { start } from "repl";
+import {MonthlyAverage} from '../../types/stepFunctionsApi'
+
 
 const getAverageLatencies = async (
   req: Request,
@@ -169,18 +171,42 @@ const getAverageLatenciesMonthly = async (
     const {step_function_id} = req.params;
     const start_time = moment().subtract(11, "month").startOf("month");
     const end_time = moment().endOf("month");
-    const monthlyStepFunctionLatencies: {}[] = 
+    const monthlyStepFunctionLatencies: MonthlyAverage[] = 
     await averageLatenciesModel.getStepFunctionLatenciesMonthly(
       Number(step_function_id),
       start_time.toISOString(),
       end_time.toISOString()
     );
-    res.locals.monthlyAvgs = monthlyStepFunctionLatencies
-   return next()
-  }catch(err){
-    return next(err)
-  }
-}
+    const stepRows = await stepsModel.getStepsByStepFunctionId(Number(step_function_id))
+    // console.log('ids', stepRows)
+    const stepIDs = stepRows.map((step) => step.step_id)
+    const rows = await stepAverageLatenciesModel
+    .getMonthlyLatencyAveragesBetweenTimes(stepIDs,
+     start_time.toISOString(),
+     end_time.toISOString()
+    );
+    const allAvgLatencies = [];
+    let stepFunctionIndex = 0;
+    for (let i = 0; i < rows.length; i += stepIDs.length){
+     const monthlyLatencies = {
+       date: monthlyStepFunctionLatencies[stepFunctionIndex].month_start,
+       stepFunctionWeeklyAvgLatency: monthlyStepFunctionLatencies[stepFunctionIndex].avg,
+       steps: {}
+     };
+       for(let j = 0; j < stepIDs.length; j++){
+         monthlyLatencies.steps[stepRows[j].name] = {
+           average : rows[i + j].avg
+         }
+       }
+       stepFunctionIndex++;
+       allAvgLatencies.push(monthlyLatencies)
+    }
+    res.locals.monthlyAvgs = allAvgLatencies
+     return next()
+   } catch (err){
+     return next(err)
+   }
+ }
 
 
 const averageLatenciesApiController = {
