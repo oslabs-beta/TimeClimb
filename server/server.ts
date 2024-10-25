@@ -35,6 +35,7 @@ app.use(
       message: "Error caught by global error handler",
     };
     const newErrObj = Object.assign({}, errObj, err);
+    console.log(newErrObj, err)
     res.status(newErrObj.status).json(newErrObj.message);
     return;
   }
