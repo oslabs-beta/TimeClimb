@@ -4,16 +4,16 @@ import "dotenv/config";
 import moment from "moment-timezone";
 import Bottleneck from "bottleneck";
 import stepFunctionTrackersModel from "../server/models/stepFunctionTrackersModel";
+import fs from "fs";
 
 import {
   CloudWatchLogsClient,
   DescribeLogGroupsCommand,
   DescribeLogGroupsCommandInput,
-  DescribeLogStreamsCommand,
-  DescribeLogStreamsCommandInput,
   FilterLogEventsCommand,
   FilterLogEventsCommandInput,
   FilterLogEventsCommandOutput,
+  FilteredLogEvent,
 } from "@aws-sdk/client-cloudwatch-logs";
 import { fromEnv } from "@aws-sdk/credential-providers";
 
@@ -46,10 +46,14 @@ const getDatabaseTrackingData = async () => {
   const response = await getFilteredLogEvents(
     logGroupArn,
     logStreamNamePrefix,
-    creationDateEpochTime,
+    moment().subtract("1", "hour").utc().valueOf(),
     moment().utc().valueOf()
   );
-  console.log("getFilteredLogEvents Response:", response);
+  const parsedEvents = await parseEvents(response.events);
+  // console.log("getFilteredLogEvents Response:", response);
+  console.log("response.events.length", response?.events?.length);
+  fs.writeFileSync("output.json", JSON.stringify(response), "utf8");
+  fs.writeFileSync("parseEvents.json", JSON.stringify(parsedEvents), "utf8");
 };
 
 /**
@@ -86,9 +90,10 @@ const getLogGroupName = async (logGroupArn: string): Promise<string[]> => {
  * and checked in the future, so we don't need to make this api call on
  * subsequent invokations, if for some reason we stop getting log information.
  *
- * @param logGroupName The log group name to filter results by, without full arn
- * @returns Promise that resolves to a number, which is an Epoch Time, or
- * undefined
+ * @param {string} logGroupName The log group name to filter results by,
+ * without the full arn
+ * @returns {Promise<number | undefined>}Promise that resolves to a number,
+ * which is an epoch time in milliseconds, or undefined
  */
 const getLogGroupCreationDate = async (
   logGroupName: string
@@ -115,12 +120,12 @@ const getLogGroupCreationDate = async (
  * stream prefix.  This helps to effectively return only the logs relavent to
  * a specific state machine.
  *
- * @param logGroupArn Log group arn minus any ending ':*' characters
- * @param logStreamNamePrefix Log stream prefix, generally in the form of
+ * @param {string} logGroupArn Log group arn minus any ending ':*' characters
+ * @param {string} logStreamNamePrefix Log stream prefix, generally in the form of
  * "states/{state_machine_name}"
- * @param epochStartTime Number of milliseconds after Jan 1, 1970 00:00:00 UTC.
+ * @param {number} epochStartTime Number of milliseconds after Jan 1, 1970 00:00:00 UTC.
  * Filters out events before this time from results.
- * @param epochEndTime Number of milliseconds after Jan 1, 1970 00:00:00 UTC.
+ * @param {number} epochEndTime Number of milliseconds after Jan 1, 1970 00:00:00 UTC.
  * Filters out events after this time from results.
  * @returns Promise that resolves to a FilterLogEventsCommandOutput, which is
  * the reposne from calling the FilterLogEvents api
@@ -148,61 +153,67 @@ const getFilteredLogEvents = async (
   return response;
 };
 
-// invoked now manually to test out the functionality
-getDatabaseTrackingData();
-
-/** Ways for accesing log streams - currently not needed */
-
-const getLogStreamCreationDate = async (
-  logGroupArn: string,
-  logStreamNamePrefix: string
-) => {
-  const client = new CloudWatchLogsClient({
-    region: process.env.AWS_REGION,
-    credentials: fromEnv(),
-  });
-
-  const params: DescribeLogStreamsCommandInput = {
-    // logGroupName: "/aws/vendedlogs/states/HelloWorldTwo-Logs",
-    logGroupIdentifier: logGroupArn,
-    // logStreamNamePrefix: logStreamNamePrefix,
-    descending: false,
+interface ParsedEvents {
+  // step function execution arn as key
+  [key: string]: {
+    logStreamName: string;
+    events: Event[];
+    eventsFound?: number;
   };
+}
+interface Event {
+  id: number;
+  type: string;
+  name?: string; // some events like start and end dont have an end
+  timestamp: number; // epoch milliseconds
+  eventId: string; // actually a long string of numbers
+}
 
-  const command = new DescribeLogStreamsCommand(params);
-  const response = await client.send(command);
-  console.log("DescribeLogStreamsCommand Response", response);
+/**
+ * This function looks through all events and organizes them by step function
+ * execution arn as described in the interface definitions. This is done to
+ * effiencently gather up all of the events from the logs, which are not
+ * gauranteed to be in proper order.  We also use this to parse the json stored
+ * in the message property to grab the values out we need to calculate latencies
+ * between steps.  We also process the logs this way to ensure have both a start
+ * and end step to each execution, so that we only process executions which are
+ * completed.  It seems the Cloudwatch logs do not gaurantee that executions are
+ * completed, and either from an incomplete log perspective, or if the step
+ * function has logged partial data but is still running.
+ *
+ * @param {FilteredLogEvent[]} events Events array from a filtered log event
+ * response
+ * @returns {Promise<ParsedEvent>} Promise that resolves to parsed events
+ * objects, organized with keys of step functionexecution arns.
+ *
+ */
+const parseEvents = async (
+  events: FilteredLogEvent[]
+): Promise<ParsedEvents> => {
+  const executions: ParsedEvents = {};
+  for (const event of events) {
+    const message = JSON.parse(event?.message);
+    if (executions[message?.execution_arn] === undefined) {
+      executions[message?.execution_arn] = {
+        logStreamName: event.logStreamName,
+        eventsFound: 0,
+        events: [],
+      };
+    }
+    executions[message?.execution_arn].events[Number(message.id) - 1] = {
+      id: Number(message.id),
+      type: message.type,
+      name: message.details?.name,
+      timestamp: Number(message.event_timestamp),
+      eventId: event.eventId,
+    };
+    executions[message?.execution_arn].eventsFound++;
+  }
+
+  console.log("executions:\n", executions);
+  console.log("executions parsed:\n", JSON.stringify(executions, null, 2));
+  return executions;
 };
 
-// a convenience function to print times for each event for debugging
-// will be removed
-async function printTimes(events) {
-  for (const event of events) {
-    console.log(moment(event.timestamp).toString());
-  }
-}
-
-async function getLogStreams() {
-  const client = new CloudWatchLogsClient({
-    region: process.env.AWS_REGION,
-    credentials: fromEnv(),
-  });
-  const versionLogArn = "version_log_arn";
-
-  const versionLogName = "version_log_name";
-
-  const params: DescribeLogStreamsCommandInput = {
-    // logGroupName: "/aws/vendedlogs/states/HelloWorldTwo-Logs",
-    logGroupIdentifier: versionLogArn,
-    logStreamNamePrefix: versionLogName,
-    orderBy: "LastEventTime",
-    descending: true,
-    limit: 10,
-  };
-
-  // filter by
-
-  const command = new DescribeLogStreamsCommand(params);
-  const response = await client.send(command);
-  console.log("DescribeLogStreamsCommand Response", response);
-}
+// invoked now manually to test out the functionality
+getDatabaseTrackingData();
