@@ -1,39 +1,96 @@
 import "dotenv/config";
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
+import moment from "moment-timezone";
 
 import stepFunctionTrackersModel from "../server/models/stepFunctionTrackersModel";
 
 import {
   CloudWatchLogsClient,
-  FilterLogEventsCommand,
+  DescribeLogGroupsCommand,
+  DescribeLogGroupsCommandInput,
   DescribeLogStreamsCommand,
   DescribeLogStreamsCommandInput,
+  FilterLogEventsCommand,
   FilterLogEventsCommandInput,
 } from "@aws-sdk/client-cloudwatch-logs";
 import { fromEnv } from "@aws-sdk/credential-providers";
 
 const trackerData = {};
-
+/**
+ * initial function to get started with this whole process of retreiving logs
+ * and storing them
+ */
 const getDatabaseTrackingData = async () => {
   const rows = await stepFunctionTrackersModel.getAllTrackerDataWithNames();
-  const logGroupName = await getLogGroupName(rows[0]?.log_group_arn);
-  console.log("logGroupName", logGroupName);
   console.log(rows);
+  const [logGroupArn, logGroupName] = await getLogGroupName(
+    rows[0]?.log_group_arn
+  );
+  console.log("logGroupArn", logGroupArn);
+  console.log("logGroupName", logGroupName);
+  const logStreamNamePrefix = `states/${rows[0]?.name}`;
+  console.log(logStreamNamePrefix);
+  await getLogGroupCreationDate(logGroupName);
 };
 
-const getLogGroupName = async (logGroupArn: string): Promise<string> => {
+const getLogGroupName = async (logGroupArn: string): Promise<string[]> => {
   /** example log group arn:
    * arn:aws:logs:us-east-1:123456789012:log-group:/aws/states/MyStateMachineLogs:*
+   *
+   * Step function log group arns can sometime end with an :*, but we need to
+   * remove that to query the logs, as this is an invalid arn to query with
    */
-  let logGroupName = logGroupArn.split("log-group:")[1];
-  // Step function og group arns can sometime end with an :*, but we need
-  // to remove that to query the logs, as this is an invalid arn to
-  // query with
-  if (logGroupName.endsWith(":*")) logGroupName = logGroupName.slice(0, -2);
-
-  console.log("logGroupArn", logGroupArn);
-  return logGroupName;
+  if (logGroupArn.endsWith(":*")) {
+    logGroupArn = logGroupArn.slice(0, -2);
+  }
+  const logGroupName = logGroupArn.split("log-group:")[1];
+  return [logGroupArn, logGroupName];
 };
+
+const getLogGroupCreationDate = async (logGroupName: string) => {
+  const client = new CloudWatchLogsClient({
+    region: process.env.AWS_REGION,
+    credentials: fromEnv(),
+  });
+
+  const params: DescribeLogGroupsCommandInput = {
+    // logGroupName: "/aws/vendedlogs/states/HelloWorldTwo-Logs",
+    logGroupNamePrefix: logGroupName,
+    // logStreamNamePrefix: logStreamNamePrefix,
+  };
+
+  const command = new DescribeLogGroupsCommand(params);
+  const response = await client.send(command);
+  console.log("DescribeLogGroupsCommand Response", response);
+  const creationTime = response?.logGroups[0]?.creationTime;
+  if (creationTime !== undefined) {
+    console.log(moment(creationTime).toString());
+  }
+};
+
+const getLogStreamCreationDate = async (
+  logGroupArn: string,
+  logStreamNamePrefix: string
+) => {
+  const client = new CloudWatchLogsClient({
+    region: process.env.AWS_REGION,
+    credentials: fromEnv(),
+  });
+
+  const params: DescribeLogStreamsCommandInput = {
+    // logGroupName: "/aws/vendedlogs/states/HelloWorldTwo-Logs",
+    logGroupIdentifier: logGroupArn,
+    // logStreamNamePrefix: logStreamNamePrefix,
+    descending: false,
+  };
+
+  const command = new DescribeLogStreamsCommand(params);
+  const response = await client.send(command);
+  console.log("DescribeLogStreamsCommand Response", response);
+};
+
+// const getLog;
 
 getDatabaseTrackingData();
 

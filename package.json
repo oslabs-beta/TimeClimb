@@ -41,7 +41,8 @@
     "react-router-dom": "^6.27.0",
     "redux": "^5.0.1",
     "ts-node-dev": "^2.0.0",
-    "vite-express": "^0.19.0"
+    "vite-express": "^0.19.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

@@ -29,7 +29,7 @@ const addToStepFunctionTable = async (detailObj) => {
         type: detailObj.type,
         definition: detailObj.definition,
         comment: "also a test",
-        revision_id: 56789929,
+        revision_id: "56789929",
         has_versions: false, //can't remember how we determine this
       })
       .returning(["step_function_id", "name", "definition"]);

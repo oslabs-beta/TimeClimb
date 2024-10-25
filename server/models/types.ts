@@ -75,3 +75,6 @@ export interface IncompleteStreamsTable {
   stream_name: string;
   log_group_arn: string;
 }
+
+export type TrackerStepFunctionsJoinTable = StepFunctionTrackersTable &
+  StepFunctionsTable;

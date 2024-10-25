@@ -1,5 +1,4 @@
 import type { Knex } from "knex";
-import { StepFunctionsTable } from "../seeds/utils/types";
 
 export async function up(knex: Knex): Promise<void> {
   // step_functions table

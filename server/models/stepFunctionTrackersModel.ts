@@ -1,8 +1,12 @@
 import db from "./db";
-import type { StepFunctionsTable, StepFunctionTrackersTable } from "./types";
+import type {
+  TrackerStepFunctionsJoinTable,
+  StepFunctionsTable,
+  StepFunctionTrackersTable,
+} from "./types";
 
 const getAllTrackerDataWithNames = async (): Promise<
-  StepFunctionTrackersTable[]
+  TrackerStepFunctionsJoinTable[]
 > => {
   try {
     const rows = await db<StepFunctionTrackersTable>(
@@ -13,7 +17,7 @@ const getAllTrackerDataWithNames = async (): Promise<
         "sf.step_function_id",
         "t.step_function_id"
       )
-      .select("t.*", "sf.step_function_id");
+      .select("t.*", "sf.name");
     return rows;
   } catch (err) {
     console.log("Error getting tracker data:", err);
