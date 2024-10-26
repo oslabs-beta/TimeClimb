@@ -6,11 +6,12 @@ import './App.css';
 // import SignUpForm from './signUpForm';
 import { Provider } from 'react-redux';
 import DetailedView from './DetailedView/DetailedView.tsx';
-import store from '../store.tsx';
+import store, {/*persistor*/} from '../store.tsx';
 import LandingPage from './landingPage/landingPage.tsx';
 import NavBar from './landingPage/navbar/navBar.tsx';
 
 import {Route, Routes, Link} from "react-router-dom";
+// import { PersistGate } from 'redux-persist/integration/react';
 
 function App() {
   // return (
@@ -36,15 +37,17 @@ function App() {
   //   </>
   // );
     <Provider store={store}>
-      <Routes>
-          {/* <Route path='/*' element={<NavBar/>}> */}
-            <Route path="/" element={<LandingPage />}/>
-            <Route path="/expandView" element={<DetailedView />}>
-              {/*possible to nest comps in here dont know that I will */}
-          {/* </Route> */}
+      {/* <PersistGate loading={null} persistor={persistor}> */}
+        <Routes>
+            {/* <Route path='/*' element={<NavBar/>}> */}
+              <Route path="/" element={<LandingPage />}/>
+              <Route path="/expandView" element={<DetailedView />}>
+                {/*possible to nest comps in here dont know that I will */}
+            {/* </Route> */}
 
-        </Route>
-      </Routes>
+          </Route>
+        </Routes>
+      {/* </PersistGate> */}
     </Provider>
   // </>
   )
