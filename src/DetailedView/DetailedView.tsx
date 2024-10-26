@@ -10,24 +10,24 @@ import { getLatencies, setLatencies, setLatency } from '../reducers/dataSlice';
 function DetailedView() {
   //const [function, setFunction] = useState({});
   const dispatch: AppDispatch = useDispatch();
-  function onclick() {
-    fetch('/api/step-functions/addStepFunction', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        arn: 'arn:aws:states:us-west-2:703671926773:stateMachine:BasicsHelloWorldStateMachine',
-      }),
-    }).then((data) => {
-      return data.json();
-    });
-    // .then((data) => console.log(data));
-  }
-  function getall() {
-    fetch('api/step-functions').then((data) => {
-      return data.json();
-    });
-    // .then((data) => console.log(data));
-  }
+  // function onclick() {
+  //   fetch('/api/step-functions/addStepFunction', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       arn: 'arn:aws:states:us-west-2:703671926773:stateMachine:BasicsHelloWorldStateMachine',
+  //     }),
+  //   }).then((data) => {
+  //     return data.json();
+  //   });
+  //   // .then((data) => console.log(data));
+  // }
+  // function getall() {
+  //   fetch('api/step-functions').then((data) => {
+  //     return data.json();
+  //   });
+  //   // .then((data) => console.log(data));
+  // }
   const definitionID = useSelector(
     (state: RootState) => state.data.currentDefinitionID
   );
@@ -35,22 +35,23 @@ function DetailedView() {
     dispatch(getLatencies(definitionID))
       .unwrap()
       // .then((data) => {
-      //   console.log(data);
+      //   console.log('d',data);
       //   return data;
       // })
       .then((data) => dispatch(setLatencies(data)));
-  }, [dispatch]);
+  }, [dispatch, definitionID]);
 
   return (
     <div className='detailedView'>
       {/* This is the detailed view */}
       <DetailedViewUI />
+      <TimeSlice />
       {/* this is just the back button */}
       {/* <button className="dv-btn" onClick={onclick}>Get one</button>
       <button className="dv-btn" onClick={getall}>Get all</button> */}
       <FlowChart />
       <DataContainer />
-      <TimeSlice />
+
     </div>
   );
 }

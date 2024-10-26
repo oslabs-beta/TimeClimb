@@ -55,7 +55,7 @@ function FlowChartBubble({ data }: BubbleProps) {
     console.log('Click');
     e.preventDefault();
     dispatch(setChartLatencies(data.name));
-    // console.log(data.metric)
+    console.log(data.name)
     // setPopup(true)
     // dispatch(setAddCardForm())
   }

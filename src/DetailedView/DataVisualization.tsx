@@ -9,7 +9,7 @@ function DataVisualization() {
   const canvasRef = useRef(null);
   let chartInstance = useRef(null);
   const latency = useSelector((state: RootState) => state.data.latencies);
-  // console.log(latency)
+  console.log('p',latency)
 
   const startTimes = latency.map((item) =>
     moment(item.startTime).format('HH:mm')

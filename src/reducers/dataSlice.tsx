@@ -19,6 +19,7 @@ interface dataState {
   ];
   latency: any;
   chartLatencies: number[];
+  time: string
 }
 
 const initialState: dataState = {
@@ -32,6 +33,7 @@ const initialState: dataState = {
   ],
   latency: {},
   chartLatencies: [],
+  time: '',
 };
 
 export const dataSlice = createSlice({
@@ -69,12 +71,15 @@ export const dataSlice = createSlice({
       if (action.payload) {
         const newChart: number[] = [];
         state.latencies.forEach((ele) => {
-          //console.log(ele);
+          // console.log(ele);
           newChart.push(ele.steps[action.payload].average);
         });
         state.chartLatencies = newChart;
       }
     },
+    setTimeToggle: (state, action) => {
+      state.time = action.payload
+    }
   },
 });
 
@@ -94,7 +99,7 @@ export const getLatencies = createAsyncThunk(
   'data/getLatencies',
   async (id: number) => {
     console.log(`Geeting latency for id: ${id}`);
-    const res = await fetch(`/api/average-latencies/${id}`);
+    const res = await fetch(`/api/average-latencies/${id}`); //add /${time} passing in user input
     if (!res.ok) {
       throw new Error('Cannot fetch stepfunctions');
     }
@@ -129,10 +134,9 @@ export const {
   getStepFunctions,
   appendStepFunction,
   setChartLatencies,
+  setTimeToggle,
 } = dataSlice.actions;
 
-export const selectData = (state: RootState) => {
-  state.data;
-};
+export const selectData = (state: RootState) => state.data;
 
 export default dataSlice.reducer;
