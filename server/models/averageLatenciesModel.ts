@@ -38,6 +38,7 @@ const getStepFunctionLatenciesDaily = async (
   .whereBetween("start_time", [start_time, end_time])
   .where("step_function_id", step_function_id)
   .groupBy(db.raw("DATE(start_time)"))
+  .orderBy("start_time")
   return latenciesObj;
 } catch (err){
   console.log(`Error getting latencies for step function: ${err}`);

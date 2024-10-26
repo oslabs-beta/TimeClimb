@@ -21,7 +21,7 @@ const getLatenciesBetweenTimes = async (
   }
 };
 
-const getHourlyLatencyAveragesBetweenTimes = async (
+const getDailyLatencyAveragesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
   endTime: string
@@ -88,7 +88,7 @@ const getMonthlyLatencyAveragesBetweenTimes = async (
 
 const stepAverageLatenciesModel = {
   getLatenciesBetweenTimes,
-  getHourlyLatencyAveragesBetweenTimes,
+  getDailyLatencyAveragesBetweenTimes,
   getWeeklyLatencyAveragesBetweenTimes,
   getMonthlyLatencyAveragesBetweenTimes
 };

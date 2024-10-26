@@ -84,7 +84,7 @@ const getAverageLatenciesDaily = async (
     const stepIDs: number[] = stepRows.map((step) => step.step_id);
     //create array of all step latencies from the last week
     const rows: StepAverageLatencies[] = await stepAverageLatenciesModel
-    .getHourlyLatencyAveragesBetweenTimes(stepIDs,
+    .getDailyLatencyAveragesBetweenTimes(stepIDs,
        start_time.toISOString(),
         end_time.toISOString()
       );
