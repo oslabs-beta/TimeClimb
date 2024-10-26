@@ -71,7 +71,7 @@ useEffect(() => {
   const zValues = dataset.map((set) =>
     yValues.map((step) => set.steps[step]?.average || 0)
   );
-  
+
   const transposedZValues = zValues[0].map((_, colIndex) => zValues.map(row => row[colIndex]));
   
   const colorscaleValue = [
@@ -108,7 +108,7 @@ useEffect(() => {
     //   tickangle: -45
 
     },
-    width: 800
+    width: 500,
   };
       Plotly.purge(plotRef.current);
       Plotly.newPlot(plotRef.current, data, layout);

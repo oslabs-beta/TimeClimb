@@ -30,7 +30,7 @@ function DataVisualization() {
         labels: startTimes,
         datasets: [
           {
-            label: 'Latency Over One Day',
+            label: 'Latency Overview Over One Day',
             data: latencies,
           },
         ],

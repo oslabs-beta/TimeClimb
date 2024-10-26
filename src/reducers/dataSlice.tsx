@@ -19,7 +19,8 @@ interface dataState {
   ];
   latency: any;
   chartLatencies: number[];
-  time: string
+  time: string;
+  bubblePopup: boolean
 }
 
 const initialState: dataState = {
@@ -34,6 +35,7 @@ const initialState: dataState = {
   latency: {},
   chartLatencies: [],
   time: '',
+  bubblePopup: false
 };
 
 export const dataSlice = createSlice({
@@ -79,7 +81,13 @@ export const dataSlice = createSlice({
     },
     setTimeToggle: (state, action) => {
       state.time = action.payload
-    }
+    },
+    setBubblePopup: (state, action) => {
+      state.bubblePopup = action.payload
+    },
+    // setName: (state, action) => {
+    //   state.bubbleName = action.payload
+    // }
   },
 });
 
@@ -135,6 +143,7 @@ export const {
   appendStepFunction,
   setChartLatencies,
   setTimeToggle,
+  setBubblePopup,
 } = dataSlice.actions;
 
 export const selectData = (state: RootState) => state.data;

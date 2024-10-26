@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import { Chart, registerables } from 'chart.js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { RootState } from '../../store';
+import {setBubblePopup} from '../reducers/dataSlice';
 // import { selectData } from '../reducers/dataSlice';
 
 function StepDataVisualization() {
@@ -10,7 +11,8 @@ function StepDataVisualization() {
   let chartInstance = useRef(null);
   const latency = useSelector((state: RootState) => state.data.chartLatencies);
   const times = useSelector((state: RootState) => state.data.latencies);
-  console.log('l',latency)
+  const dispatch = useDispatch()
+  // console.log('l',latency)
 
   const startTimes = times.map((item) =>
     moment(item.startTime).format('HH:mm')
@@ -48,10 +50,14 @@ function StepDataVisualization() {
 
   // }
 
+  const handleClick = () => {
+    dispatch(setBubblePopup(false))
+  }
+
   return (
-    <div className='rightSideLineGraph'>
+    <div className='popupLineGraph'>
       <canvas ref={canvasRef}></canvas>
-      {/* <button onClick={handleClose}>Close</button> */}
+      <button onClick={handleClick}>Close</button>
     </div>
   );
 }
