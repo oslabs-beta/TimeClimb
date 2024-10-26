@@ -73,49 +73,87 @@ const getAverageLatenciesDaily = async (
 ):Promise<void> => {
   try{
   const {step_function_id} = req.params;
-  const start_time = moment().subtract(6, "day").startOf("day")
+  const start_time = moment().subtract(6, "day").startOf("day");
+ 
+    const allAvgLatencies = [];
   const end_time = moment().endOf("day")//includes current day in request
     const dailyStepFunctionLatencies: AverageLatencies[] = 
     await averageLatenciesModel.getStepFunctionLatenciesDaily(Number(step_function_id), start_time.toISOString(), end_time.toISOString())
-    console.log("daily latencies", dailyStepFunctionLatencies)
+    // console.log("daily latencies", dailyStepFunctionLatencies)
+    //iterate through 7 days 
+  
+  //  console.log(allAvgLatencies)
     //get step averages for all steps within function
     const stepRows: StepsByStepFunctionId[] = await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
+    const stepNames = {};
+    stepRows.forEach((el) => stepNames[el.step_id] = el.name)
     //create array of the id's of each step in function
     const stepIDs: number[] = stepRows.map((step) => step.step_id);
     //create array of all step latencies from the last week
-    const rows: StepAverageLatencies[] = await stepAverageLatenciesModel
+    const stepLatencies: StepAverageLatencies[] = await stepAverageLatenciesModel
     .getDailyLatencyAveragesBetweenTimes(stepIDs,
        start_time.toISOString(),
         end_time.toISOString()
       );
-        const allAvgLatencies = [];
-        let stepFunctionIndex = 0;
+     
+      let currentDay = moment(start_time)
+      for(let i = 6; i >= 0; i--){
+       const [currentDate] = dailyStepFunctionLatencies.filter((day) => {
+      //  console.log('day.start_time:', day.start_time.toISOString())
+       // console.log('currentDay:', typeof currentDay)
+          return day.start_time.toISOString() === currentDay.utc().toISOString()
+        });
+       
+        if(currentDate){
+          const currentDateSteps = stepLatencies.filter((step) => {
+            console.log('step.start_time', step.start_time.toISOString())
+            console.log('currentDay', currentDay.utc().toISOString())
+            return step.start_time.toISOString() === currentDay.utc().toISOString()
+          })
+          console.log(currentDateSteps)
+        const dailyLatencies: LatenciesObj = {
+          date: currentDate.start_time,
+          stepFunctionAverageLatency: currentDate.average,
+          steps: {}
+        };
+        for(const step of currentDateSteps){
+          dailyLatencies.steps[stepNames[step.step_id]] = {average: step.average}
+        }
+        allAvgLatencies.push(dailyLatencies)
+        }else {
+          allAvgLatencies.push({})
+        }
+        currentDay = currentDay.add(1, "day")
+      }
+      res.locals.dailyAvgs = allAvgLatencies
+         
+      return next()
+    } catch (err){
+      return next(err)
+    }
+  }
+      //  const allAvgLatencies = [];
+       // let stepFunctionIndex = 0;
        // console.log("rows:", rows)
         //iterate through all step latencies from the last week
-        for(let i = 0; i < rows.length; i += stepIDs.length){
-          const dailyLatencies:LatenciesObj = {
-            date: dailyStepFunctionLatencies[stepFunctionIndex].start_time,
-            stepFunctionAverageLatency: dailyStepFunctionLatencies[stepFunctionIndex].average,
-            steps: {}
-          };
-            //for each step in this function, add it's averages to dailyLatencies
-            for(let j = 0; j < stepIDs.length; j++){
-              dailyLatencies.steps[stepRows[j].name] = {
-                average : rows[i + j].average
-              }
-            }
-            stepFunctionIndex++;
-            allAvgLatencies.push(dailyLatencies) 
-           // console.log(allAvgLatencies.length)
-        }
+        // for(let i = 0; i < rows.length; i += stepIDs.length){
+        //   const dailyLatencies:LatenciesObj = {
+        //     date: dailyStepFunctionLatencies[stepFunctionIndex].start_time,
+        //     stepFunctionAverageLatency: dailyStepFunctionLatencies[stepFunctionIndex].average,
+        //     steps: {}
+        //   };
+        //     //for each step in this function, add it's averages to dailyLatencies
+        //     for(let j = 0; j < stepIDs.length; j++){
+        //       dailyLatencies.steps[stepRows[j].name] = {
+        //         average : rows[i + j].average
+        //       }
+        //     }
+        //     stepFunctionIndex++;
+        //     allAvgLatencies.push(dailyLatencies) 
+        //    // console.log(allAvgLatencies.length)
+        // }
 
-        res.locals.dailyAvgs = allAvgLatencies
-         
-    return next()
-  } catch (err){
-    return next(err)
-  }
-}
+   
 
 const getAverageLatenciesWeekly = async(
   req: Request,
