@@ -29,12 +29,12 @@ const getHourlyLatencyAveragesBetweenTimes = async (
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id")
-      .select(db.raw('DATE_TRUNC(\'day\', "start_time") AS day'))
-      .avg("average")
+      .select(db.raw('DATE_TRUNC(\'day\', "start_time") AS start_time'))
+      .avg("average AS average")
       .whereIn("step_id", stepIds)
       .whereBetween("start_time", [startTime, endTime])
       .groupBy(db.raw("step_id, DATE_TRUNC('day', \"start_time\")"))
-      .orderBy(["day","step_id"]);
+      .orderBy(["start_time","step_id"]);
      // console.log(rows)
     return rows;
   } catch (err) {
@@ -51,12 +51,12 @@ const getWeeklyLatencyAveragesBetweenTimes = async (
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id")
-      .select(db.raw('DATE_TRUNC(\'week\', "start_time") AS week'))
-      .avg("average")
+      .select(db.raw('DATE_TRUNC(\'week\', "start_time") AS start_time'))
+      .avg("average as average")
       .whereIn("step_id", stepIds)
       .whereBetween("start_time", [startTime, endTime])
       .groupBy(db.raw("step_id, DATE_TRUNC('week', \"start_time\")"))
-      .orderBy(["week","step_id"]);
+      .orderBy(["start_time","step_id"]);
      // console.log(rows)
     return rows;
   } catch(err) {
@@ -74,11 +74,11 @@ const getMonthlyLatencyAveragesBetweenTimes = async (
   const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
   .select("step_id")
   .select(db.raw('DATE_TRUNC(\'month\', "start_time") AS month'))
-  .avg("average")
+  .avg("average AS average")
   .whereIn("step_id", stepIds)
   .whereBetween("start_time", [startTime, endTime])
   .groupBy(db.raw("step_id, DATE_TRUNC('month', \"start_time\")"))
-  .orderBy("month", "step_id")
+  .orderBy(['month', 'step_id'])
   return rows
   }catch(err){
     console.log(`Error gettting step latency between times: ${err}`)
