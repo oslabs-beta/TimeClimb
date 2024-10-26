@@ -4,6 +4,7 @@ import "dotenv/config";
 import moment from "moment-timezone";
 import Bottleneck from "bottleneck";
 import stepFunctionTrackersModel from "../server/models/stepFunctionTrackersModel";
+import stepsModel from "../server/models/stepsModel";
 import fs from "fs";
 
 import {
@@ -16,9 +17,10 @@ import {
   FilteredLogEvent,
 } from "@aws-sdk/client-cloudwatch-logs";
 import { fromEnv } from "@aws-sdk/credential-providers";
+import { StepsTable } from "../server/models/types";
 
 const descibeLogGroupsBottleneck = new Bottleneck({
-  maxConcurrent: 10,
+  maxConcurrent: 3,
   minTime: 105, // rate limit of 10 per second. added 5ms to ensure about 9.5/s
 });
 
@@ -29,31 +31,59 @@ const trackerData = {};
  */
 const getDatabaseTrackingData = async () => {
   const rows = await stepFunctionTrackersModel.getAllTrackerDataWithNames();
-  console.log(rows);
+  console.log("rows", rows);
+  const stepRows = await stepsModel.getStepsByStepFunctionId(
+    rows[0].step_function_id
+  );
+  const formattedSteps = await formatSteps(stepRows);
   const [logGroupArn, logGroupName] = await getLogGroupName(
     rows[0]?.log_group_arn
   );
-  console.log("logGroupArn", logGroupArn);
-  console.log("logGroupName", logGroupName);
+
   const logStreamNamePrefix = `states/${rows[0]?.name}`;
-  console.log(logStreamNamePrefix);
-  const creationDateEpochTime = await getLogGroupCreationDate(logGroupName);
-  const momentLogGroupCreationDate = moment(creationDateEpochTime);
-  console.log(
-    "moment epoch time toString",
-    moment(momentLogGroupCreationDate).toString()
-  );
-  const response = await getFilteredLogEvents(
-    logGroupArn,
-    logStreamNamePrefix,
-    moment().subtract("1", "hour").utc().valueOf(),
-    moment().utc().valueOf()
-  );
-  const parsedEvents = await parseEvents(response.events);
+  let reponseHasEvents = true;
+  let nextToken = undefined;
+  let count = 0;
+  const responses = [];
+  while (reponseHasEvents) {
+    const response = await getFilteredLogEvents(
+      logGroupArn,
+      logStreamNamePrefix,
+      moment().subtract("3", "hour").utc().valueOf(),
+      moment().utc().valueOf(),
+      nextToken
+    );
+
+    console.log("response had this many events:", response?.events?.length);
+    console.log("nextToken", nextToken);
+    console.log("count", count);
+    console.log("reponseHasEvents", reponseHasEvents);
+
+    if (response.events === undefined || response.events.length === 0) {
+      reponseHasEvents = false;
+      break;
+    } else {
+      responses.push(response);
+    }
+    nextToken = response.nextToken;
+    count++;
+    if (count > 10) break;
+  }
+  let executions: ParsedEvents = {};
+  for (const response of responses) {
+    executions = await parseEvents(response.events, executions);
+  }
+
+  // now that we have all executions for a specified period, get database
+  // information for data within that period of time
+
   // console.log("getFilteredLogEvents Response:", response);
-  console.log("response.events.length", response?.events?.length);
-  fs.writeFileSync("output.json", JSON.stringify(response), "utf8");
-  fs.writeFileSync("parseEvents.json", JSON.stringify(parsedEvents), "utf8");
+  fs.writeFileSync("output.json", JSON.stringify(responses), "utf8");
+  fs.writeFileSync("parseEvents.json", JSON.stringify(executions), "utf8");
+
+  const latencyData = await calculateLatencies(executions, formattedSteps);
+  fs.writeFileSync("latencyData.json", JSON.stringify(latencyData), "utf8");
+  // console.log("latencyData", latencyData);
 };
 
 /**
@@ -134,7 +164,8 @@ const getFilteredLogEvents = async (
   logGroupArn: string,
   logStreamNamePrefix: string,
   epochStartTime: number,
-  epochEndTime: number
+  epochEndTime: number,
+  nextToken: string | undefined = undefined
 ): Promise<FilterLogEventsCommandOutput> => {
   const client = new CloudWatchLogsClient({
     region: process.env.AWS_REGION,
@@ -146,6 +177,7 @@ const getFilteredLogEvents = async (
     logStreamNamePrefix: logStreamNamePrefix,
     startTime: epochStartTime,
     endTime: epochEndTime,
+    nextToken,
   };
   const command = new FilterLogEventsCommand(params);
 
@@ -188,9 +220,9 @@ interface Event {
  *
  */
 const parseEvents = async (
-  events: FilteredLogEvent[]
+  events: FilteredLogEvent[],
+  executions: ParsedEvents = {}
 ): Promise<ParsedEvents> => {
-  const executions: ParsedEvents = {};
   for (const event of events) {
     const message = JSON.parse(event?.message);
     if (executions[message?.execution_arn] === undefined) {
@@ -212,6 +244,88 @@ const parseEvents = async (
 
   console.log("executions:\n", executions);
   console.log("executions parsed:\n", JSON.stringify(executions, null, 2));
+  return executions;
+};
+
+interface FormattedSteps {
+  [key: string]: {
+    type: string;
+    stepId: number;
+    isBranch: boolean;
+  };
+}
+
+const formatSteps = async (stepRows: StepsTable[]): Promise<FormattedSteps> => {
+  const steps: FormattedSteps = {};
+  for (const step of stepRows) {
+    steps[step.name] = {
+      type: step.type,
+      stepId: step.step_id,
+      isBranch: step.is_branch,
+    };
+  }
+  return steps;
+};
+
+type starType = "ExecutionStarted";
+type endTypes =
+  | "ExecutionSucceeded"
+  | "ExecutionFailed"
+  | "ExecutionAborted"
+  | "ExecutionTimedOut";
+const endTypesSet = new Set([
+  "ExecutionSucceeded",
+  "ExecutionFailed",
+  "ExecutionAborted",
+  "ExecutionTimedOut",
+]);
+
+const calculateLatencies = async (executions, steps) => {
+  for (const exercutionArn in executions) {
+    const stepBuffer = {};
+    const events = executions[exercutionArn].events;
+    executions[exercutionArn].steps = [];
+    /** if we didn't get all of the events, ignore the execution */
+    /* this is moving to a different portion, where we have all of the data
+       across log requests consumed
+    */
+    //if (!endTypesSet.has(events[events.length - 1].type)) continue;
+    //if (executions[exercutionArn].eventsFound !== events.length) continue;
+
+    executions[exercutionArn].startTime = events[0].timestamp;
+    executions[exercutionArn].endTime = events[events.length - 1].timestamp;
+    executions[exercutionArn].latency =
+      events[events.length - 1].timestamp - events[0].timestamp;
+
+    for (const event of events) {
+      // these are event types which do not need processing
+      if (event.type === "ExecutionStarted") continue;
+      if (event.type === "ExecutionSucceeded") continue;
+      if (event.name === undefined || steps[event.name] === undefined) continue;
+      if (
+        event.type === "FailStateEntered" ||
+        event.type === "SucessStateEntered"
+      )
+        continue;
+
+      if (event.type.endsWith("Entered")) {
+        if (stepBuffer[event.name] === undefined) {
+          stepBuffer[event.name] = [{ timestamp: event.timestamp }];
+        } else {
+          stepBuffer[event.name].push([{ timestamp: event.timestamp }]);
+        }
+      } else if (event.type.endsWith("Exited")) {
+        const step = stepBuffer[event.name].shift();
+        const latency = event.timestamp - step.timestamp;
+        executions[exercutionArn].steps.push({
+          stepName: event.name,
+          startTime: step.timestamp,
+          endTime: event.timestamp,
+          latency: latency,
+        });
+      }
+    }
+  }
   return executions;
 };
 

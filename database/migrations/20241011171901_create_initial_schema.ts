@@ -93,10 +93,8 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable("step_function_trackers", (table) => {
     table.increments("tracker_id").notNullable();
     table.integer("step_function_id").unsigned().notNullable();
-    table.timestamp("newest_stream_time", { useTz: true });
-    table.timestamp("oldest_stream_time", { useTz: true });
-    table.string("newest_stream_name");
-    table.string("oldest_stream_name");
+    table.timestamp("newest_execution_time", { useTz: true });
+    table.timestamp("oldest_execution_time", { useTz: true });
     table.timestamp("tracker_start_time", { useTz: true });
     table.timestamp("tracker_end_time", { useTz: true });
     table.boolean("active").defaultTo(true).notNullable();
@@ -109,10 +107,11 @@ export async function up(knex: Knex): Promise<void> {
   });
 
   // step_function_trackers table
-  await knex.schema.createTable("incomplete_streams", (table) => {
-    table.increments("stream_id").notNullable();
+  await knex.schema.createTable("incomplete_executions", (table) => {
+    table.increments("execution_id").notNullable();
     table.integer("step_function_id").unsigned().notNullable();
-    table.string("stream_name");
+    table.string("execution_arn");
+    table.timestamp("execution_time", { useTz: true });
     table.string("log_group_arn");
     table
       .foreign("step_function_id")

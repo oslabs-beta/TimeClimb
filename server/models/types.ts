@@ -22,6 +22,7 @@ export interface StepsTable {
   name: string;
   type: string;
   comment?: string | null;
+  is_branch?: boolean;
 }
 
 export interface StepAverageLatenciesTable {
