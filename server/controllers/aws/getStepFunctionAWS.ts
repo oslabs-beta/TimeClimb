@@ -29,7 +29,7 @@ const getStateMachineDetails = async (
     });
     //create new instance of sfn
     const sfn = new SFNClient({
-      region: stateMachineArn.split(":")[3],
+      region: stateMachineArn.split(':')[3],
       credentials: fromEnv(),
     });
     // sfn.config.region = stateMachineArn.split(":")
