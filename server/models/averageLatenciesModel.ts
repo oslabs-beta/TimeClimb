@@ -1,6 +1,6 @@
 import db from "./db";
 import moment from "moment";
-import { StepFunctionAverageLatenciesTable } from "./types";
+import { AverageLatencies, StepFunctionAverageLatenciesTable } from "./types";
 import { start } from "repl";
 
 //hourly latencies
@@ -8,7 +8,7 @@ const getStepFunctionLatencies = async (
   step_function_id: number,
   start_time: string,
   end_time: string
-) => {
+):Promise<AverageLatencies[]> => {
   try {
     const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
       "step_function_average_latencies"
@@ -28,7 +28,7 @@ const getStepFunctionLatenciesDaily = async (
   step_function_id: number,
   start_time: string,
   end_time: string
-) => {
+):Promise<AverageLatencies[]> => {
   try {
   const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
     "step_function_average_latencies"
@@ -48,7 +48,7 @@ const getStepFunctionLatenciesWeekly = async (
   step_function_id: number,
   start_time: string,
   end_time: string
-) => {
+):Promise<AverageLatencies[]>  => {
   try {
     const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
       "step_function_average_latencies"
@@ -69,7 +69,7 @@ const getStepFunctionLatenciesMonthly = async (
   step_function_id: number,
   start_time: string,
   end_time: string
-) => {
+):Promise<AverageLatencies[]>  => {
   try {
     const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
       "step_function_average_latencies"

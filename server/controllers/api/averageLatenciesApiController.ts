@@ -5,18 +5,18 @@ import stepAverageLatenciesModel from "../../models/stepAverageLatenciesModel";
 import moment from "moment";
 import { start } from "repl";
 import {MonthlyAverage} from '../../types/stepFunctionLatencyAvgsApi'
-
+import type { AverageLatencies, StepsByStepFunctionId, StepAverageLatencies, LatenciesObj } from "../../models/types";
 
 const getAverageLatencies = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+):Promise<void> => {
   try {
     const { step_function_id } = req.params; //not sure if destructuring will work properly this way with req.params instead of req.body
     const start_time = moment().subtract(1, "day").startOf("day");//eventually will need to be set by frontend
     const end_time = moment().subtract(1, "day").endOf("day");
-    const averageLatencies =
+    const averageLatencies: AverageLatencies[] =
       await averageLatenciesModel.getStepFunctionLatencies(
         Number(step_function_id), //was getting error because this must be turn into string or something when passed as param???
         start_time.toISOString(),
@@ -28,13 +28,13 @@ const getAverageLatencies = async (
      * ]
      */
 //creates array of all steps based on step function id
-    const stepRows = await stepsModel.getStepsByStepFunctionId(
+    const stepRows: StepsByStepFunctionId[] = await stepsModel.getStepsByStepFunctionId(
       Number(step_function_id)
     );
 //create array of all step ids
     const stepIds: number[] = stepRows.map((el) => el.step_id);
 //assign rows to array of steps in a function executed between certain times
-    const rows = await stepAverageLatenciesModel.getLatenciesBetweenTimes(
+    const rows: StepAverageLatencies[] = await stepAverageLatenciesModel.getLatenciesBetweenTimes(
       stepIds,
       start_time.toISOString(),
       end_time.toISOString()
@@ -43,8 +43,8 @@ const getAverageLatencies = async (
     const latenciesArray = [];
     let stepFunctionIndex = 0;
     for (let i = 0; i < rows.length; i += stepIds.length) {
-      const hourLatencies = {
-        startTime: averageLatencies[stepFunctionIndex].start_time,
+      const hourLatencies:LatenciesObj = {
+        date: averageLatencies[stepFunctionIndex].start_time,
         stepFunctionAverageLatency: averageLatencies[stepFunctionIndex].average,
         steps: {},
       };
@@ -71,21 +71,20 @@ const getAverageLatenciesDaily = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+):Promise<void> => {
   try{
-   
   const {step_function_id} = req.params;
   const start_time = moment().subtract(6, "day").startOf("day")
   const end_time = moment().endOf("day")//includes current day in request
-    const dailyStepFunctionLatencies = 
+    const dailyStepFunctionLatencies: AverageLatencies[] = 
     await averageLatenciesModel.getStepFunctionLatenciesDaily(Number(step_function_id), start_time.toISOString(), end_time.toISOString())
     //console.log("daily latencies", dailyStepFunctionLatencies)
     //get step averages for all steps within function
-    const stepRows = await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
+    const stepRows: StepsByStepFunctionId[] = await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
     //create array of the id's of each step in function
-    const stepIDs = stepRows.map((step) => step.step_id);
+    const stepIDs: number[] = stepRows.map((step) => step.step_id);
     //create array of all step latencies from the last week
-    const rows = await stepAverageLatenciesModel
+    const rows: StepAverageLatencies[] = await stepAverageLatenciesModel
     .getHourlyLatencyAveragesBetweenTimes(stepIDs,
        start_time.toISOString(),
         end_time.toISOString()
@@ -95,9 +94,9 @@ const getAverageLatenciesDaily = async (
        // console.log("rows:", rows)
         //iterate through all step latencies from the last week
         for(let i = 0; i < rows.length; i += stepIDs.length){
-          const dailyLatencies = {
-            date: dailyStepFunctionLatencies[stepFunctionIndex].date,
-            stepFunctionAverageLatency: dailyStepFunctionLatencies[stepFunctionIndex].avg,
+          const dailyLatencies:LatenciesObj = {
+            date: dailyStepFunctionLatencies[stepFunctionIndex].start_time,
+            stepFunctionAverageLatency: dailyStepFunctionLatencies[stepFunctionIndex].average,
             steps: {}
           };
             //for each step in this function, add it's averages to dailyLatencies
@@ -128,13 +127,13 @@ const getAverageLatenciesWeekly = async(
     const {step_function_id} = req.params;
     const start_time = moment().subtract(11, "week").startOf("week")
     const end_time = moment().endOf("day")//includes current day in request
-      const weeklyStepFunctionLatencies = 
+      const weeklyStepFunctionLatencies: AverageLatencies[] = 
       await averageLatenciesModel.getStepFunctionLatenciesWeekly(Number(step_function_id), start_time.toISOString(), end_time.toISOString())
    // console.log(weeklyStepFunctionLatencies)
-    const stepRows = await stepsModel.getStepsByStepFunctionId(Number(step_function_id))
+    const stepRows: StepsByStepFunctionId[] = await stepsModel.getStepsByStepFunctionId(Number(step_function_id))
    // console.log('ids', stepRows)
-   const stepIDs = stepRows.map((step) => step.step_id)
-   const rows = await stepAverageLatenciesModel
+   const stepIDs: number[] = stepRows.map((step) => step.step_id)
+   const rows: StepAverageLatencies[] = await stepAverageLatenciesModel
    .getWeeklyLatencyAveragesBetweenTimes(stepIDs,
     start_time.toISOString(),
     end_time.toISOString()
@@ -142,9 +141,9 @@ const getAverageLatenciesWeekly = async(
    const allAvgLatencies = [];
    let stepFunctionIndex = 0;
    for (let i = 0; i < rows.length; i += stepIDs.length){
-    const weeklyLatencies = {
-      date: weeklyStepFunctionLatencies[stepFunctionIndex].date,
-      stepFunctionAverageLatency: weeklyStepFunctionLatencies[stepFunctionIndex].avg,
+    const weeklyLatencies: LatenciesObj = {
+      date: weeklyStepFunctionLatencies[stepFunctionIndex].start_time,
+      stepFunctionAverageLatency: weeklyStepFunctionLatencies[stepFunctionIndex].average,
       steps: {}
     };
       for(let j = 0; j < stepIDs.length; j++){
