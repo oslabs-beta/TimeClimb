@@ -27,7 +27,7 @@ type xaxis = {
     automargin: boolean;
     tickangle: number
 };
-
+ 
 type yaxis = {
     ticks: string;
     ticksuffix: string;
