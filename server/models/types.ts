@@ -68,7 +68,6 @@ export interface AliasRoutesTable {
   step_function_id: number;
   weight: number;
 }
-<<<<<<< HEAD
 
 export interface IncompleteStreamsTable {
   stream_id?: number;
@@ -79,18 +78,19 @@ export interface IncompleteStreamsTable {
 
 export type TrackerStepFunctionsJoinTable = StepFunctionTrackersTable &
   StepFunctionsTable;
-=======
 //for step average latencies from database
 export interface StepAverageLatencies {
   step_id: number;
   average: number;
-  start_time: string
+  start_time: string;
 }
 
 export interface AverageLatencies {
+  latency_id?: number;
   step_function_id: number;
   average: number;
-  start_time: string
+  start_time: string;
+  executions?: number;
 }
 
 export interface StepsByStepFunctionId {
@@ -103,7 +103,7 @@ export interface StepsByStepFunctionId {
 export interface LatenciesObj {
   date: string;
   stepFunctionAverageLatency: number;
-  steps: {[stepName: string] : {average:number}}
+  steps: { [stepName: string]: { average: number } };
 }
 
 //for stepFunctionsApiController.getStepFunctions
@@ -113,4 +113,3 @@ export interface StepFunctionSubset {
   definition: string;
   description?: string | null;
 }
->>>>>>> dev

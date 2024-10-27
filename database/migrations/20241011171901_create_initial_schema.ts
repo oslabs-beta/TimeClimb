@@ -106,13 +106,14 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete("CASCADE");
   });
 
-  // step_function_trackers table
+  // incomplete_executions table
   await knex.schema.createTable("incomplete_executions", (table) => {
     table.increments("execution_id").notNullable();
     table.integer("step_function_id").unsigned().notNullable();
     table.string("execution_arn");
     table.timestamp("execution_time", { useTz: true });
     table.string("log_group_arn");
+    table.string("log_stream");
     table
       .foreign("step_function_id")
       .references("step_function_id")
@@ -124,6 +125,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTableIfExists("alias_routes");
   await knex.schema.dropTableIfExists("incomplete_streams");
+  await knex.schema.dropTableIfExists("incomplete_executions");
   await knex.schema.dropTableIfExists("step_function_aliases");
   await knex.schema.dropTableIfExists("step_function_monitoring");
   await knex.schema.dropTableIfExists("step_function_monitors");

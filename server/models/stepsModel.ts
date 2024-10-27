@@ -2,16 +2,16 @@ import "dotenv/config";
 import db from "./db";
 import { StepsTable } from "./types";
 
-const getStepsByStepFunctionId = async (step_function_id: number) => {
+const getStepsByStepFunctionId = async (stepFunctionId: number) => {
   try {
     const rows = await db<StepsTable>("steps")
-      .select("step_id", "name", "type", "comment", "is_branch")
-      .where("step_function_id", step_function_id)
+      .select("step_id", "name", "type", "comment")
+      .where("step_function_id", stepFunctionId)
       .orderBy("step_id");
     return rows;
   } catch (err) {
     console.log(
-      `Error getting steps for step_function_id ${step_function_id}: ${err}`
+      `Error getting steps for step_function_id ${stepFunctionId}: ${err}`
     );
   }
 };
@@ -25,7 +25,7 @@ const getStepsByStepFunctionIds = async (stepFunctionIds: number[]) => {
     return rows;
   } catch (err) {
     console.log(
-      `Error getting steps for step_function_id ${step_function_id}: ${err}`
+      `Error getting steps for step_function_ids ${stepFunctionIds}: ${err}`
     );
   }
 };
