@@ -7,7 +7,7 @@ const getLatenciesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
   endTime: string
-):Promise<StepAverageLatencies[]> => {
+): Promise<StepAverageLatencies[]> => {
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id", "average", "start_time")
@@ -17,7 +17,7 @@ const getLatenciesBetweenTimes = async (
     return rows;
   } catch (err) {
     console.log(`Error getting step lantency data between times: ${err}`);
-    return []
+    return [];
   }
 };
 
@@ -25,17 +25,17 @@ const getDailyLatencyAveragesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
   endTime: string
-):Promise<StepAverageLatencies[]> => {
+): Promise<StepAverageLatencies[]> => {
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id")
-      .select(db.raw('DATE_TRUNC(\'day\', "start_time") AS start_time'))
+      .select(db.raw("DATE_TRUNC('day', \"start_time\") AS start_time"))
       .avg("average AS average")
       .whereIn("step_id", stepIds)
       .whereBetween("start_time", [startTime, endTime])
       .groupBy(db.raw("step_id, DATE_TRUNC('day', \"start_time\")"))
-      .orderBy(["start_time","step_id"]);
-     // console.log(rows)
+      .orderBy(["start_time", "step_id"]);
+    // console.log(rows)
     return rows;
   } catch (err) {
     console.log(`Error getting step lantency data between times: ${err}`);
@@ -46,51 +46,51 @@ const getDailyLatencyAveragesBetweenTimes = async (
 const getWeeklyLatencyAveragesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
-  endTime: string,
-):Promise<StepAverageLatencies[]> => {
+  endTime: string
+): Promise<StepAverageLatencies[]> => {
   try {
     const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
       .select("step_id")
-      .select(db.raw('DATE_TRUNC(\'week\', "start_time") AS start_time'))
+      .select(db.raw("DATE_TRUNC('week', \"start_time\") AS start_time"))
       .avg("average as average")
       .whereIn("step_id", stepIds)
       .whereBetween("start_time", [startTime, endTime])
       .groupBy(db.raw("step_id, DATE_TRUNC('week', \"start_time\")"))
-      .orderBy(["start_time","step_id"]);
-     // console.log(rows)
+      .orderBy(["start_time", "step_id"]);
+    // console.log(rows)
     return rows;
-  } catch(err) {
+  } catch (err) {
     console.log(`Error getting step lantency data between times: ${err}`);
-    return []
+    return [];
   }
-}
+};
 
 const getMonthlyLatencyAveragesBetweenTimes = async (
   stepIds: number[],
   startTime: string,
-  endTime: string,
-):Promise<StepAverageLatencies[]> => {
-  try{
-  const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
-  .select("step_id")
-  .select(db.raw('DATE_TRUNC(\'month\', "start_time") AS month'))
-  .avg("average AS average")
-  .whereIn("step_id", stepIds)
-  .whereBetween("start_time", [startTime, endTime])
-  .groupBy(db.raw("step_id, DATE_TRUNC('month', \"start_time\")"))
-  .orderBy(['month', 'step_id'])
-  return rows
-  }catch(err){
-    console.log(`Error gettting step latency between times: ${err}`)
-  return [];
+  endTime: string
+): Promise<StepAverageLatencies[]> => {
+  try {
+    const rows = await db<StepAverageLatenciesTable>("step_average_latencies")
+      .select("step_id")
+      .select(db.raw("DATE_TRUNC('month', \"start_time\") AS start_time"))
+      .avg("average AS average")
+      .whereIn("step_id", stepIds)
+      .whereBetween("start_time", [startTime, endTime])
+      .groupBy(db.raw("step_id, DATE_TRUNC('month', \"start_time\")"))
+      .orderBy(["start_time", "step_id"]);
+    return rows;
+  } catch (err) {
+    console.log(`Error gettting step latency between times: ${err}`);
+    return [];
   }
-}
+};
 
 const stepAverageLatenciesModel = {
   getLatenciesBetweenTimes,
   getDailyLatencyAveragesBetweenTimes,
   getWeeklyLatencyAveragesBetweenTimes,
-  getMonthlyLatencyAveragesBetweenTimes
+  getMonthlyLatencyAveragesBetweenTimes,
 };
 
 export default stepAverageLatenciesModel;
