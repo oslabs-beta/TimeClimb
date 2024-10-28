@@ -103,7 +103,9 @@ export interface StepsByStepFunctionId {
 export interface LatenciesObj {
   date: string;
   stepFunctionAverageLatency: number;
-  steps: { [stepName: string]: { average: number } };
+  steps: {
+    [key: string]: { average?: number };
+  };
 }
 
 //for stepFunctionsApiController.getStepFunctions
