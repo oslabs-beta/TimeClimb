@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .chartBubble {
   height: 100px;
   width: 150px;
@@ -18,7 +22,12 @@ body {
   margin: 0;
   color: var(--main-white);
   background-color: var(--main-black);
+  overflow-x: hidden;
   /* background-color: rgb(247, 247, 247); */
+}
+
+.react-flow .react-flow__controls{
+ color: black
 }
 
 .landingPage {
@@ -68,6 +77,8 @@ body {
 .addCard .add {
   height: 100px;
   width: 100px;
+  margin: 0px;
+  padding: 0%;
   background-color: var(--main-blue);
   opacity: 0.9;
   border-radius: 5px;

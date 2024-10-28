@@ -61,7 +61,7 @@ function FlowChartBubble({ data }: BubbleProps) {
   }
   const latency = useSelector((state: RootState) => state.data.latency);
   let average = 0;
-  let color = 'gray';
+  let color = 'rgb(235, 235, 235)';
   if (latency) {
     if (latency.hasOwnProperty('steps')) {
       average = latency.steps[data.name].average;
@@ -70,12 +70,13 @@ function FlowChartBubble({ data }: BubbleProps) {
   }
   return (
     <button
-      className='chartBubble'
+      className='text-black h-full width-96 p-3 rounded-full'
       style={{ backgroundColor: color }}
       onClick={handleClick}
     >
       <Handle type='target' position={Position.Top} />
       <span>{data.name}</span>
+      <br></br>
       <span>{average}</span>
       <Handle type='source' position={Position.Bottom} />
     </button>

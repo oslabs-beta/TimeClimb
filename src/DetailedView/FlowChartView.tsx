@@ -104,6 +104,8 @@ function FlowChartView({ height, width, definition }) {
         id: `${e.v}->${e.w}`,
         source: e.v,
         target: e.w,
+        type: 'simplebezier',
+        style: { stroke: 'rgb(50, 50, 50)', strokeWidth: 5}
       };
       initialEdges.push(newEdge);
     });
@@ -115,14 +117,14 @@ function FlowChartView({ height, width, definition }) {
   const initialEdges = results.edges;
 
   return (
-    <div id='graph-style' style={{ width: 500, height: 500 }}>
+    <div id='graph-style' className='size-80'>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}
         nodeTypes={nodeTypes}
       >
         <Controls />
-        <Background variant={BackgroundVariant.Lines} gap={25} size={4} />
+        <Background variant={BackgroundVariant.Cross} gap={25} size={4} />
       </ReactFlow>
     </div>
   );
