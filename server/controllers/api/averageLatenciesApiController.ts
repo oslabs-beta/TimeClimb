@@ -2,15 +2,19 @@ import type { Request, Response, NextFunction } from "express";
 import averageLatenciesModel from "../../models/averageLatenciesModel";
 import stepsModel from "../../models/stepsModel";
 import stepAverageLatenciesModel from "../../models/stepAverageLatenciesModel";
-import moment from "moment";
-
+import moment, { Moment } from "moment";
+import type {
+  SFLatenciesByTime,
+  StepLatenciesByTime,
+  TimePeriod,
+  AverageLatenciesResponse,
+} from "../../types/types";
 import type {
   AverageLatencies,
   StepsByStepFunctionId,
   StepAverageLatencies,
   LatenciesObj,
 } from "../../models/types";
-import { start } from "repl";
 
 const getAverageLatencies = async (
   req: Request,
@@ -22,128 +26,36 @@ const getAverageLatencies = async (
     const startTime = moment().startOf("day");
     const endTime = moment().endOf("day");
 
-    const averageLatencies: AverageLatencies[] =
+    // db call
+    const sfAverageLatencyRows: AverageLatencies[] =
       await averageLatenciesModel.getStepFunctionLatencies(
         Number(step_function_id),
         startTime.toISOString(),
         endTime.toISOString()
       );
 
-    interface FunctionAverageLatenciesObject {
-      [key: string]: {
-        stepFunctionId: number;
-        average: number;
-        executions?: number;
-      };
-    }
-    // turn the array or rows into an object with keys of start time
-    const functionAverageLatenciesObject: FunctionAverageLatenciesObject = {};
-    averageLatencies.forEach((row) => {
-      functionAverageLatenciesObject[moment(row.start_time).toISOString()] = {
-        stepFunctionId: row.step_function_id,
-        average: row.average,
-      };
-    });
-    console.log(
-      "functionAverageLatenciesObject",
-      functionAverageLatenciesObject
-    );
+    // db call
     const stepRows: StepsByStepFunctionId[] =
       await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
 
     const stepIds: number[] = stepRows.map((row) => row.step_id);
 
-    const stepIdsByName = {};
-    const stepNamesById = {};
-    stepRows.forEach((row) => {
-      stepIdsByName[row.name] = row.step_id;
-      stepNamesById[row.step_id] = row.name;
-    });
-
-    const stepAverageLatenciesRows: StepAverageLatencies[] =
+    // db call
+    const stepAverageLatencyRows: StepAverageLatencies[] =
       await stepAverageLatenciesModel.getLatenciesBetweenTimes(
         stepIds,
         startTime.toISOString(),
         endTime.toISOString()
       );
 
-    interface StepAverageLatenciesObject {
-      [key: string]: {
-        stepId?: number;
-        average?: number;
-        executions?: number;
-      };
-    }
-    // turn the array of rows into objects with keys of start time for quick
-    // lookup
-    const stepAverageLatenciesObject: StepAverageLatenciesObject = {};
-    stepAverageLatenciesRows.forEach((row) => {
-      stepAverageLatenciesObject[
-        stepNamesById[row.step_id] + moment(row.start_time).toISOString()
-      ] = {
-        stepId: row.step_id,
-        average: row.average,
-      };
-    });
-
-    const latenciesArray = [];
-    let stepFunctionIndex = 0;
-    let count = 0;
-    // loop through dates by hour using moment
-    for (
-      const startClone = startTime.clone();
-      startClone.isBefore(endTime);
-      startClone.add(1, "hour")
-    ) {
-      console.log(startClone.toISOString());
-      console.log("count", ++count);
-      const functionObject =
-        functionAverageLatenciesObject[startClone.toISOString()];
-      if (functionObject) {
-        console.log("functionObject truthy", functionObject);
-        const data: LatenciesObj = {
-          date: startClone.toISOString(),
-          stepFunctionAverageLatency: functionObject.average,
-          steps: {},
-        };
-
-        for (const name in stepIdsByName) {
-          if (stepAverageLatenciesObject[name + startClone.toISOString()]) {
-            data.steps[name] = {
-              average:
-                stepAverageLatenciesObject[name + startClone.toISOString()]
-                  .average,
-            };
-          } else {
-            data.steps[name] = {};
-          }
-        }
-
-        latenciesArray.push(data);
-      } else {
-        latenciesArray.push({});
-      }
-    }
-
-    // for (let i = 0; i < stepAverageLatencies.length; i += stepIds.length) {
-    //   const hourLatencies: LatenciesObj = {
-    //     date: averageLatencies[stepFunctionIndex].start_time,
-    //     stepFunctionAverageLatency: averageLatencies[stepFunctionIndex].average,
-    //     steps: {},
-    //   };
-
-    //   for (let j = 0; j < stepIds.length; j++) {
-    //     hourLatencies.steps[stepRows[j].name] = {
-    //       average: stepAverageLatencies[i + j].average,
-    //     };
-    //   }
-    //   stepFunctionIndex++;
-    //   latenciesArray.push(hourLatencies);
-    // }
-
-    //console.log("latenciesArray", JSON.stringify(latenciesArray, null, 2));
-    // console.log("latenciesArray", latenciesArray.length);
-
+    const latenciesArray = await makeResponseObject(
+      sfAverageLatencyRows,
+      stepAverageLatencyRows,
+      stepRows,
+      "hours",
+      startTime,
+      endTime
+    );
     res.locals.latencyAverages = latenciesArray;
     return next();
   } catch (err) {
@@ -158,95 +70,48 @@ const getAverageLatenciesDaily = async (
 ): Promise<void> => {
   try {
     const { step_function_id } = req.params;
-    const start_time = moment().subtract(6, "day").startOf("day");
+    const startTime = moment().subtract(6, "day").startOf("day");
+    const endTime = moment().endOf("day"); //includes current day in request
 
-    const allAvgLatencies = [];
-    const end_time = moment().endOf("day"); //includes current day in request
+    // db call
     const dailyStepFunctionLatencies: AverageLatencies[] =
       await averageLatenciesModel.getStepFunctionLatenciesDaily(
         Number(step_function_id),
-        start_time.toISOString(),
-        end_time.toISOString()
+        startTime.toISOString(),
+        endTime.toISOString()
       );
-    // console.log("daily latencies", dailyStepFunctionLatencies)
-    //iterate through 7 days
 
-    //  console.log(allAvgLatencies)
-    //get step averages for all steps within function
+    // db call
     const stepRows: StepsByStepFunctionId[] =
       await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
-    const stepNames = {};
-    stepRows.forEach((el) => (stepNames[el.step_id] = el.name));
-    //create array of the id's of each step in function
+
     const stepIDs: number[] = stepRows.map((step) => step.step_id);
-    //create array of all step latencies from the last week
+
+    //db call
     const stepLatencies: StepAverageLatencies[] =
       await stepAverageLatenciesModel.getDailyLatencyAveragesBetweenTimes(
         stepIDs,
-        start_time.toISOString(),
-        end_time.toISOString()
+        startTime.toISOString(),
+        endTime.toISOString()
       );
 
-    let currentDay = moment(start_time);
-    for (let i = 6; i >= 0; i--) {
-      const [currentDate] = dailyStepFunctionLatencies.filter((day) => {
-        //  console.log('day.start_time:', day.start_time.toISOString())
-        // console.log('currentDay:', typeof currentDay)
-        return day.start_time.toISOString() === currentDay.utc().toISOString();
-      });
+    const latenciesArray = await makeResponseObject(
+      dailyStepFunctionLatencies,
+      stepLatencies,
+      stepRows,
+      "days",
+      startTime,
+      endTime
+    );
 
-      if (currentDate) {
-        const currentDateSteps = stepLatencies.filter((step) => {
-          console.log("step.start_time", step.start_time.toISOString());
-          console.log("currentDay", currentDay.utc().toISOString());
-          return (
-            step.start_time.toISOString() === currentDay.utc().toISOString()
-          );
-        });
-        console.log(currentDateSteps);
-        const dailyLatencies: LatenciesObj = {
-          date: currentDate.start_time,
-          stepFunctionAverageLatency: currentDate.average,
-          steps: {},
-        };
-        for (const step of currentDateSteps) {
-          dailyLatencies.steps[stepNames[step.step_id]] = {
-            average: step.average,
-          };
-        }
-        allAvgLatencies.push(dailyLatencies);
-      } else {
-        allAvgLatencies.push({});
-      }
-      currentDay = currentDay.add(1, "day");
-    }
-    res.locals.dailyAvgs = allAvgLatencies;
+    res.locals.dailyAvgs = latenciesArray;
 
     return next();
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 };
-//  const allAvgLatencies = [];
-// let stepFunctionIndex = 0;
-// console.log("rows:", rows)
-//iterate through all step latencies from the last week
-// for(let i = 0; i < rows.length; i += stepIDs.length){
-//   const dailyLatencies:LatenciesObj = {
-//     date: dailyStepFunctionLatencies[stepFunctionIndex].start_time,
-//     stepFunctionAverageLatency: dailyStepFunctionLatencies[stepFunctionIndex].average,
-//     steps: {}
-//   };
-//     //for each step in this function, add it's averages to dailyLatencies
-//     for(let j = 0; j < stepIDs.length; j++){
-//       dailyLatencies.steps[stepRows[j].name] = {
-//         average : rows[i + j].average
-//       }
-//     }
-//     stepFunctionIndex++;
-//     allAvgLatencies.push(dailyLatencies)
-//    // console.log(allAvgLatencies.length)
-// }
 
 const getAverageLatenciesWeekly = async (
   req: Request,
@@ -347,6 +212,102 @@ const getAverageLatenciesMonthly = async (
   } catch (err) {
     return next(err);
   }
+};
+
+const makeResponseObject = async (
+  sfLatencyRows: AverageLatencies[],
+  stepLatencyRows: StepAverageLatencies[],
+  stepRows: StepsByStepFunctionId[],
+  timePeriod: TimePeriod,
+  startTime: Moment,
+  endTime: Moment
+): Promise<AverageLatenciesResponse[]> => {
+  // turn the array or rows into an object with keys of start time
+  const sfLatenciesByTime = await makeSFAverageLatenciesByTimeObject(
+    sfLatencyRows
+  );
+  console.log("sfLatenciesByTime", sfLatenciesByTime);
+
+  const stepIdsByName = {};
+  const stepNamesById = {};
+  stepRows.forEach((row) => {
+    stepIdsByName[row.name] = row.step_id;
+    stepNamesById[row.step_id] = row.name;
+  });
+
+  // turn the array of rows into objects with keys of start time for quick
+  // lookup
+  const stepsLatenciesByTime = await makeStepAverageLatenciesByTimeObject(
+    stepLatencyRows,
+    stepNamesById
+  );
+
+  console.log("stepsLatenciesByTime", stepsLatenciesByTime);
+
+  const latenciesArray: AverageLatenciesResponse[] = [];
+  let count = 0;
+  // loop through dates by hour using moment
+  for (
+    const startClone = startTime.clone();
+    startClone.isBefore(endTime);
+    startClone.add(1, timePeriod)
+  ) {
+    console.log(startClone.toISOString());
+    console.log("count", ++count);
+    const sfData = sfLatenciesByTime[startClone.toISOString()];
+    if (sfData) {
+      const data: LatenciesObj = {
+        date: startClone.toISOString(),
+        stepFunctionAverageLatency: sfData.average,
+        steps: {},
+      };
+
+      for (const name in stepIdsByName) {
+        if (stepsLatenciesByTime[name + startClone.toISOString()]) {
+          data.steps[name] = {
+            average:
+              stepsLatenciesByTime[name + startClone.toISOString()].average,
+          };
+          console.log("data", data);
+        } else {
+          data.steps[name] = {};
+        }
+      }
+      latenciesArray.push(data);
+    } else {
+      latenciesArray.push({});
+    }
+  }
+  return latenciesArray;
+};
+
+const makeSFAverageLatenciesByTimeObject = async (
+  averageLatencies: AverageLatencies[]
+): Promise<SFLatenciesByTime> => {
+  const sfLatenciesByTimeObject = {};
+  averageLatencies.forEach((row) => {
+    sfLatenciesByTimeObject[moment(row.start_time).toISOString()] = {
+      stepFunctionId: row.step_function_id,
+      average: row.average,
+    };
+  });
+  return sfLatenciesByTimeObject;
+};
+
+const makeStepAverageLatenciesByTimeObject = async (
+  stepLatencyRows: StepAverageLatencies[],
+  stepNamesById: object
+): Promise<StepLatenciesByTime> => {
+  const stepLatenciesByTimeObject: StepLatenciesByTime = {};
+  stepLatencyRows.forEach((row) => {
+    stepLatenciesByTimeObject[
+      stepNamesById[row.step_id] + moment(row.start_time).toISOString()
+    ] = {
+      stepId: row.step_id,
+      average: row.average,
+    };
+  });
+  return stepLatenciesByTimeObject;
 };
 
 const averageLatenciesApiController = {
