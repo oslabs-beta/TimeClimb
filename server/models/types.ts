@@ -45,10 +45,8 @@ export interface StepFunctionAverageLatenciesTable {
 export interface StepFunctionTrackersTable {
   tracker_id?: number;
   step_function_id: number;
-  newest_stream_time?: string | null;
-  oldest_stream_time?: string | null;
-  newest_stream_name?: string | null;
-  oldest_stream_name?: string | null;
+  newest_execution_time?: string | null;
+  oldest_execution_time?: string | null;
   tracker_start_time?: string | null;
   tracker_end_time?: string | null;
   log_group_arn: string;
@@ -80,9 +78,11 @@ export type TrackerStepFunctionsJoinTable = StepFunctionTrackersTable &
   StepFunctionsTable;
 //for step average latencies from database
 export interface StepAverageLatencies {
+  latency_id?: number;
   step_id: number;
   average: number;
   start_time: string;
+  executions?: number;
 }
 
 export interface AverageLatencies {

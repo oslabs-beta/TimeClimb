@@ -1,13 +1,16 @@
 import "dotenv/config";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-import moment from "moment-timezone";
+import moment, { Moment } from "moment-timezone";
 import Bottleneck from "bottleneck";
 import stepFunctionTrackersModel from "../server/models/stepFunctionTrackersModel";
 import stepsModel from "../server/models/stepsModel";
 import stepFunctionAverageLatenciesModel from "../server/models/stepFunctionAverageLatenciesModel";
 import stepAverageLatenciesModel from "../server/models/stepAverageLatenciesModel";
 import fs from "fs";
+import executionsObject from "./executions";
+import type { Executions, FormattedSteps, LatencyData } from "./types";
+import logs from "./logs";
 
 import {
   CloudWatchLogsClient,
@@ -19,7 +22,12 @@ import {
   FilteredLogEvent,
 } from "@aws-sdk/client-cloudwatch-logs";
 import { fromEnv } from "@aws-sdk/credential-providers";
-import { StepsTable } from "../server/models/types";
+import {
+  AverageLatencies,
+  StepAverageLatencies,
+  StepAverageLatenciesTable,
+  StepsTable,
+} from "../server/models/types";
 
 const descibeLogGroupsBottleneck = new Bottleneck({
   maxConcurrent: 3,
@@ -32,28 +40,31 @@ const descibeLogGroupsBottleneck = new Bottleneck({
  */
 const getDatabaseTrackingData = async () => {
   // need the tracker information to see what time period of data to retreive
-  const rows = await stepFunctionTrackersModel.getAllTrackerDataWithNames();
+  const trackerDbRows =
+    await stepFunctionTrackersModel.getAllTrackerDataWithNames();
 
   // get steps for this step function
-  const stepRows = await stepsModel.getStepsByStepFunctionId(
-    rows[0].step_function_id
+  const stepDbRows = await stepsModel.getStepsByStepFunctionId(
+    trackerDbRows[0].step_function_id
   );
 
+  const stepIds: number[] = stepDbRows.map((el) => el.step_id);
+
   // create a new object stucture to look up step information up by step name
-  const formattedSteps = await formatSteps(stepRows);
+  const formattedSteps = await formatSteps(stepDbRows);
 
   // log group arn needs to be formatted and the group name separated for
   // future api requests
   const [logGroupArn, logGroupName] = await getLogGroupName(
-    rows[0]?.log_group_arn
+    trackerDbRows[0]?.log_group_arn
   );
 
   // this prefix is necessary to filter logs by step function
-  const logStreamNamePrefix = `states/${rows[0]?.name}`;
+  const logStreamNamePrefix = `states/${trackerDbRows[0]?.name}`;
 
   // these times ensure we wait at least an hour before reading cloudwatch data
-  const startTime = moment().subtract(2, "hour").startOf("hour").utc();
-  const endTime = moment().subtract(2, "hour").endOf("hour").utc();
+  const startTime = moment().subtract(2, "day").startOf("hour").utc();
+  const endTime = moment().subtract(2, "day").endOf("hour").utc();
 
   // make http requests to retreive full data for an hour
   let reponseHasEvents = true;
@@ -73,6 +84,7 @@ const getDatabaseTrackingData = async () => {
     console.log("nextToken", nextToken);
     console.log("count", count);
     console.log("reponseHasEvents", reponseHasEvents);
+    console.log("logGroupName", logGroupName);
 
     if (response.events === undefined || response.events.length === 0) {
       reponseHasEvents = false;
@@ -96,77 +108,22 @@ const getDatabaseTrackingData = async () => {
     executions = await parseEvents(response.events, executions);
   }
 
-  // get average data for the step function and steps for this hour
-  const [stepFunctionCurrentLatencyData] =
-    await stepFunctionAverageLatenciesModel.getStepFunctionLatencies(
-      rows[0].step_function_id,
-      startTime.toISOString(),
-      endTime.toISOString()
-    );
-
-  const stepIds: number[] = stepRows.map((el) => el.step_id);
-  const stepsCurrentLatencyData =
-    await stepAverageLatenciesModel.getHourlyLatenciesBetweenTimes(
-      stepIds,
-      startTime.toISOString(),
-      endTime.toISOString()
-    );
-
-  console.log("stepFunctionCurrentLatencyData", stepFunctionCurrentLatencyData);
-  console.log("stepsCurrentLatencyData", stepsCurrentLatencyData);
-
   // calculate the average data for the step function and steps for this hour
-  const [latencyData, incompleteExecutions] = await calculateLatencies(
+  const [latencyData, incompleteExecutions] = await logs.calculateLogLatencies(
     executions,
     formattedSteps
   );
-  console.log("latencyData", latencyData);
-  console.log("incompleteExecutions", incompleteExecutions);
 
-  // update/insert the calcualted average for each step and the step function
-
-  if (stepFunctionCurrentLatencyData) {
-    // calculate new average
-    const oldSum =
-      Number(stepFunctionCurrentLatencyData.average) *
-      Number(stepFunctionCurrentLatencyData.executions);
-
-    const newSum = oldSum + latencyData.stepFunctionLatencySum / 1000;
-    const newExecutions =
-      Number(stepFunctionCurrentLatencyData.executions) +
-      Number(latencyData.executions);
-    const newAverage = newSum / newExecutions;
-
-    console.log("updating data");
-    console.log(
-      "stepFunctionCurrentLatencyData.average",
-      stepFunctionCurrentLatencyData.average
+  if (latencyData.executions > 0) {
+    executionsObject.addExecutionsToDatabase(
+      executions,
+      latencyData,
+      trackerDbRows[0].step_function_id,
+      stepIds,
+      formattedSteps,
+      startTime,
+      endTime
     );
-    console.log(
-      "stepFunctionCurrentLatencyData.executions",
-      stepFunctionCurrentLatencyData.executions
-    );
-    console.log("oldSum", oldSum);
-    console.log("newSum", newSum);
-    console.log("newExecutions", newExecutions);
-    console.log("newAverage", newAverage);
-
-    await stepFunctionAverageLatenciesModel.updateStepFunctionLatency(
-      stepFunctionCurrentLatencyData.latency_id,
-      newAverage,
-      newExecutions
-    );
-  } else {
-    await stepFunctionAverageLatenciesModel.insertStepFunctionLatencies([
-      {
-        step_function_id: rows[0].step_function_id,
-        start_time: startTime.toISOString(),
-        end_time: endTime.toISOString(),
-        average:
-          latencyData.stepFunctionLatencySum / latencyData.executions / 1000,
-        executions: latencyData.executions,
-      },
-    ]);
   }
 
   // update/insert the tracker data to cover this hour
@@ -179,11 +136,10 @@ const getDatabaseTrackingData = async () => {
 
   // communicate with server or built as part of the server
 
-  // console.log("getFilteredLogEvents Response:", response);
+  console.log("incomplete executions", incompleteExecutions);
   fs.writeFileSync("output.json", JSON.stringify(responses), "utf8");
   fs.writeFileSync("executions.json", JSON.stringify(executions), "utf8");
   fs.writeFileSync("latencyData.json", JSON.stringify(latencyData), "utf8");
-  // console.log("latencyData", latencyData);
 };
 
 /**
@@ -285,24 +241,6 @@ const getFilteredLogEvents = async (
   return response;
 };
 
-interface Executions {
-  // step function execution arn as key
-  [key: string]: {
-    logStreamName: string;
-    events: Event[];
-    eventsFound?: number;
-    isStillRunning?: boolean;
-    hasMissingEvents?: boolean;
-  };
-}
-interface Event {
-  id: number;
-  type: string;
-  name?: string; // some events like start and end dont have an end
-  timestamp: number; // epoch milliseconds
-  eventId: string; // actually a long string of numbers
-}
-
 /**
  * This function looks through all events and organizes them by step function
  * execution arn as described in the interface definitions. This is done to
@@ -349,13 +287,6 @@ const parseEvents = async (
   return executions;
 };
 
-interface FormattedSteps {
-  [key: string]: {
-    type: string;
-    stepId: number;
-  };
-}
-
 const formatSteps = async (stepRows: StepsTable[]): Promise<FormattedSteps> => {
   const steps: FormattedSteps = {};
   for (const step of stepRows) {
@@ -365,110 +296,6 @@ const formatSteps = async (stepRows: StepsTable[]): Promise<FormattedSteps> => {
     };
   }
   return steps;
-};
-
-type starType = "ExecutionStarted";
-type endTypes =
-  | "ExecutionSucceeded"
-  | "ExecutionFailed"
-  | "ExecutionAborted"
-  | "ExecutionTimedOut";
-const endTypesSet = new Set([
-  "ExecutionSucceeded",
-  "ExecutionFailed",
-  "ExecutionAborted",
-  "ExecutionTimedOut",
-]);
-
-interface LatencyData {
-  executions: number;
-  stepFunctionLatencySum: number;
-  steps: {
-    [key: string]: {
-      executions: number;
-      sum: number;
-    };
-  };
-}
-const calculateLatencies = async (
-  executions: Executions,
-  steps: FormattedSteps
-): Promise<[LatencyData, Executions]> => {
-  const latencyData: LatencyData = {
-    executions: 0,
-    stepFunctionLatencySum: 0,
-    steps: {},
-  };
-
-  const incompleteExecutions: Executions = {};
-
-  for (const executionArn in executions) {
-    const stepBuffer = {};
-    const events = executions[executionArn].events;
-
-    if (!endTypesSet.has(events[events.length - 1].type)) {
-      incompleteExecutions[executionArn] = executions[executionArn];
-      incompleteExecutions[executionArn].isStillRunning = true;
-      continue;
-    }
-    if (executions[executionArn].eventsFound !== events.length) {
-      incompleteExecutions[executionArn] = executions[executionArn];
-      incompleteExecutions[executionArn].hasMissingEvents = true;
-      continue;
-    }
-
-    latencyData.executions++;
-
-    latencyData.stepFunctionLatencySum +=
-      events[events.length - 1].timestamp - events[0].timestamp;
-
-    // executions[exercutionArn].startTime = events[0].timestamp;
-    // executions[exercutionArn].endTime = events[events.length - 1].timestamp;
-    // executions[exercutionArn].latency =
-    //   events[events.length - 1].timestamp - events[0].timestamp;
-
-    for (const event of events) {
-      // these are event types which do not need processing
-      if (event.type === "ExecutionStarted") continue;
-      if (event.type === "ExecutionSucceeded") continue;
-      if (event.name === undefined || steps[event.name] === undefined) continue;
-      if (
-        event.type === "FailStateEntered" ||
-        event.type === "SucessStateEntered"
-      )
-        continue;
-
-      if (event.type.endsWith("Entered")) {
-        if (stepBuffer[event.name] === undefined) {
-          stepBuffer[event.name] = [{ timestamp: event.timestamp }];
-        } else {
-          stepBuffer[event.name].push([{ timestamp: event.timestamp }]);
-        }
-      } else if (event.type.endsWith("Exited")) {
-        const step = stepBuffer[event.name].shift();
-        const latency = event.timestamp - step.timestamp;
-
-        const stepId = steps[event.name].stepId;
-
-        if (latencyData.steps[stepId] !== undefined) {
-          latencyData.steps[stepId].executions++;
-          latencyData.steps[stepId].sum += latency;
-        } else {
-          latencyData.steps[stepId] = {
-            executions: 1,
-            sum: latency,
-          };
-        }
-        // latencyData.steps[event.name].steps.push({
-        //   stepName: event.name,
-        //   startTime: step.timestamp,
-        //   endTime: event.timestamp,
-        //   latency: latency,
-        // });
-      }
-    }
-  }
-  return [latencyData, incompleteExecutions];
 };
 
 // invoked now manually to test out the functionality
