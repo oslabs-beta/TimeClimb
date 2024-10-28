@@ -70,6 +70,7 @@ const getAverageLatencies = async (
     res.locals.latencyAverages = averageLatenciesResponse;
     return next();
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 };
@@ -164,6 +165,7 @@ const getAverageLatenciesWeekly = async (
     res.locals.weeklyAvgs = averageLatenciesResponse;
     return next();
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 };
@@ -209,10 +211,28 @@ const getAverageLatenciesMonthly = async (
     res.locals.monthlyAvgs = averageLatenciesResponse;
     return next();
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 };
 
+/**
+ * Creates the formatted json object from the database data retreived by
+ * appropriate queries.
+ * @param sfLatencyRows Step Function Average Latencey rows of data returned
+ * from the database
+ * @param stepLatencyRows Step Average Latency rows of data returned from the
+ * database
+ * @param stepRows Rows of steps from the database that belong to this step
+ * function
+ * @param timePeriod Granularity of the data requested, such as hours, days,
+ * weeks, or months
+ * @param startTime Start time of the data requested, with full date and time
+ * with timezone
+ * @param endTime Start time of the data requested, with full date and time with
+ * timezone
+ * @returns Array of Average Latencies Objects in form the client can consume
+ */
 const makeResponseObject = async (
   sfLatencyRows: AverageLatencies[],
   stepLatencyRows: StepAverageLatencies[],
@@ -225,8 +245,8 @@ const makeResponseObject = async (
   const sfLatenciesByTime = await makeSFAverageLatenciesByTimeObject(
     sfLatencyRows
   );
-  console.log("sfLatenciesByTime", sfLatenciesByTime);
 
+  // two different ways to access data quickly by keys to reduce iteration
   const stepIdsByName = {};
   const stepNamesById = {};
   stepRows.forEach((row) => {
@@ -234,25 +254,20 @@ const makeResponseObject = async (
     stepNamesById[row.step_id] = row.name;
   });
 
-  // turn the array of rows into objects with keys of start time for quick
-  // lookup
+  // turns array of rows into objects with keys of start time for quick access
   const stepsLatenciesByTime = await makeStepAverageLatenciesByTimeObject(
     stepLatencyRows,
     stepNamesById
   );
 
-  console.log("stepsLatenciesByTime", stepsLatenciesByTime);
-
   const latenciesArray: AverageLatenciesResponse[] = [];
-  let count = 0;
-  // loop through dates by hour using moment
+
+  // loop through dates by time period using moment, as the dates can change
   for (
     const startClone = startTime.clone();
     startClone.isBefore(endTime);
     startClone.add(1, timePeriod)
   ) {
-    console.log(startClone.toISOString());
-    console.log("count", ++count);
     const sfData = sfLatenciesByTime[startClone.toISOString()];
     if (sfData) {
       const data: LatenciesObj = {
@@ -267,25 +282,30 @@ const makeResponseObject = async (
             average:
               stepsLatenciesByTime[name + startClone.toISOString()].average,
           };
-          console.log("data", data);
         } else {
-          data.steps[name] = {};
+          data.steps[name] = {}; //return empty object if no data for this time
         }
       }
       latenciesArray.push(data);
     } else {
-      latenciesArray.push({});
+      latenciesArray.push({}); //return empty object if no data for this time
     }
   }
   return latenciesArray;
 };
 
+/**
+ * Turn array of data into object with keys as timestamps for faster lookup
+ * @param averageLatencies Rows of database data containing average latencies
+ * for the overall step function
+ * @returns Promise of SFLatenciesByTime object, where data can be accessed by
+ * date keys for faster iteration in the future
+ */
 const makeSFAverageLatenciesByTimeObject = async (
   averageLatencies: AverageLatencies[]
 ): Promise<SFLatenciesByTime> => {
   const sfLatenciesByTimeObject = {};
   averageLatencies.forEach((row) => {
-    console.log("row", row);
     sfLatenciesByTimeObject[moment(row.start_time).toISOString()] = {
       average: row.average,
     };
@@ -293,6 +313,16 @@ const makeSFAverageLatenciesByTimeObject = async (
   return sfLatenciesByTimeObject;
 };
 
+/**
+ * Turns array of step data into object with timestamps as keys for faster
+ * access.  Keys are actually step names concatenated with timestamps to make
+ * them unique.
+ * @param stepLatencyRows Rows of step average latency data as returned from
+ * the database
+ * @param stepNamesById Object to lookup step names using their ids as keys
+ * @returns Promise of StepLatenceiesBy time object, where data can be accessed
+ * by step names combined with times for faster access.
+ */
 const makeStepAverageLatenciesByTimeObject = async (
   stepLatencyRows: StepAverageLatencies[],
   stepNamesById: object
