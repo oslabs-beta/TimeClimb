@@ -9,6 +9,7 @@ import stepFunctionAverageLatenciesModel from "../server/models/stepFunctionAver
 import stepAverageLatenciesModel from "../server/models/stepAverageLatenciesModel";
 import fs from "fs";
 import executionsObject from "./executions";
+import tracker from "./tracker";
 import type { Executions, FormattedSteps, LatencyData } from "./types";
 import logs from "./logs";
 
@@ -63,8 +64,8 @@ const getDatabaseTrackingData = async () => {
   const logStreamNamePrefix = `states/${trackerDbRows[0]?.name}`;
 
   // these times ensure we wait at least an hour before reading cloudwatch data
-  const startTime = moment().subtract(2, "day").startOf("hour").utc();
-  const endTime = moment().subtract(2, "day").endOf("hour").utc();
+  const startTime = moment().subtract(1, "day").startOf("hour").utc();
+  const endTime = moment().subtract(1, "day").endOf("hour").utc();
 
   // make http requests to retreive full data for an hour
   let reponseHasEvents = true;
@@ -127,7 +128,7 @@ const getDatabaseTrackingData = async () => {
   }
 
   // update/insert the tracker data to cover this hour
-
+  await tracker.updateTrackerTimes(trackerDbRows[0], startTime, endTime);
   // do it again for all previous hours with bottleneck
 
   // move most functions into class
