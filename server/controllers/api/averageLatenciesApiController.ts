@@ -23,10 +23,22 @@ const getAverageLatencies = async (
 ): Promise<void> => {
   try {
     const { step_function_id } = req.params;
-    const startTime = moment().startOf("day");
-    const endTime = moment().endOf("day");
+    const { isoStartTime, isoEndTime } = req.query;
 
-    // db call
+    let startTime: Moment;
+    let endTime: Moment;
+    if (isoStartTime !== undefined) {
+      startTime = moment(String(isoStartTime)).startOf("hour");
+    } else {
+      startTime = moment().startOf("day");
+    }
+
+    if (isoEndTime !== undefined) {
+      endTime = moment(String(isoEndTime)).endOf("hour");
+    } else {
+      endTime = moment().endOf("day");
+    }
+
     const sfAverageLatencyRows: AverageLatencies[] =
       await averageLatenciesModel.getStepFunctionLatencies(
         Number(step_function_id),
@@ -34,13 +46,11 @@ const getAverageLatencies = async (
         endTime.toISOString()
       );
 
-    // db call
     const stepRows: StepsByStepFunctionId[] =
       await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
 
     const stepIds: number[] = stepRows.map((row) => row.step_id);
 
-    // db call
     const stepAverageLatencyRows: StepAverageLatencies[] =
       await stepAverageLatenciesModel.getLatenciesBetweenTimes(
         stepIds,
@@ -56,6 +66,7 @@ const getAverageLatencies = async (
       startTime,
       endTime
     );
+
     res.locals.latencyAverages = averageLatenciesResponse;
     return next();
   } catch (err) {
@@ -73,7 +84,6 @@ const getAverageLatenciesDaily = async (
     const startTime = moment().subtract(6, "day").startOf("day");
     const endTime = moment().endOf("day"); //includes current day in request
 
-    // db call
     const dailyStepFunctionLatencies: AverageLatencies[] =
       await averageLatenciesModel.getStepFunctionLatenciesDaily(
         Number(step_function_id),
@@ -81,13 +91,11 @@ const getAverageLatenciesDaily = async (
         endTime.toISOString()
       );
 
-    // db call
     const stepRows: StepsByStepFunctionId[] =
       await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
 
     const stepIDs: number[] = stepRows.map((step) => step.step_id);
 
-    //db call
     const stepLatencies: StepAverageLatencies[] =
       await stepAverageLatenciesModel.getDailyLatencyAveragesBetweenTimes(
         stepIDs,
@@ -105,7 +113,6 @@ const getAverageLatenciesDaily = async (
     );
 
     res.locals.dailyAvgs = averageLatenciesResponse;
-
     return next();
   } catch (err) {
     console.log(err);
