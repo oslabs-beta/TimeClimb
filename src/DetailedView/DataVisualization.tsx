@@ -9,13 +9,13 @@ function DataVisualization() {
   const canvasRef = useRef(null);
   let chartInstance = useRef(null);
   const latency = useSelector((state: RootState) => state.data.latencies);
-  console.log('p',latency)
+  const timePeriod = useSelector((state: RootState) => state.data.time);
+  // console.log('p',latency)
 
-  const startTimes = latency.map((item) =>
-    moment(item.startTime).format('HH:mm')
-  );
 
   const latencies = latency.map((item) => item.stepFunctionAverageLatency);
+  // const latencies = Array.isArray(latency) ? latency.map((item) => item.stepFunctionAverageLatency) : [];
+
 
   Chart.register(...registerables);
 
@@ -24,13 +24,31 @@ function DataVisualization() {
       chartInstance.current.destroy();
     }
 
+    let xValues = latency.map((set) => moment(set.date).format('HH:mm'))
+    let timeLabel = '24 Hours'
+
+
+    if (latency) {
+      if (timePeriod == 'days') {
+          xValues = latency.map((set) => moment(set.date).format('MM/DD'))
+          timeLabel = '7 Days'
+      } else if (timePeriod == 'weeks') {
+          xValues = latency.map((set) => moment(set.date).format('MM/DD'))
+          timeLabel = '12 (Full) Weeks'
+      } else if (timePeriod == 'months') {
+          xValues = latency.map((set) => moment(set.date).format('MM/YYYY'))
+          timeLabel = '12 Months'
+
+      }
+    }
+
     chartInstance.current = new Chart(canvasRef.current, {
       type: 'line',
       data: {
-        labels: startTimes,
+        labels: xValues,
         datasets: [
           {
-            label: 'Latency Over One Day',
+            label: `Latency Overview Across ${timeLabel}`,
             data: latencies,
           },
         ],

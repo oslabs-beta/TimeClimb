@@ -34,10 +34,32 @@ type NodesAndEdges = {
 
 function FlowChartView({ height, width, definition }) {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
+  const [nodes, setNodes] = useState<FlowChartNode[]>([]);
+  const [edges, setEdges] = useState<FlowChartEdge[]>([]);
   // const [initialNodes, setInitialNodes] = useState<FlowChartNode[]>([]);
   // const [initialEdges, setInitialEdges] = useState<FlowChartEdge[]>([]);
 
-  var g = new dagre.graphlib.Graph();
+  useEffect(() => {
+    // Load flowchart data from local storage
+    const storedNodes = localStorage.getItem('flowchartNodes');
+    const storedEdges = localStorage.getItem('flowchartEdges');
+
+    if (storedNodes) {
+      setNodes(JSON.parse(storedNodes));
+    }
+
+    if (storedEdges) {
+      setEdges(JSON.parse(storedEdges));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save flowchart data to local storage whenever nodes or edges change
+    localStorage.setItem('flowchartNodes', JSON.stringify(nodes));
+    localStorage.setItem('flowchartEdges', JSON.stringify(edges));
+  }, [nodes, edges]);
+
+  let g = new dagre.graphlib.Graph();
 
   g.setGraph({});
 

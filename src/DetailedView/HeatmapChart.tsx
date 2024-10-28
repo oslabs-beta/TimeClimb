@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { RootState } from '../../store';
 
-
 type Annotation = {
   xref: string;
   yref: string;
@@ -20,108 +19,111 @@ type Annotation = {
 };
 
 type xaxis = {
-    ticks: string;
-    side: string;
-    zeroline: boolean;
-    title: string;
-    automargin: boolean;
-    tickangle: number
+  ticks: string;
+  side: string;
+  zeroline: boolean;
+  title: string;
+  automargin: boolean;
+  tickangle: number;
 };
  
 type yaxis = {
-    ticks: string;
-    ticksuffix: string;
-    autosize: boolean;
-    automargin: boolean;
-    title: string;
-    // tickangle: number
+  ticks: string;
+  ticksuffix: string;
+  autosize: boolean;
+  automargin: boolean;
+  title: string;
 };
 
 function HeatmapChart() {
-
-  const dataset = useSelector((state:RootState) => state.data.latencies)
-//   console.log('t', dataset)
   const plotRef = useRef(null);
-
-//   const xValues = ['A', 'B', 'C', 'D', 'E', 'G', 'H', 'I', 'J', 'K', 'L'];
-//   const yValues = ['W', 'X', 'Y', 'Z'];
-//   const hourly = [
-//     '00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00',
-//     '09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00',
-//     '18:00','19:00','20:00','21:00','22:00','23:00']
-
-//   const dataset = [
-//     { name: 'set1', data: [0.00, 0.3, 0.75, 0.75, 0.00, .75,.75,.75,.75,.75,.75] },
-//     { name: 'set2', data: [0.00, 0.90, 0.75, 0.75, 0.00] },
-//     { name: 'set3', data: [0.75, 0.5, 0.75, 0.3, 0.75] },
-//     { name: 'set4', data: [0.8, 0.00, 0.6, 0.3, 0.00] },
-//     { name: 'set5', data: [0.00, 0.3, 0.00, 0.4, 0.9] },
-//     { name: 'set6', data: [0.3, 0.6, 0.00, 0.75, 0.00] },
-//     { name: 'set7', data: [1, 0.00, 0.5, 0.75, 0.7] },
-//     { name: 'set8', data: [0.2, 0.00, 0.00, 0.75, 0.5] },
-
-//   ];
-useEffect(() => {
-  if (dataset && dataset.length > 0) {
-  const xValues = dataset.map((set) => moment(set.startTime).format('HH:mm'))
-//   console.log('x', xValues)
-  const yValues = Object.keys(dataset[0].steps)
-//   console.log('y', yValues)
-
-  const zValues = dataset.map((set) =>
-    yValues.map((step) => set.steps[step]?.average || 0)
-  );
+  const dataset = useSelector((state: RootState) => state.data.latencies);
+  const timePeriod = useSelector((state: RootState) => state.data.time);
   
-  const transposedZValues = zValues[0].map((_, colIndex) => zValues.map(row => row[colIndex]));
-  
-  const colorscaleValue = [
-    [0, '#78fa4c'],
-    [1, '#ff4136']
+
+  const placeholderData = [
+    {
+      date: new Date(),
+      steps: { step1: { average: 0 }, step2: { average: 0 } }
+    }
   ];
 
-  const data = [{
-    x: xValues,
-    y: yValues,
-    z: transposedZValues,
-    type: 'heatmap',
-    colorscale: colorscaleValue,
-    showscale: true
-  }];
+  const currentData = dataset && dataset.length > 0 ? dataset : placeholderData;
 
-  const layout: { annotations: Annotation[]; title:string; width: number; xaxis:xaxis; yaxis:yaxis} = {
-    title: 'Heatmap Overview',
-    annotations: [],
-    xaxis: {
-      ticks: '',
-      side: 'bottom',
-      zeroline: false,
-      title: 'Time',
-      automargin: true,
-      tickangle: 315
-    },
-    yaxis: {
-      ticks: '',
-      ticksuffix: ' ',
-      autosize: false,
-      automargin: true,
-      title: 'Step Function Action',
-    //   tickangle: -45
+  useEffect(() => {
+    if (!currentData || currentData.length === 0 || !currentData[0].steps) return;
 
-    },
-    width: 800
-  };
-      Plotly.purge(plotRef.current);
-      Plotly.newPlot(plotRef.current, data, layout);
+    let xValues = currentData.map((set) => moment(set.date).format('HH:mm'));
+    if (timePeriod === 'days') {
+      xValues = currentData.map((set) => moment(set.date).format('MM/DD'));
+    } else if (timePeriod === 'weeks') {
+      xValues = currentData.map((set) => moment(set.date).format('MM/DD'));
+    } else if (timePeriod === 'months') {
+      xValues = currentData.map((set) => moment(set.date).format('MM/YYYY'));
     }
-  }, [dataset]); 
 
-  if (!dataset || dataset.length < 2) {
-    return <div>Loading data...</div>; 
-  }
+    const addLineBreaks = (label: string, maxLength: number) => {
+      const words = label.split(" ");
+      let line = "";
+      const lines = [];
+
+      words.forEach((word) => {
+        if ((line + word).length > maxLength) {
+          lines.push(line);
+          line = "";
+        }
+        line += word + " ";
+      });
+      lines.push(line.trim());
+
+      return { original: label, processed: lines.join("<br>") };
+    };
+
+    const yValues = Object.keys(currentData[0].steps || {}).map((label) => addLineBreaks(label, 15));
+    const zValues = currentData.map((set) =>
+      yValues.map((step) => set.steps[step.original]?.average || 0)
+    );
+
+    const processedYValues = yValues.map((step) => step.processed);
+    const transposedZValues = zValues[0].map((_, colIndex) => zValues.map(row => row[colIndex]));
+
+
+    const data = [
+      {
+        x: xValues,
+        y: processedYValues,
+        z: transposedZValues,
+        type: 'heatmap',
+        colorscale: [
+          [0, '#78fa4c'],
+          [1, '#ff4136']
+        ],
+        showscale: true
+      }
+    ];
+
+    const layout: { annotations: Annotation[]; title: string; width: number; xaxis: xaxis; yaxis: yaxis } = {
+      title: 'Heatmap Overview',
+      annotations: [],
+      xaxis: { ticks: '', side: 'bottom', zeroline: false, title: 'Time', automargin: true, tickangle: 315 },
+      yaxis: { ticks: '', ticksuffix: ' ', autosize: false, automargin: true, title: 'Step Function Action' },
+      width: 500,
+    };
+
+    if (plotRef.current) {
+        Plotly.newPlot(plotRef.current, data, layout);
+      }
+
+      return () => {
+        if (plotRef.current) {
+          Plotly.purge(plotRef.current);
+        }
+      };
+  }, [currentData, timePeriod]);
 
   return (
     <div>
-      <div ref={plotRef} className='heatMap' />
+      <div ref={plotRef} className="heatMap" />
     </div>
   );
 }
