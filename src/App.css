@@ -1,17 +1,26 @@
 .chartBubble {
-  height: 50px;
-  width: 100px;
+  height: 100px;
+  width: 150px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   border: 1px solid #eee;
   padding: 5px;
   border-radius: 5px;
 }
-html, body {
+html,
+body {
+  --main-black: rgb(20, 20, 20);
+  --main-white: rgb(235, 235, 235);
+  --main-blue: #4e77ff;
   height: 100%;
   margin: 0;
+  color: var(--main-white);
+  background-color: var(--main-black);
+  /* background-color: rgb(247, 247, 247); */
 }
+
 .landingPage {
   display: flex;
   height: 75vw;
@@ -21,40 +30,61 @@ html, body {
 .navBar {
   display: flex;
   flex-direction: column;
+  color: var(--main-white);
+  /* background-color: #04AA6D; */
   border: 1px solid black;
   border-radius: 5px;
   width: fit-content;
+  height: 500px;
   margin: 20px;
   padding: 10px;
+  background-color: rgb(42, 42, 42);
   justify-content: space-between;
 }
 
-.about a, .contact a, .home a, .logout a {
+.about a,
+.contact a,
+.home a,
+.logout a {
   text-decoration: none;
-  color: black;
+  color: var(--main-white);
   margin: 200px 5px;
+}
+
+.about a:hover,
+.contact a:hover,
+.home a:hover,
+.logout a:hover {
+  color: var(--main-blue);
 }
 
 .addCard {
   display: flex;
   width: fit-content;
   margin: 20px;
+  background-color: var(--main-black);
 }
 
 .addCard .add {
   height: 100px;
   width: 100px;
+  background-color: var(--main-blue);
+  opacity: 0.9;
   border-radius: 5px;
 }
 
-.functionCards{
+.add:hover {
+  opacity: 1;
+}
+
+.functionCards {
   border: 1px solid black;
   margin: 20px;
   border-radius: 5px;
 }
 
 .stepFunc {
-  position: fixed; 
+  position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
@@ -63,7 +93,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.1); 
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .stepFunc form {
@@ -75,10 +105,91 @@ html, body {
   background-color: white;
 }
 
-.stepFunc form label, .stepFunc form input, .stepFunc form button {
+.stepFunc form label,
+.stepFunc form input,
+.stepFunc form button {
   margin: 5px 20px;
 }
 
-.stepFunc form label, .stepFunc form button {
+.stepFunc form label,
+.stepFunc form button {
   border-radius: 5px;
 }
+
+/* slider */
+.slidecontainer {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+  border-radius: 25px;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4e77ff;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #04aa6d;
+  cursor: pointer;
+}
+
+/* .rightSideLineGraph {
+  height: 500px;
+  width: 500px;
+} */
+#graph-style {
+  margin-left: auto;
+  margin-right: auto;
+  border: solid black;
+}
+
+.dv-btn {
+  background-color: var(--main-blue);
+  opacity: 0.9;
+  height: 30px;
+  width: 60px;
+  margin: 5px;
+  box-shadow: 3px 3px 0px 0px black;
+}
+.detailedView {
+  display: flex;
+}
+
+.dv-btn:hover {
+  opacity: 1;
+  /* width: 100px;
+  height: 50px; */
+}
+/* #detailed-view{
+
+  width: 40%;
+  background-color: blue;
+} */
+
+
+/* .heatMap {
+  width: 500px;
+} */

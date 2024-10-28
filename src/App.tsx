@@ -1,23 +1,56 @@
 // import { useState } from 'react';
 import './App.css';
 // import DetailedView from './DetailedView/DetailedView';
-import LandingPage from './landingPage/landingPage';
+// import LandingPage from './landingPage/landingPage';npm
 // import LoginForm from './loginForm';
 // import SignUpForm from './signUpForm';
 import { Provider } from 'react-redux';
 import DetailedView from './DetailedView/DetailedView.tsx';
-import store from '../store.tsx';
+import store, {/*persistor*/} from '../store.tsx';
+import LandingPage from './landingPage/landingPage.tsx';
+import NavBar from './landingPage/navbar/navBar.tsx';
+
+import {Route, Routes, Link} from "react-router-dom";
+// import { PersistGate } from 'redux-persist/integration/react';
 
 function App() {
+  // return (
+  //   <>
+  //     <Provider store={store}>
+  //       {/* <LoginForm /> */}
+  //       {/* <SignUpForm />  */}
+  //       {/* <DetailedView /> */}
+  //       <LandingPage />
+  //     </Provider>
+  //   </>
+  // );old
+
   return (
-    <>
-      <Provider store={store}>
-        {/* <LoginForm /> */}
-        {/* <SignUpForm />  */}
-        <DetailedView />
-      </Provider>
-    </>
-  );
+    
+    // <>
+  //     <Provider store={store}>
+  //       {/* <LoginForm /> */}
+  //       {/* <SignUpForm />  */}
+  //       {/* <DetailedView /> */}
+  //       <LandingPage />
+  //     </Provider>
+  //   </>
+  // );
+    <Provider store={store}>
+      {/* <PersistGate loading={null} persistor={persistor}> */}
+        <Routes>
+            {/* <Route path='/*' element={<NavBar/>}> */}
+              <Route path="/" element={<LandingPage />}/>
+              <Route path="/expandView" element={<DetailedView />}>
+                {/*possible to nest comps in here dont know that I will */}
+            {/* </Route> */}
+
+          </Route>
+        </Routes>
+      {/* </PersistGate> */}
+    </Provider>
+  // </>
+  )
 }
 
 export default App;
