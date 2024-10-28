@@ -20,7 +20,8 @@ interface dataState {
   latency: any;
   chartLatencies: number[];
   time: string;
-  bubblePopup: boolean
+  bubblePopup: boolean;
+  bubbleName:string
 }
 
 const initialState: dataState = {
@@ -34,8 +35,9 @@ const initialState: dataState = {
   ],
   latency: {},
   chartLatencies: [],
-  time: '',
-  bubblePopup: false
+  time: 'hours',
+  bubblePopup: false,
+  bubbleName: ''
 };
 
 export const dataSlice = createSlice({
@@ -85,9 +87,9 @@ export const dataSlice = createSlice({
     setBubblePopup: (state, action) => {
       state.bubblePopup = action.payload
     },
-    // setName: (state, action) => {
-    //   state.bubbleName = action.payload
-    // }
+    setBubbleName: (state, action) => {
+      state.bubbleName = action.payload
+    }
   },
 });
 
@@ -105,9 +107,9 @@ export const getStepFunctionList = createAsyncThunk(
 
 export const getLatencies = createAsyncThunk(
   'data/getLatencies',
-  async (id: number) => {
-    console.log(`Geeting latency for id: ${id}`);
-    const res = await fetch(`/api/average-latencies/${id}`); //add /${time} passing in user input
+  async ({ id, time }: { id: number; time: string }) => {
+    console.log(`Geeting latency for id: ${id} time: ${time}`);
+    const res = await fetch(`/api/average-latencies/${id}/${time}`); 
     if (!res.ok) {
       throw new Error('Cannot fetch stepfunctions');
     }
@@ -144,6 +146,7 @@ export const {
   setChartLatencies,
   setTimeToggle,
   setBubblePopup,
+  setBubbleName,
 } = dataSlice.actions;
 
 export const selectData = (state: RootState) => state.data;

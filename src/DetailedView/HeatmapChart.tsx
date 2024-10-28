@@ -42,7 +42,7 @@ function HeatmapChart() {
   const dataset = useSelector((state:RootState) => state.data.latencies)
 //   console.log('t', dataset)
   const plotRef = useRef(null);
-
+  const timePeriod = useSelector((state:RootState) => state.data.time)
 //   const xValues = ['A', 'B', 'C', 'D', 'E', 'G', 'H', 'I', 'J', 'K', 'L'];
 //   const yValues = ['W', 'X', 'Y', 'Z'];
 //   const hourly = [
@@ -61,16 +61,50 @@ function HeatmapChart() {
 //     { name: 'set8', data: [0.2, 0.00, 0.00, 0.75, 0.5] },
 
 //   ];
+// console.log('time', timePeriod)
+
+if (!dataset || dataset.length < 0) return null;
+
 useEffect(() => {
   if (dataset && dataset.length > 0) {
-  const xValues = dataset.map((set) => moment(set.startTime).format('HH:mm'))
-//   console.log('x', xValues)
-  const yValues = Object.keys(dataset[0].steps)
-//   console.log('y', yValues)
+    console.log('kk',dataset)
+    let xValues = dataset.map((set) => moment(set.date).format('HH:mm'))
+    if (timePeriod == 'days') {
+        xValues = dataset.map((set) => moment(set.date).format('MM/DD'))
+    } else if (timePeriod == 'weeks') {
+        xValues = dataset.map((set) => moment(set.date).format('MM/DD'))
+    } else if (timePeriod == 'months') {
+        xValues = dataset.map((set) => moment(set.date).format('MM/YYYY'))
+    }
 
+const addLineBreaks = (label: string, maxLength: number) => {
+    const words = label.split(" ");
+    let line = "";
+    const lines = [];
+  
+    words.forEach((word) => {
+      if ((line + word).length > maxLength) {
+        lines.push(line);
+        line = "";
+      }
+      line += word + " ";
+    });
+    lines.push(line.trim());
+  
+    const yLabels = {
+        original: label,
+        processed: lines.join("<br>")
+      };
+      return yLabels;
+  };
+  
+  const yValues = Object.keys(dataset[0].steps).map((label) => addLineBreaks(label, 15));
+  
   const zValues = dataset.map((set) =>
-    yValues.map((step) => set.steps[step]?.average || 0)
+    yValues.map((step) => set.steps[step.original]?.average || 0) 
   );
+  
+  const processedYValues = yValues.map((step) => step.processed);
 
   const transposedZValues = zValues[0].map((_, colIndex) => zValues.map(row => row[colIndex]));
   
@@ -81,7 +115,7 @@ useEffect(() => {
 
   const data = [{
     x: xValues,
-    y: yValues,
+    y: processedYValues,
     z: transposedZValues,
     type: 'heatmap',
     colorscale: colorscaleValue,
@@ -110,14 +144,15 @@ useEffect(() => {
     },
     width: 500,
   };
+    // if (plotRef.current) {
+    //     Plotly.purge(plotRef.current);
+    // }
+    // if (!dataset || dataset.length < 1) return;
+
       Plotly.purge(plotRef.current);
       Plotly.newPlot(plotRef.current, data, layout);
     }
-  }, [dataset]); 
-
-  if (!dataset || dataset.length < 2) {
-    return <div>Loading data...</div>; 
-  }
+  }, [dataset, timePeriod]); 
 
   return (
     <div>

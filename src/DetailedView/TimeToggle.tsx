@@ -16,10 +16,10 @@ function TimeToggle() {
     <div>
       <label htmlFor="timeToggle">Select Time Period</label>
         <select className="times" value={data.time} onChange={handleChange}> 
-            <option value='hourly'>Hourly</option>
-            <option value='daily'>Daily</option>
-            <option value='weekly'>Weekly</option>
-            <option value='monthly'>Monthly</option>
+            <option value='hours'>Hourly</option>
+            <option value='days'>Daily</option>
+            <option value='weeks'>Weekly</option>
+            <option value='months'>Monthly</option>
         </select>
     </div>
   )

@@ -12,12 +12,13 @@ function DataContainer() {
       {/* This is the Data Container */}
       <TimePeriodToggle />
       <DataVisualization />
+      <HeatmapChart />
       {data.bubblePopup && (
           <div className="popupOverlay">
           <StepDataVisualization />
           </div>
       )}
-      <HeatmapChart />
+
     </div>
   );
 }

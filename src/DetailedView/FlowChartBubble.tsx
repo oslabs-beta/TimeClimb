@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from 'react-redux';
 // import DataVisualization from './DataVisualization';
-import { setChartLatencies,setBubblePopup } from '../reducers/dataSlice';
+import { setChartLatencies, setBubblePopup, setBubbleName } from '../reducers/dataSlice';
 import { AppDispatch } from '../../store.tsx';
 // import { setAddCardForm } from '../reducers/cardSlice';
 // import { useDispatch, useSelector } from 'react-redux';
@@ -56,7 +56,8 @@ function FlowChartBubble({ data }: BubbleProps) {
     e.preventDefault();
     dispatch(setChartLatencies(data.name));
     dispatch(setBubblePopup(true))
-    // console.log(data.name)
+    dispatch(setBubbleName(data.name))
+    // console.log('n',data.name)
     // setPopup(true)
     // dispatch(setAddCardForm())
   }
