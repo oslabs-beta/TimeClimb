@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { StepsTable } from "./utils/types";
 
-export async function seed(knex: Knex): Promise<void> {
+// export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
   await knex("steps").del();
 

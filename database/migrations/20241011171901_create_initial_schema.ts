@@ -1,6 +1,6 @@
 import type { Knex } from "knex";
 
-export async function up(knex: Knex): Promise<void> {
+// export async function up(knex: Knex): Promise<void> {
   // step_functions table
   await knex.schema.createTable("step_functions", (table) => {
     table.increments("step_function_id").notNullable();
