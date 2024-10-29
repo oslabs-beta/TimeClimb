@@ -13,30 +13,56 @@ function DataVisualization() {
   // console.log('p',latency)
 
 
-  const latencies = latency.map((item) => item.stepFunctionAverageLatency);
-  // const latencies = Array.isArray(latency) ? latency.map((item) => item.stepFunctionAverageLatency) : [];
+  const latencies = latency.map((item) => 
+    Object.keys(item).length === 0 ? null : item.stepFunctionAverageLatency
+  );
 
 
   Chart.register(...registerables);
+
+  function generateLast24Hours() {
+    return Array.from({ length: 24 }, (_, i) =>
+      moment().subtract(23 - i, 'hours').format('HH:mm')
+    );
+  }
+
+  function generateLast7Days() {
+    return Array.from({ length: 7 }, (_, i) =>
+      moment().subtract(6 - i, 'days').format('MM/DD')
+    );
+  }
+
+  function generateLast12Weeks() {
+    return Array.from({ length: 12 }, (_, i) =>
+      moment().subtract(11 - i, 'weeks').format('MM/DD') 
+    );
+  }
+
+  function generateLast12Months() {
+    return Array.from({ length: 12 }, (_, i) =>
+      moment().subtract(11 - i, 'months').format('MM/YYYY') 
+    );
+  }
 
   useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
 
-    let xValues = latency.map((set) => moment(set.date).format('HH:mm'))
+    // let xValues = latency.map((set) => moment(set.date).format('HH:mm'))
+    let xValues = generateLast24Hours()
     let timeLabel = '24 Hours'
 
 
     if (latency) {
       if (timePeriod == 'days') {
-          xValues = latency.map((set) => moment(set.date).format('MM/DD'))
+          xValues = generateLast7Days()
           timeLabel = '7 Days'
       } else if (timePeriod == 'weeks') {
-          xValues = latency.map((set) => moment(set.date).format('MM/DD'))
+          xValues = generateLast12Weeks()
           timeLabel = '12 (Full) Weeks'
       } else if (timePeriod == 'months') {
-          xValues = latency.map((set) => moment(set.date).format('MM/YYYY'))
+          xValues = generateLast12Months()
           timeLabel = '12 Months'
 
       }
@@ -50,9 +76,13 @@ function DataVisualization() {
           {
             label: `Latency Overview Across ${timeLabel}`,
             data: latencies,
+            fill: false
           },
         ],
       },
+      options: {
+        spanGaps: false
+      }
     });
 
     // return () => {

@@ -49,19 +49,45 @@ function HeatmapChart() {
 
   const currentData = dataset && dataset.length > 0 ? dataset : placeholderData;
 
+  function generateLast24Hours() {
+    return Array.from({ length: 24 }, (_, i) =>
+      moment().subtract(23 - i, 'hours').format('HH:mm')
+    );
+  }
+
+  function generateLast7Days() {
+    return Array.from({ length: 7 }, (_, i) =>
+      moment().subtract(6 - i, 'days').format('MM/DD')
+    );
+  }
+  function generateLast12Weeks() {
+    return Array.from({ length: 12 }, (_, i) =>
+      moment().subtract(11 - i, 'weeks').format('MM/DD') 
+    );
+  }
+
+  function generateLast12Months() {
+    return Array.from({ length: 12 }, (_, i) =>
+      moment().subtract(11 - i, 'months').format('MM/YYYY') 
+    );
+  }
+
   useEffect(() => {
-    if (!currentData || currentData.length === 0 || !currentData[0].steps)
+    if (!currentData || currentData.length === 0)
       return;
-
-    let xValues = currentData.map((set) => moment(set.date).format('HH:mm'));
-    if (timePeriod === 'days') {
-      xValues = currentData.map((set) => moment(set.date).format('MM/DD'));
-    } else if (timePeriod === 'weeks') {
-      xValues = currentData.map((set) => moment(set.date).format('MM/DD'));
-    } else if (timePeriod === 'months') {
-      xValues = currentData.map((set) => moment(set.date).format('MM/YYYY'));
+    let xValues;
+    // let xValues = currentData.map((set) => moment(set.date).format('HH:mm'));
+    if (timePeriod === 'hours') {
+      xValues = generateLast24Hours()
     }
-
+    if (timePeriod === 'days') {
+      xValues = generateLast7Days()
+    } else if (timePeriod === 'weeks') {
+      xValues = generateLast12Weeks()
+    } else if (timePeriod === 'months') {
+      xValues = generateLast12Months()
+    }
+    
     const addLineBreaks = (label: string, maxLength: number) => {
       const words = label.split(' ');
       let line = '';
@@ -78,19 +104,20 @@ function HeatmapChart() {
 
       return { original: label, processed: lines.join('<br>') };
     };
-
-    const yValues = Object.keys(currentData[0].steps || {}).map((label) =>
+    const validData = currentData.find((set) => set.steps);
+    const yValues = Object.keys(validData.steps).map((label)=>
       addLineBreaks(label, 15)
     );
+    console.log('xvalues', xValues)
     console.log('Yvalues: ', yValues);
     console.log('CurrentData: ', currentData);
     const zValues = currentData.map((set) =>
       yValues.map((step) => {
         /*set.steps[step.original]?.average || 0*/
-        if (set.steps) {
+        if (set.steps && set.steps[step.original]) {
           return set.steps[step.original].average;
         }
-        return 0;
+        return null;
       })
     );
 
