@@ -1,4 +1,4 @@
-import DetailedViewUI from './DetailedViewUI';
+
 import FlowChart from './FlowChart';
 import DataContainer from './DataContainer';
 import TimeSlice from './TimeSlice';
@@ -31,25 +31,47 @@ function DetailedView() {
   const definitionID = useSelector(
     (state: RootState) => state.data.currentDefinitionID
   );
-  useEffect(() => {
-    dispatch(getLatencies(definitionID))
-      .unwrap()
-      // .then((data) => {
-      //   console.log('d',data);
-      //   return data;
-      // })
-      .then((data) => dispatch(setLatencies(data)));
-  }, [dispatch, definitionID]);
 
+
+  const timeToggle = useSelector((state: RootState) => state.data.time)
+
+
+  // useEffect(() => {
+  //   dispatch(getLatencies(definitionID, timeToggle))
+  //     .unwrap()
+  //     // .then((data) => {
+  //     //   console.log('d',data);
+  //     //   return data;
+  //     // })
+  //     .then((data) => dispatch(setLatencies(data)));
+  // }, [dispatch, definitionID, timeToggle]);
+
+  useEffect(() => {
+    if (definitionID && timeToggle) {
+      dispatch(getLatencies({ id: definitionID, time: timeToggle }))
+        .unwrap()
+        .then((data) => {
+          dispatch(setLatencies(data))
+      });
+    }
+  }, [dispatch, definitionID, timeToggle]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const data = await dispatch(getLatencies({ id: definitionID, time: timeToggle }));
+  //     dispatch(setLatencies(data));
+  //   };
+  //   fetchData();
+  // }, [definitionID, timeToggle, dispatch]);
+  
   return (
     <div className='detailedView'>
       {/* This is the detailed view */}
-      <DetailedViewUI />
-      <TimeSlice />
-      {/* this is just the back button */}
       {/* <button className="dv-btn" onClick={onclick}>Get one</button>
       <button className="dv-btn" onClick={getall}>Get all</button> */}
       <FlowChart />
+      
+      {/* this is just the back button */}
       <DataContainer />
 
     </div>

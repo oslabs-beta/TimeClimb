@@ -30,28 +30,28 @@ function FunctionCards({
     dispatch(setStepFunction(definition));
     dispatch(setDefinitionID(id));
   };
-  // function changeView(){
+  // function changeView() {
   //     navigate("/expandView")
   // }
 
   return (
-    <div className='functionCards'>
-      <div className='cardName'>{name}</div>
+    <div className='hover:opacity-100  opacity-90 p-3 size-100 bg-gradient-to-br from-purple-600 to-fuchsia-400 rounded-3xl flex flex-col items-center'>
+      <div className=''>{name}</div>
 
-      <div className='cardRegion'>{region}</div>
+      <div className=''>{region}</div>
 
-      <div className='cardVisual'>
+      <div className=''>
         {visual}{' '}
-        <FlowChartView height={200} width={200} definition={definition} />
+        <FlowChartView size='size-80' definition={definition} />
       </div>
 
-      <button id='viewButton' onClick={() => handleView(name)}>
+      <button className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 my-6" id='viewButton' onClick={() => handleView(name)}>
         {view}
       </button>
 
-      <button id='deleteButton' onClick={() => handleDelete(name)}>
+      {/* <button id='deleteButton' onClick={() => handleDelete(name)}>
         {remove}
-      </button>
+      </button> */}
     </div>
   );
 }
