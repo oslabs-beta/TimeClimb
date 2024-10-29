@@ -77,16 +77,15 @@ export const dataSlice = createSlice({
       //   state.currentDefinition = state.stepfunctions[0].definition;
     },
     appendStepFunction: (state, action) => {
-      console.log(current(state.stepfunctions));
       state.stepfunctions.push(action.payload);
-      console.log(current(state.stepfunctions));
     },
     setChartLatencies: (state, action) => {
       if (action.payload) {
         const newChart: number[] = [];
         state.latencies.forEach((ele) => {
-          // console.log(ele);
-          newChart.push(ele.steps[action.payload].average);
+          if (ele.steps)
+            if (ele.steps[action.payload])
+              newChart.push(ele.steps[action.payload].average);
         });
         state.chartLatencies = newChart;
       }
