@@ -1,4 +1,4 @@
-import DetailedViewUI from './DetailedViewUI';
+
 import FlowChart from './FlowChart';
 import DataContainer from './DataContainer';
 import TimeSlice from './TimeSlice';
@@ -67,12 +67,11 @@ function DetailedView() {
   return (
     <div className='detailedView'>
       {/* This is the detailed view */}
-      <DetailedViewUI />
-      <TimeSlice />
-      {/* this is just the back button */}
       {/* <button className="dv-btn" onClick={onclick}>Get one</button>
       <button className="dv-btn" onClick={getall}>Get all</button> */}
       <FlowChart />
+      
+      {/* this is just the back button */}
       <DataContainer />
 
     </div>
