@@ -19,10 +19,9 @@ TimeClimb is an app that visualizes AWS Step Function latency averages over cust
 </p>
 
 ## Setup
-#### More detailed setup information on each step can be found in database/knex-migration-usage.md
-
-
-  ### 1. Insert environment variables to example.env file
+ #### Note:
+ See complete example of .env file in .env.example
+  ### 1. Insert environment variables to .env file
   ```json
           PGHOST='localhost'
           PGPORT='5432'
@@ -45,8 +44,10 @@ TimeClimb is an app that visualizes AWS Step Function latency averages over cust
 # Contribution Information:
 
 ## Creating and Updating the database time_climb
+ #### Note:
+ See complete example of .env file in .env.example
 <details>
-<summary>1. Create an example.env file and insert environment variables to file</summary>
+<summary>1. Create a .env file and insert environment variables to file</summary>
 
 #### Note: Be sure this file is added to your gitignore
 Example:
@@ -79,14 +80,18 @@ Example:
 </summary>
 
 #### Note: 
-These migrations will happen through Knex Library https://knexjs.org/. This library will also be used for queries made to database in models.
+These migrations will happen through Knex Library https://knexjs.org/. Knex helps to document and automate database schema changes and data migrations over time. This library will also be used for queries made to database in models.
 
 #### Note: 
 If you do not already have PostgresQL on your machine, you will need to download it.
-Knex helps to document and automate database schema changes and data migrations over time.
 
-## Once Credentials have been added to example.env
+## Once Credentials have been added to example.env:
 
+### Populating with Seed Data
+
+`npm run seed:run` will populate the database with test data. This will erase any existing data you might have in your database.
+
+### Updating database with Seed Data
 <li><code>npm run migrate:latest</code> to update the database with the latest schema.
 </ol>
 
@@ -94,19 +99,15 @@ Updating to the latest migration will typically erase all data in your database
 unless the migration script specifically is set up to migrate your data, which
 it currently is not.
 
-### Populating with Seed Data
+### Knex Detailed Usage
 
-`npm run seed:data` will populate the database with test data. This will erase any existing data you might have in your database.
+Convenience scripts are set up in package.json to run common knex migration functions.
 
-## Knex Detailed Usage
-
-Convience scripts are set up in package.json to run common knex migration functions.
-
-- `npm run migrate:make` Creating a migration with npm run migate:make
+- `npm run migrate:make` Creating a migration with npm run migrate:make
 - `npm run migrate:latest` Updating the database with the latest schema changes
 - `npm run migrate:rollback` Rolling back a change to the database
 
-These are partially necessary because both the configuration files and migrations are written in TypeScript. Knex's command line tool does not natively support TypeScript. The need for these tools might become unnecessary with proper TypeScript configuration.
+These are partially necessary because both the configuration files and migrations are written in TypeScript. Knex's command line tool does not natively support TypeScript. 
 
 ### Creating a migration
 
@@ -120,7 +121,7 @@ You can pass the name of the file after the script like so:
 
 `npm run migrate:latest`
 
-This will update the database with latest schema changes. If necessary its possible to also migrate data so that it data is not lost, which might be especially helpful in a production environment.
+This will update the database with latest schema changes. If necessary its possible to also migrate data so that the data is not lost, which might be especially helpful in a production environment.
 
 ### Rolling back a migration
 
@@ -131,7 +132,6 @@ This will roll back only the very latest migration unit. You can pass in an argu
 `npm run migrate:rollback -- --all`
 
 </details>
-
 
 ## API Documentation
 ## Base URL
