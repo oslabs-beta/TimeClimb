@@ -32,7 +32,7 @@ type NodesAndEdges = {
   edges: FlowChartEdge[];
 };
 
-function FlowChartView({ height, width, definition }) {
+function FlowChartView({ size, definition }) {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
   const [nodes, setNodes] = useState<FlowChartNode[]>([]);
   const [edges, setEdges] = useState<FlowChartEdge[]>([]);
@@ -71,7 +71,7 @@ function FlowChartView({ height, width, definition }) {
     if (!data) return { nodes: [], edges: [] };
     function createGraph(g, subgraph, next?) {
       for (const state in subgraph.States) {
-        g.setNode(state, { label: state, width: 100, height: 100 });
+        g.setNode(state, { label: state, width: 200, height: 200 });
         if (
           subgraph.States[state].Next &&
           !(subgraph.States[state].Type === 'Parallel')
@@ -126,6 +126,8 @@ function FlowChartView({ height, width, definition }) {
         id: `${e.v}->${e.w}`,
         source: e.v,
         target: e.w,
+        type: 'simplebezier',
+        style: { stroke: 'rgb(50, 50, 50)', strokeWidth: 5}
       };
       initialEdges.push(newEdge);
     });
@@ -137,14 +139,14 @@ function FlowChartView({ height, width, definition }) {
   const initialEdges = results.edges;
 
   return (
-    <div id='graph-style' style={{ width: 500, height: 500 }}>
+    <div id='graph-style' className={`${size}`}>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}
         nodeTypes={nodeTypes}
       >
         <Controls />
-        <Background variant={BackgroundVariant.Lines} gap={25} size={4} />
+        <Background variant={BackgroundVariant.Cross} gap={25} size={4} />
       </ReactFlow>
     </div>
   );

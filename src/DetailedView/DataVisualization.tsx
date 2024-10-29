@@ -65,7 +65,7 @@ function DataVisualization() {
   // }
 
   return (
-    <div className='rightSideLineGraph'>
+    <div className='my-10 rounded shadow-glow'>
       <canvas ref={canvasRef}></canvas>
       {/* <button onClick={handleClose}>Close</button> */}
     </div>
