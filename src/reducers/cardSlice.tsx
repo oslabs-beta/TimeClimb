@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../store.tsx';
+import { current } from '@reduxjs/toolkit';
 
 export interface card {
   name: string;
