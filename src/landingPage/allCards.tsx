@@ -72,7 +72,7 @@ function AllCards() {
   //if (filteredCards.length > 0) console.log(filteredCards);
 
   return (
-    <div className='allFunctionCards'>
+    <div className='grid grid-cols-2 gap-x-20 gap-y-20 h-fit'>
       {filteredCards.map((card, index) => (
         <FunctionCards
           key={index}

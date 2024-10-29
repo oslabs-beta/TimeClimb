@@ -36,10 +36,10 @@ function TimeSlider() {
 
   useEffect(() => {
     switch (data.time) {
-      case 'hourly': setMax(23); break;
-      case 'daily': setMax(7); break;
-      case 'weekly': setMax(12); break;
-      case 'monthly': setMax(12); break;
+      case 'hours': setMax(23); break;
+      case 'days': setMax(6); break;
+      case 'weeks': setMax(11); break;
+      case 'months': setMax(11); break;
       default: setMax(23);
     }
   }, [data.time]);
