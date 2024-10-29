@@ -69,13 +69,13 @@ export interface AliasRoutesTable {
 export interface StepAverageLatencies {
   step_id: number;
   average: number;
-  start_time: string
+  start_time: string;
 }
 
 export interface AverageLatencies {
   step_function_id: number;
   average: number;
-  start_time: string
+  start_time: string;
 }
 
 export interface StepsByStepFunctionId {
@@ -88,7 +88,9 @@ export interface StepsByStepFunctionId {
 export interface LatenciesObj {
   date: string;
   stepFunctionAverageLatency: number;
-  steps: {[stepName: string] : {average:number}}
+  steps: {
+    [key: string]: { average?: number };
+  };
 }
 
 //for stepFunctionsApiController.getStepFunctions
