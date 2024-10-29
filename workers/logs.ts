@@ -1,5 +1,14 @@
 import type { Executions, LatencyData, FormattedSteps } from "./types";
 
+/**
+ * Calculates the overall latency and individual step latencies for each
+ * execution.  Stores incomplete executions for later processing.
+ * @param executions Object with data on all executions collected from the logs.
+ * Data is keyed by execution arn.
+ * @param steps Steps object for all steps this step function uses, organized by
+ * step name as keys.
+ * @returns [LatencyData, Executions]
+ */
 const calculateLogLatencies = async (
   executions: Executions,
   steps: FormattedSteps
@@ -40,7 +49,7 @@ const calculateLogLatencies = async (
       events[events.length - 1].timestamp - events[0].timestamp;
 
     for (const event of events) {
-      // these are event types which do not need processing
+      // these are event types which do not have an associated latency
       if (event.type === "ExecutionStarted") continue;
       if (event.type === "ExecutionSucceeded") continue;
       if (event.name === undefined || steps[event.name] === undefined) continue;

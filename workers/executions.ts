@@ -1,27 +1,28 @@
 import stepFunctionAverageLatenciesModel from "../server/models/stepFunctionAverageLatenciesModel";
 import stepAverageLatenciesModel from "../server/models/stepAverageLatenciesModel";
-import logs from "./logs";
-import type {
-  FormattedSteps,
-  Executions,
-  StepCurrentLatencies,
-  LatencyData,
-} from "./types";
+import type { StepCurrentLatencies, LatencyData } from "./types";
 import type {
   StepAverageLatencies,
   AverageLatencies,
 } from "../server/models/types";
 import type { Moment } from "moment";
 
-const addExecutionsToDatabase = async (
-  executions: Executions,
+/**
+ * Adds latencies to the database for step functions and each step, whether
+ * updating existing rows or adding new rows of data.
+ * @param latencyData Object with latency data per execution of the step function
+ * @param stepFunctionId Id of the step function as referenced in the database
+ * @param stepIds Array step ids which belong to this step function
+ * @param startTime The start time of the hour for this data
+ * @param endTime The end time of the hour for this data
+ */
+const addLatenciesToDatabase = async (
   latencyData: LatencyData,
   stepFunctionId: number,
   stepIds: number[],
-  formattedSteps: FormattedSteps,
   startTime: Moment,
   endTime: Moment
-) => {
+): Promise<void> => {
   // get average data for the step function and steps for this hour
   const [stepFunctionCurrentLatencyData] =
     await stepFunctionAverageLatenciesModel.getStepFunctionLatencies(
@@ -36,9 +37,6 @@ const addExecutionsToDatabase = async (
       startTime.toISOString(),
       endTime.toISOString()
     );
-
-  console.log("stepFunctionCurrentLatencyData", stepFunctionCurrentLatencyData);
-  console.log("stepsCurrentLatencyRows", stepsCurrentLatencyRows);
 
   await upsertStepFunctionLatency(
     stepFunctionCurrentLatencyData,
@@ -57,6 +55,16 @@ const addExecutionsToDatabase = async (
   }
 };
 
+/**
+ * Inserts or Updates the step function average latencies in the database with
+ * the most recent calculated values.
+ * @param stepFunctionCurrentLatencyData Row of database information for the
+ * overall step function latency from step_function_average_latencies table
+ * @param latencyData New latency data from cloudwatch logs
+ * @param stepFunctionId Id of the step function as stored in the database
+ * @param startTime The start time of the hour for this data
+ * @param endTime The end time of the hour for this data
+ */
 const upsertStepFunctionLatency = async (
   stepFunctionCurrentLatencyData: AverageLatencies,
   latencyData: LatencyData,
@@ -92,6 +100,15 @@ const upsertStepFunctionLatency = async (
   }
 };
 
+/**
+ * Inserts or Updates step average latencies in the database with most recent
+ * calculated values.
+ * @param stepsCurrentLatencyRows Rows of database information for each step
+ * which includes its currently latency information
+ * @param latencyData New latency data object created from cloudwatch logs
+ * @param startTime The start time of the hour this data is for
+ * @param endTime The end time of the hour this data is for
+ */
 const upsertStepLatencies = async (
   stepsCurrentLatencyRows: StepAverageLatencies[],
   latencyData: LatencyData,
@@ -159,6 +176,14 @@ const upsertStepLatencies = async (
   }
 };
 
+/**
+ * Calculates latency by combining old data with new data
+ * @param oldAverage Existing average from
+ * @param oldExecutions Existing number of executions from the database
+ * @param newSum New latency sum from cloudwatch logs
+ * @param newExecutions New execution sum from cloudwatch logs
+ * @returns Array of [new average, new total executions]
+ */
 const calculateNewLatencyData = async (
   oldAverage: number,
   oldExecutions: number,
@@ -166,18 +191,15 @@ const calculateNewLatencyData = async (
   newExecutions: number
 ): Promise<number[]> => {
   const oldSum = Number(oldAverage) * Number(oldExecutions);
-  console.log("fn_oldSum", oldSum);
   const newAverage =
     (Number(newSum) + Number(oldSum)) /
     (Number(newExecutions) + Number(oldExecutions));
-  console.log("newAverage", newAverage);
   const totalExecutions = Number(newExecutions) + Number(oldExecutions);
-  console.log("totalExecutions", totalExecutions);
   return [newAverage, totalExecutions];
 };
 
 const executionsObject = {
-  addExecutionsToDatabase,
+  addLatenciesToDatabase,
   upsertStepFunctionLatency,
   upsertStepLatencies,
   calculateNewLatencyData,

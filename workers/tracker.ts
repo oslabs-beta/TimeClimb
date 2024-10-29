@@ -32,9 +32,10 @@ export type Tracker = {
 };
 
 /**
- *
+ * Creates a Tracker object to hold data needed to queue logs for processing
  * @param stepFunction StepFunction object to attach to this tracker
- * @param trackerDbRow Rows of information
+ * @param trackerDbRow Rows of data received from the database related to this
+ * tracker
  * @returns
  */
 export function createTracker(
@@ -54,18 +55,30 @@ export function createTracker(
 }
 
 const trackerPrototype = {
+  /**
+   * Removes the ending ':*' characters from the log if they are present.
+   * Also reads the log group name from the arn and stores it on the object.
+   * @param this Tracker object
+   * @param logGroupArn The full raw log group arn
+   * @returns undefined
+   */
   setLogGroup(this: Tracker, logGroupArn: string): void {
     if (logGroupArn.endsWith(":*")) logGroupArn = logGroupArn.slice(0, -2);
     this.logGroupArn = logGroupArn;
     this.logGroupName = logGroupArn.split("log-group:")[1];
     return;
   },
-  setTimeSegments(this: Tracker) {
+  /**
+   * Splits the logs to scan up into segments. Produces only one segment.
+   * Also stores the current time period to begin processing logs.
+   * @param this Tracker object
+   * @returns undefined
+   */
+  setTimeSegments(this: Tracker): void {
     if (
       this.trackerDbRow.newest_execution_time === null &&
       this.trackerDbRow.oldest_execution_time === null
     ) {
-      console.log("this");
       this.timeSegment = [
         {
           startTime: moment(this.trackerDbRow.tracker_start_time).utc(),
@@ -79,7 +92,6 @@ const trackerPrototype = {
         .utc();
       this.currentEndTime = moment().subtract(2, "hours").endOf("hour").utc();
     } else {
-      console.log("that");
       this.timeSegment = [
         {
           startTime: moment(this.trackerDbRow.newest_execution_time).utc(),
@@ -92,20 +104,35 @@ const trackerPrototype = {
         .utc();
       this.currentEndTime = moment().subtract(2, "hours").endOf("hour").utc();
     }
-    console.log("this.timeSegment", this.timeSegment);
   },
-  async decrementCurrentTimes(this: Tracker) {
+  /**
+   * Subtracts an hour from the current time object properties
+   * @param this Tracker object
+   * @returns Promise<void>
+   */
+  async decrementCurrentTimes(this: Tracker): Promise<void> {
     this.currentEndTime.subtract(1, "hour");
     this.currentStartTime.subtract(1, "hour");
+    return;
   },
+  /**
+   * Tests to see if the tracker has processed all within the time stegment
+   * @param this Tracker object
+   * @returns true | false
+   */
   async isFinished(this: Tracker): Promise<boolean> {
     if (this.currentStartTime.isBefore(this.timeSegment[0].startTime)) {
-      console.log("we think its finished?");
       return true;
     }
-    console.log("we think its NOT finished?");
     return false;
   },
+  /**
+   * Updates the tracker table in the database with the newest and oldest logs
+   * scanned of appropriate.
+   * @param this Tracker object
+   * @param startTime Moment object for the oldest update
+   * @param endTime Moment object for the newest update
+   */
   async updateTrackerTimes(
     this: Tracker,
     startTime: Moment,
