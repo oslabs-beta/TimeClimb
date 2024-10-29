@@ -17,7 +17,9 @@ export default defineConfig({
     },
   },
   test: {
+    coverage: { include: ['src/**/*.{tsx,ts}'] },
     stopCoverage: {
+      reportsDirectory: './src',
       report: ['text', 'html']
     },
     include: ['./__test__/**.tsx'],
