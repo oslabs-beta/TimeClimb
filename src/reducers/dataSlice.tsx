@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../store.tsx';
 import { StateEnteredEventDetailsFilterSensitiveLog } from '@aws-sdk/client-sfn';
+import { current } from '@reduxjs/toolkit';
 
 type stepfunction = {
   definition?: object;
@@ -76,9 +77,9 @@ export const dataSlice = createSlice({
       //   state.currentDefinition = state.stepfunctions[0].definition;
     },
     appendStepFunction: (state, action) => {
-      console.log('Appending step function');
+      console.log(current(state.stepfunctions));
       state.stepfunctions.push(action.payload);
-      console.log(state.stepfunctions);
+      console.log(current(state.stepfunctions));
     },
     setChartLatencies: (state, action) => {
       if (action.payload) {
