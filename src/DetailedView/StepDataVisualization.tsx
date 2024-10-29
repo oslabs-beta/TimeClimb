@@ -10,13 +10,14 @@ function StepDataVisualization() {
   let chartInstance = useRef(null);
   const latency = useSelector((state: RootState) => state.data.chartLatencies);
   const times = useSelector((state: RootState) => state.data.latencies);
-  // console.log(latency)
+  console.log('l',latency)
 
   const startTimes = times.map((item) =>
     moment(item.startTime).format('HH:mm')
   );
 
-  //   const latencies = latency.map((item) => item.stepFunctionAverageLatency);
+    const latencies = latency.map((item) => item.stepFunctionAverageLatency);
+    // console.log('hi',latencies)
 
   Chart.register(...registerables);
 
