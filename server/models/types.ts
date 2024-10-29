@@ -18,7 +18,7 @@ export interface StepFunctionsTable {
 
 export interface StepsTable {
   step_id: number;
-  step_function_id: number;
+  step_function_id?: number;
   name: string;
   type: string;
   comment?: string | null;
@@ -93,12 +93,10 @@ export interface AverageLatencies {
   executions?: number;
 }
 
-export interface StepsByStepFunctionId {
-  step_id: number;
-  name: string;
-  type: string;
-  comment: string;
-}
+export type StepsByStepFunctionId = Pick<
+  StepsTable,
+  "step_id" | "name" | "type" | "step_function_id" | "comment"
+>;
 
 export interface LatenciesObj {
   date: string;

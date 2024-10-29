@@ -1,8 +1,10 @@
 import "dotenv/config";
 import db from "./db";
-import { StepsTable } from "./types";
+import { StepsByStepFunctionId, StepsTable } from "./types";
 
-const getStepsByStepFunctionId = async (stepFunctionId: number) => {
+const getStepsByStepFunctionId = async (
+  stepFunctionId: number
+): Promise<StepsByStepFunctionId[]> => {
   try {
     const rows = await db<StepsTable>("steps")
       .select("step_id", "name", "type", "comment")
@@ -16,7 +18,9 @@ const getStepsByStepFunctionId = async (stepFunctionId: number) => {
   }
 };
 
-const getStepsByStepFunctionIds = async (stepFunctionIds: number[]) => {
+const getStepsByStepFunctionIds = async (
+  stepFunctionIds: number[]
+): Promise<StepsByStepFunctionId[]> => {
   try {
     const rows = await db<StepsTable>("steps")
       .select("step_id", "name", "type", "step_function_id")

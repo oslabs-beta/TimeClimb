@@ -9,7 +9,6 @@ import stepFunctionAverageLatenciesModel from "../server/models/stepFunctionAver
 import stepAverageLatenciesModel from "../server/models/stepAverageLatenciesModel";
 import fs from "fs";
 import executionsObject from "./executions";
-import tracker from "./tracker";
 import type { Executions, FormattedSteps, LatencyData } from "./types";
 import logs from "./logs";
 
@@ -29,44 +28,153 @@ import {
   StepAverageLatenciesTable,
   StepsTable,
 } from "../server/models/types";
-
-const descibeLogGroupsBottleneck = new Bottleneck({
-  maxConcurrent: 3,
-  minTime: 105, // rate limit of 10 per second. added 5ms to ensure about 9.5/s
-});
-
+import { createTracker, Tracker } from "./Tracker";
+import { createStepFunction } from "./StepFunction";
 /**
+ *
  * initial function to get started with this whole process of retreiving logs
  * and storing them
  */
+
+// get tracking data from database
+
+// get step function data for each tracker
+
+// format tracker data into correct format for each tracker
+
+// either add each to the bottleneck queue or
+
+// add one to th bottleneck queue
+
+const processResponses = async (
+  tracker: Tracker,
+  responses: FilterLogEventsCommandOutput[],
+  startTime: Moment,
+  endTime: Moment
+) => {
+  let executions: Executions = {};
+  for (const response of responses) {
+    executions = await parseEvents(response.events, executions);
+  }
+
+  // calculate the average data for the step function and steps for this hour
+  const [latencyData, incompleteExecutions] = await logs.calculateLogLatencies(
+    executions,
+    tracker.stepFunction.steps
+  );
+
+  if (latencyData.executions > 0) {
+    executionsObject.addExecutionsToDatabase(
+      executions,
+      latencyData,
+      tracker.trackerDbRow.step_function_id,
+      tracker.stepFunction.stepIds,
+      tracker.stepFunction.steps,
+      startTime,
+      endTime
+    );
+    await tracker.updateTrackerTimes(startTime, endTime);
+  }
+  console.log("incomplete executions", incompleteExecutions);
+};
+
 const getDatabaseTrackingData = async () => {
   // need the tracker information to see what time period of data to retreive
   const trackerDbRows =
     await stepFunctionTrackersModel.getAllTrackerDataWithNames();
+  const trackers: Tracker[] = [];
+  for (const trackerDbRow of trackerDbRows) {
+    // get steps for this step function
+    const stepDbRows = await stepsModel.getStepsByStepFunctionId(
+      trackerDbRow.step_function_id
+    );
+    const stepFunction = createStepFunction(stepDbRows);
+    const tracker = createTracker(stepFunction, trackerDbRow);
+    trackers.push(tracker);
+  }
+  console.log("trackers", JSON.stringify(trackers, null, 2));
 
-  // get steps for this step function
-  const stepDbRows = await stepsModel.getStepsByStepFunctionId(
-    trackerDbRows[0].step_function_id
-  );
-
-  const stepIds: number[] = stepDbRows.map((el) => el.step_id);
+  //* const stepIds: number[] = stepDbRows.map((el) => el.step_id);
 
   // create a new object stucture to look up step information up by step name
-  const formattedSteps = await formatSteps(stepDbRows);
+  /*const formattedSteps = await formatSteps(stepDbRows);
 
   // log group arn needs to be formatted and the group name separated for
   // future api requests
-  const [logGroupArn, logGroupName] = await getLogGroupName(
-    trackerDbRows[0]?.log_group_arn
-  );
-
+  
+  /*const [logGroupArn, logGroupName] = await getLogGroupName(
+   * trackerDbRows[0]?.log_group_arn
+  *);
+  
   // this prefix is necessary to filter logs by step function
-  const logStreamNamePrefix = `states/${trackerDbRows[0]?.name}`;
-
+  /*const logStreamNamePrefix = `states/${trackerDbRows[0]?.name}`;
+  */
   // these times ensure we wait at least an hour before reading cloudwatch data
-  const startTime = moment().subtract(1, "day").startOf("hour").utc();
-  const endTime = moment().subtract(1, "day").endOf("hour").utc();
 
+  const filteredLogsRequestBottleneck = new Bottleneck({
+    maxConcurrent: 3,
+    minTime: 205, // rate limit of 5 per second. added 5ms to ensure about 4.8/s
+  });
+
+  const throttledFilteredLogsRequest = async (
+    tracker: Tracker,
+    responses: FilterLogEventsCommandOutput[] = []
+  ): Promise<void> => {
+    while (true) {
+      const response = await filteredLogsRequestBottleneck.schedule(
+        async () => {
+          const response = await getFilteredLogEventsTracker(tracker);
+          return response;
+        }
+      );
+
+      // process the result and see if we need to schedule another call here
+      if (response["$metadata"].httpStatusCode === 200) {
+        console.log("if its equal to 200");
+        // all data for his hour is processed
+        if (response.events === undefined || response.events.length === 0) {
+          tracker.nextToken = undefined;
+          responses.push(response);
+          const cloneResponses = structuredClone(responses);
+          const cloneStartTime = tracker.currentStartTime.clone();
+          const cloneEndTime = tracker.currentEndTime.clone();
+          // processed data for this hour before processing other hours
+          await processResponses(
+            tracker,
+            cloneResponses,
+            cloneStartTime,
+            cloneEndTime
+          );
+          responses = []; // reset reponses for the next hour
+          await tracker.decrementCurrentTimes();
+          // see if all data for all hours have been processed
+          if (await tracker.isFinished()) {
+            break;
+          }
+        } else {
+          responses.push(response);
+          tracker.nextToken = response.nextToken;
+        }
+      } else {
+        console.error("http error status code was not 200");
+        break;
+      }
+    }
+    return;
+  };
+
+  for (const tracker of trackers) {
+    // loop through each tracker and add to bottleneck queue based upon
+    // trackerDbRow newewst_execution_time vs tracker_end_time and now time?
+    // trackerDbRow oldest_execution_time vs tracker_start time?
+    // trying to come up with
+    // const startTime = moment().subtract(1, "day").startOf("hour").utc();
+    // const endTime = moment().subtract(1, "day").endOf("hour").utc();
+    if (!(await tracker.isFinished())) {
+      throttledFilteredLogsRequest(tracker);
+    }
+  }
+  return;
   // make http requests to retreive full data for an hour
   let reponseHasEvents = true;
   let nextToken = undefined;
@@ -104,6 +212,7 @@ const getDatabaseTrackingData = async () => {
 
   // parse logs to group them by executions and ensure each execution is
   // has compele data
+
   let executions: Executions = {};
   for (const response of responses) {
     executions = await parseEvents(response.events, executions);
@@ -186,7 +295,7 @@ const getLogGroupCreationDate = async (
   logGroupName: string
 ): Promise<number | undefined> => {
   const client = new CloudWatchLogsClient({
-    region: process.env.AWS_REGION,
+    region: tracker.logGroupRegion,
     credentials: fromEnv(),
   });
 
@@ -235,6 +344,28 @@ const getFilteredLogEvents = async (
     startTime: epochStartTime,
     endTime: epochEndTime,
     nextToken,
+  };
+  const command = new FilterLogEventsCommand(params);
+
+  const response = await client.send(command);
+  return response;
+};
+
+const getFilteredLogEventsTracker = async (
+  tracker: Tracker
+): Promise<FilterLogEventsCommandOutput> => {
+  const client = new CloudWatchLogsClient({
+    region: tracker.logGroupRegion,
+    credentials: fromEnv(),
+  });
+  console.log("making request");
+  console.log("tracker", JSON.stringify(tracker, null, 2));
+  const params: FilterLogEventsCommandInput = {
+    logGroupIdentifier: tracker.logGroupArn,
+    logStreamNamePrefix: tracker.logStreamNamePrefix,
+    startTime: tracker.currentStartTime.valueOf(),
+    endTime: tracker.currentEndTime.valueOf(),
+    nextToken: tracker.nextToken,
   };
   const command = new FilterLogEventsCommand(params);
 

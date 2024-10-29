@@ -40,7 +40,7 @@ const getAverageLatencies = async (
     }
 
     const sfAverageLatencyRows: AverageLatencies[] =
-      await averageLatenciesModel.getStepFunctionLatencies(
+      await stepFunctionAverageLatenciesModel.getStepFunctionLatencies(
         Number(step_function_id),
         startTime.toISOString(),
         endTime.toISOString()
@@ -52,7 +52,7 @@ const getAverageLatencies = async (
     const stepIds: number[] = stepRows.map((row) => row.step_id);
 
     const stepAverageLatencyRows: StepAverageLatencies[] =
-      await stepAverageLatenciesModel.getLatenciesBetweenTimes(
+      await stepAverageLatenciesModel.getHourlyLatenciesBetweenTimes(
         stepIds,
         startTime.toISOString(),
         endTime.toISOString()
@@ -86,7 +86,7 @@ const getAverageLatenciesDaily = async (
     const endTime = moment().endOf("day"); //includes current day in request
 
     const dailyStepFunctionLatencies: AverageLatencies[] =
-      await averageLatenciesModel.getStepFunctionLatenciesDaily(
+      await stepFunctionAverageLatenciesModel.getStepFunctionLatenciesDaily(
         Number(step_function_id),
         startTime.toISOString(),
         endTime.toISOString()
@@ -135,7 +135,7 @@ const getAverageLatenciesWeekly = async (
     const endTime = moment().endOf("day"); //includes current day in request
 
     const weeklyStepFunctionLatencies: AverageLatencies[] =
-      await averageLatenciesModel.getStepFunctionLatenciesWeekly(
+      await stepFunctionAverageLatenciesModel.getStepFunctionLatenciesWeekly(
         Number(step_function_id),
         startTime.toISOString(),
         endTime.toISOString()
@@ -181,15 +181,14 @@ const getAverageLatenciesMonthly = async (
     const endTime = moment().endOf("month");
 
     const monthlyStepFunctionLatencies: AverageLatencies[] =
-      await averageLatenciesModel.getStepFunctionLatenciesMonthly(
+      await stepFunctionAverageLatenciesModel.getStepFunctionLatenciesMonthly(
         Number(step_function_id),
         startTime.toISOString(),
         endTime.toISOString()
       );
 
-    const stepRows = await stepsModel.getStepsByStepFunctionId(
-      Number(step_function_id)
-    );
+    const stepRows: StepsByStepFunctionId[] =
+      await stepsModel.getStepsByStepFunctionId(Number(step_function_id));
     const stepIDs = stepRows.map((step) => step.step_id);
 
     const monthlyStepLatencies: StepAverageLatencies[] =
@@ -340,7 +339,6 @@ const makeStepAverageLatenciesByTimeObject = async (
 };
 
 const averageLatenciesApiController = {
-  // methods in here
   getAverageLatencies,
   getAverageLatenciesDaily,
   getAverageLatenciesWeekly,
