@@ -41,9 +41,19 @@ const addToStepFunctionTable = async (detailObj) => {
   }
 };
 
+//check if step function exists in step_functions table in DB
+const checkStepFunctionsTable = async (arn: string): Promise<StepFunctionsTable | undefined> => {
+  const result = await db<StepFunctionsTable>("step_functions")
+  .where({arn: arn})
+  .first();
+  return result
+}
+
+
 const stepFunctionsModel = {
   selectAllStepFunctions,
   addToStepFunctionTable,
+  checkStepFunctionsTable
 };
 
 export default stepFunctionsModel;
