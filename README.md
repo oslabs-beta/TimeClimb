@@ -30,7 +30,7 @@ All API requests are be made to http://localhost:3000/api
 
 <details>
 <summary>
-<code>GET</code><code>/step-functions</code>Gets all step functions previously stored in the database
+<code>GET</code><code>/</code>Gets all step functions previously stored in the database
 </summary>
 
 #### Parameters
@@ -55,55 +55,13 @@ All API requests are be made to http://localhost:3000/api
 ]
 ```
 </details>
-
 <details>
-<summary>
-<code>GET</code><code>/step_functions/{step_function_id}
-</code> Get the details for a specific step function by it's id - <b>Not Yet Implemented</b>
-</summary>
 
-#### Parameters
-
-> | name             | type     | data type    | description |
-> | ---------------- | -------- | ------------ | -------------------------------------------- |
-> | step_function_id | required | integer > 0  | unique id associated with this step function
-
-#### Responses
-
-> | http code | content-type                     | response |
-> | --------- | -------------------------------- | -------- |
-> | `200`     | `application/json;charset=UTF-8` | JSON     |
-> | `400`     | `application/json;charset=UTF-8` | JSON     |
-> | `404`     | `application/json;charset=UTF-8` | JSON     |
-
-#### Example Status Code for: 200 Ok <b>(Not Yet Implemented)</b>
-
-```json
-{
-  "step_function_id": 0,
-  "name": "string",
-  "description": "string",
-  "definition": {}
-}
-```
-
-#### Example Status Code for: 400 Invalid Step Function Id
-
-```json
-{ "error": "Invalid step_function_id" }
-```
-
-#### Example Status Code for: 404 Step Function Not Found
-
-```json
-{ "error": "No step function found" }
-```
-
-</details>
 <summary>
 <code>POST</code><code>/step_functions/addStepFunction</code>
 <code>Adds a step function to the database</code>
 </summary>
+
 
 #### Parameters
 
@@ -144,11 +102,26 @@ All API requests are be made to http://localhost:3000/api
 { "error": "Unauthorized to access this arn" }
 ```
 
+</details>
 <details>
+<summary>
+<code>GET</code><code>/step_functions/:step_functions_id/hours</code>
+<code>Retrieves hourly average latencies over a span of one day</code>
+</summary>
+
+#### Parameters
+
+> | name                    | type     | data type |  description                             |
+> | ------------------------| -------- | --------- | ---------------------------------------- |
+> | `path.step_function_id` | required | string    | The unique ID associated with this step function in database passed in the URL path (`/:step_function_id/hours`) |
+
+#### Example Request
+localhost:3000/api/average-latencies/:step_function_id/hours
+
+<!-- PICK UP HERE!!! -->
 
 
-
-
+</details>
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
