@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { setLatency, setLatencies, setBubbleName } from '../reducers/dataSlice';
+import { setLatency, setLatencies, setBubbleName, setTimeToggle } from '../reducers/dataSlice';
 import { AppDispatch } from "../../store.tsx";
 import { useDispatch } from 'react-redux';
 
@@ -12,6 +12,7 @@ function BackButton() {
     dispatch(setLatency([]))
     dispatch(setLatencies([]))
     dispatch(setBubbleName(''))
+    dispatch(setTimeToggle('hours'))
     navigate('/');
   }
   return <button className="dv-btn" onClick={goBack}>Back</button>;
