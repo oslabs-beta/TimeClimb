@@ -42,7 +42,7 @@ function FunctionCards({
 
       <div className=''>
         {visual}{' '}
-        <FlowChartView height={200} width={200} definition={definition} />
+        <FlowChartView size='size-80' definition={definition} />
       </div>
 
       <button className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 my-6" id='viewButton' onClick={() => handleView(name)}>

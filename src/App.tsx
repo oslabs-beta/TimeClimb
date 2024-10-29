@@ -10,6 +10,7 @@ import store, {/*persistor*/} from '../store.tsx';
 import LandingPage from './landingPage/landingPage.tsx';
 import NavBar from './landingPage/navbar/navBar.tsx';
 import Dashboard from './landingPage/Dashboard.tsx';
+import DetailedViewContainer from './DetailedView/DetailedViewContainer.tsx'
 
 import {Route, Routes, Link} from "react-router-dom";
 // import { PersistGate } from 'redux-persist/integration/react';
@@ -42,7 +43,7 @@ function App() {
         <Routes>
             {/* <Route path='/*' element={<NavBar/>}> */}
               <Route path="/" element={<Dashboard />}/>
-              <Route path="/expandView" element={<DetailedView />}>
+              <Route path="/expandView" element={<DetailedViewContainer />}>
                 {/*possible to nest comps in here dont know that I will */}
             {/* </Route> */}
 

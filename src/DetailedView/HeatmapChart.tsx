@@ -122,8 +122,8 @@ function HeatmapChart() {
   }, [currentData, timePeriod]);
 
   return (
-    <div>
-      <div ref={plotRef} className="heatMap" />
+    <div className='rounded bg-gray-600'>
+      <div ref={plotRef}  />
     </div>
   );
 }

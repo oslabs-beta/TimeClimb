@@ -72,7 +72,7 @@ function FlowChartBubble({ data }: BubbleProps) {
   }
   return (
     <button
-      className='text-black h-full width-96 p-3 rounded-full'
+      className='text-black h-full width-96 p-3 rounded-full shadow-2xl'
       style={{ backgroundColor: color }}
       onClick={handleClick}
     >

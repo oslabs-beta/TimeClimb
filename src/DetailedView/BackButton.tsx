@@ -14,7 +14,7 @@ function BackButton() {
     dispatch(setBubbleName(''))
     navigate('/');
   }
-  return <button className="bg-lime-500 text-pink p-4 rounded" onClick={goBack}>Back</button>;
+  return <button className="dv-btn" onClick={goBack}>Back</button>;
 }
 
 export default BackButton;

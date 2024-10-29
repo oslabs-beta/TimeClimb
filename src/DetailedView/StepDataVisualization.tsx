@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { RootState } from '../../store';
 import {setBubblePopup} from '../reducers/dataSlice';
+import { Background } from '@xyflow/react';
 // import { selectData } from '../reducers/dataSlice';
 
 function StepDataVisualization() {
@@ -76,7 +77,7 @@ function StepDataVisualization() {
   return (
     <div className='popupLineGraph'>
       <canvas ref={canvasRef}></canvas>
-      <button onClick={handleClick}>Close</button>
+      <button style={{backgroundColor: 'pink'}} onClick={handleClick}>Close</button>
     </div>
   );
 }
