@@ -81,11 +81,12 @@ export const dataSlice = createSlice({
     },
     setChartLatencies: (state, action) => {
       if (action.payload) {
-        const newChart: number[] = [];
+        const newChart: any[] = [];
         state.latencies.forEach((ele) => {
-          if (ele.steps)
+          if (ele.steps) {
             if (ele.steps[action.payload])
               newChart.push(ele.steps[action.payload].average);
+          } else newChart.push(null);
         });
         state.chartLatencies = newChart;
       }
@@ -118,7 +119,6 @@ export const getStepFunctionList = createAsyncThunk(
 export const getLatencies = createAsyncThunk(
   'data/getLatencies',
   async ({ id, time }: { id: number; time: string }) => {
-    console.log(`Geeting latency for id: ${id} time: ${time}`);
     const res = await fetch(`/api/average-latencies/${id}/${time}`);
     if (!res.ok) {
       throw new Error('Cannot fetch stepfunctions');
