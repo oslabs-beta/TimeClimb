@@ -26,7 +26,7 @@ type xaxis = {
   automargin: boolean;
   tickangle: number;
 };
- 
+
 type yaxis = {
   ticks: string;
   ticksuffix: string;
@@ -39,19 +39,19 @@ function HeatmapChart() {
   const plotRef = useRef(null);
   const dataset = useSelector((state: RootState) => state.data.latencies);
   const timePeriod = useSelector((state: RootState) => state.data.time);
-  
 
   const placeholderData = [
     {
       date: new Date(),
-      steps: { step1: { average: 0 }, step2: { average: 0 } }
-    }
+      steps: { step1: { average: 0 }, step2: { average: 0 } },
+    },
   ];
 
   const currentData = dataset && dataset.length > 0 ? dataset : placeholderData;
 
   useEffect(() => {
-    if (!currentData || currentData.length === 0 || !currentData[0].steps) return;
+    if (!currentData || currentData.length === 0 || !currentData[0].steps)
+      return;
 
     let xValues = currentData.map((set) => moment(set.date).format('HH:mm'));
     if (timePeriod === 'days') {
@@ -63,30 +63,41 @@ function HeatmapChart() {
     }
 
     const addLineBreaks = (label: string, maxLength: number) => {
-      const words = label.split(" ");
-      let line = "";
+      const words = label.split(' ');
+      let line = '';
       const lines = [];
 
       words.forEach((word) => {
         if ((line + word).length > maxLength) {
           lines.push(line);
-          line = "";
+          line = '';
         }
-        line += word + " ";
+        line += word + ' ';
       });
       lines.push(line.trim());
 
-      return { original: label, processed: lines.join("<br>") };
+      return { original: label, processed: lines.join('<br>') };
     };
 
-    const yValues = Object.keys(currentData[0].steps || {}).map((label) => addLineBreaks(label, 15));
+    const yValues = Object.keys(currentData[0].steps || {}).map((label) =>
+      addLineBreaks(label, 15)
+    );
+    console.log('Yvalues: ', yValues);
+    console.log('CurrentData: ', currentData);
     const zValues = currentData.map((set) =>
-      yValues.map((step) => set.steps[step.original]?.average || 0)
+      yValues.map((step) => {
+        /*set.steps[step.original]?.average || 0*/
+        if (set.steps) {
+          return set.steps[step.original].average;
+        }
+        return 0;
+      })
     );
 
     const processedYValues = yValues.map((step) => step.processed);
-    const transposedZValues = zValues[0].map((_, colIndex) => zValues.map(row => row[colIndex]));
-
+    const transposedZValues = zValues[0].map((_, colIndex) =>
+      zValues.map((row) => row[colIndex])
+    );
 
     const data = [
       {
@@ -96,34 +107,53 @@ function HeatmapChart() {
         type: 'heatmap',
         colorscale: [
           [0, '#78fa4c'],
-          [1, '#ff4136']
+          [1, '#ff4136'],
         ],
-        showscale: true
-      }
+        showscale: true,
+      },
     ];
 
-    const layout: { annotations: Annotation[]; title: string; width: number; xaxis: xaxis; yaxis: yaxis } = {
+    const layout: {
+      annotations: Annotation[];
+      title: string;
+      width: number;
+      xaxis: xaxis;
+      yaxis: yaxis;
+    } = {
       title: 'Heatmap Overview',
       annotations: [],
-      xaxis: { ticks: '', side: 'bottom', zeroline: false, title: 'Time', automargin: true, tickangle: 315 },
-      yaxis: { ticks: '', ticksuffix: ' ', autosize: false, automargin: true, title: 'Step Function Action' },
+      xaxis: {
+        ticks: '',
+        side: 'bottom',
+        zeroline: false,
+        title: 'Time',
+        automargin: true,
+        tickangle: 315,
+      },
+      yaxis: {
+        ticks: '',
+        ticksuffix: ' ',
+        autosize: false,
+        automargin: true,
+        title: 'Step Function Action',
+      },
       width: 500,
     };
 
     if (plotRef.current) {
-        Plotly.newPlot(plotRef.current, data, layout);
-      }
+      Plotly.newPlot(plotRef.current, data, layout);
+    }
 
-      return () => {
-        if (plotRef.current) {
-          Plotly.purge(plotRef.current);
-        }
-      };
+    return () => {
+      if (plotRef.current) {
+        Plotly.purge(plotRef.current);
+      }
+    };
   }, [currentData, timePeriod]);
 
   return (
     <div className='rounded bg-gray-600'>
-      <div ref={plotRef}  />
+      <div ref={plotRef} />
     </div>
   );
 }

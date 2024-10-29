@@ -21,19 +21,25 @@ interface dataState {
   chartLatencies: number[];
   time: string;
   bubblePopup: boolean;
-  bubbleName:string
+  bubbleName: string;
 }
 
 const initialState: dataState = {
   stepfunctions: [],
-  currentDefinition: JSON.parse(localStorage.getItem('currentDefinition') || '{}'),
-  currentDefinitionID: JSON.parse(localStorage.getItem('currentDefinitionID') || '0'),
-  latencies: JSON.parse(localStorage.getItem('latencies') || '[{steps: null}]'),
+  currentDefinition: JSON.parse(
+    localStorage.getItem('currentDefinition') || '{}'
+  ),
+  currentDefinitionID:
+    JSON.parse(localStorage.getItem('currentDefinitionID') /*|| '0'*/) || 0,
+  latencies: JSON.parse(
+    localStorage.getItem('latencies') /*|| '[{steps: null}]'*/
+  ) || [{ steps: null }],
   latency: {},
   chartLatencies: [],
-  time: JSON.parse(localStorage.getItem('timeToggle') || 'hours'),
+  time:
+    JSON.parse(localStorage.getItem('timeToggle') /*|| 'hours'*/) || 'hours',
   bubblePopup: false,
-  bubbleName: ''
+  bubbleName: '',
 };
 
 export const dataSlice = createSlice({
@@ -59,7 +65,10 @@ export const dataSlice = createSlice({
     },
     setDefinitionID: (state, action) => {
       state.currentDefinitionID = action.payload;
-      localStorage.setItem('currentDefinitionID', JSON.stringify(action.payload));
+      localStorage.setItem(
+        'currentDefinitionID',
+        JSON.stringify(action.payload)
+      );
     },
     getStepFunctions: (state, action) => {
       state.stepfunctions = action.payload;
@@ -86,11 +95,11 @@ export const dataSlice = createSlice({
       localStorage.setItem('timeToggle', JSON.stringify(action.payload));
     },
     setBubblePopup: (state, action) => {
-      state.bubblePopup = action.payload
+      state.bubblePopup = action.payload;
     },
     setBubbleName: (state, action) => {
-      state.bubbleName = action.payload
-    }
+      state.bubbleName = action.payload;
+    },
   },
 });
 
@@ -110,7 +119,7 @@ export const getLatencies = createAsyncThunk(
   'data/getLatencies',
   async ({ id, time }: { id: number; time: string }) => {
     console.log(`Geeting latency for id: ${id} time: ${time}`);
-    const res = await fetch(`/api/average-latencies/${id}/${time}`); 
+    const res = await fetch(`/api/average-latencies/${id}/${time}`);
     if (!res.ok) {
       throw new Error('Cannot fetch stepfunctions');
     }
