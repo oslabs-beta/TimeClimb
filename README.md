@@ -4,6 +4,28 @@ TimeClimb is an app that visualizes AWS Step Function latency averages over cust
 
 ## Features
 
+### Database
+
+ #### This application is deployed locally on each user's machine using Docker. As long as the user has PostgresDB installed on their machine and has provide the required credentials in a .env file, the program will create a local database in which to store AWS State Machine (Step Function) latency averages.
+
+#### A user will select which State Machine they would like to see latency averages for by providing the State Machine's arn. As long as the correct permissions have been set in AWS for this user (details found in User Setup below) this application will query the database for latency averages for the desired State Machine and display it.
+
+#### A user will select a period of time for which they would like to view their State Machine's latency averages in a drop down. The application will display the following based on the user's input:
+
+  <ul>
+    <li>Hours : Will display hourly averages over a 24 hour period</li>
+     <li>Days : Will display hourly averages over a 7 day period</li>
+      <li>Weeks : Will display hourly averages over a 12 week period</li>
+      <li>Months : Will display hourly averages over a 12 month period</li>
+  </ul>
+
+#### A user will use a slider to view State Machine averages at certain points within the desired time period 
+
+#### A user may view a line graph of the State Machine's latency averages in a line graph 
+
+#### A user may view the individual Action's (Step's) average latencies in the form of a heat map
+
+#### A user may view a line graph of each Action's average latencies by selecting the desired Action in the display
 
 ### Demonstrations 
 ## Select desired hour, day, week or month
@@ -18,9 +40,8 @@ TimeClimb is an app that visualizes AWS Step Function latency averages over cust
 <img src="./ReadMeUtils/steplatencychart.gif" width="250" height="250" style="block"/>
 </p>
 
-## Setup
- #### Note:
- See complete example of .env file in .env.example
+## User Setup
+ #### Note: See complete example of .env file in .env.example
   ### 1. Insert environment variables to .env file
   ```json
           PGHOST='localhost'
@@ -44,8 +65,7 @@ TimeClimb is an app that visualizes AWS Step Function latency averages over cust
 # Contribution Information:
 
 ## Creating and Updating the database time_climb
- #### Note:
- See complete example of .env file in .env.example
+ #### Note: See complete example of .env file in .env.example
 <details>
 <summary>1. Create a .env file and insert environment variables to file</summary>
 
@@ -79,11 +99,9 @@ Example:
  3. Seed dummy data into database
 </summary>
 
-#### Note: 
-These migrations will happen through Knex Library https://knexjs.org/. Knex helps to document and automate database schema changes and data migrations over time. This library will also be used for queries made to database in models.
+#### Note: These migrations will happen through Knex Library https://knexjs.org/. Knex helps to document and automate database schema changes and data migrations over time. This library will also be used for queries made to database in models.
 
-#### Note: 
-If you do not already have PostgresQL on your machine, you will need to download it.
+#### Note: If you do not already have PostgresQL on your machine, you will need to download it.
 
 ## Once Credentials have been added to example.env:
 
@@ -92,15 +110,15 @@ If you do not already have PostgresQL on your machine, you will need to download
 `npm run seed:run` will populate the database with test data. This will erase any existing data you might have in your database.
 
 ### Updating database with Seed Data
-<li><code>npm run migrate:latest</code> to update the database with the latest schema.
-</ol>
+<code>npm run migrate:latest</code> to update the database with the latest schema.
 
 Updating to the latest migration will typically erase all data in your database
 unless the migration script specifically is set up to migrate your data, which
 it currently is not.
 
-### Knex Detailed Usage
 
+<details>
+<summary> <b>Knex Detailed Usage<b> </summary>
 Convenience scripts are set up in package.json to run common knex migration functions.
 
 - `npm run migrate:make` Creating a migration with npm run migrate:make
@@ -130,18 +148,21 @@ This will update the database with latest schema changes. If necessary its possi
 This will roll back only the very latest migration unit. You can pass in an argument `--all` to rollback all of the completed migrations this way:
 
 `npm run migrate:rollback -- --all`
+</details>
 
 </details>
 
+4. Run<code>npm run dev</code>
+
+5. Run<code>npm run dev:server</code> 
+
 ## API Documentation
-## Base URL
-### **`http://localhost:3000/api`**
+### Base URL
+#### **`http://localhost:3000/api`**
 
-All API requests are be made to http://localhost:3000/api
+All API requests are made to http://localhost:3000/api
 
-## Endpoints
-
-### To retrieve **Step Functions** from database
+### Endpoints for adding/retrieving **Step Functions** to/from database
 
 <details>
 <summary>
@@ -175,7 +196,7 @@ All API requests are be made to http://localhost:3000/api
 
 <summary>
 <code>POST</code><code>/step_functions/addStepFunction</code>
-<code>Adds a step function to the database</code>
+Adds a step function to the database
 </summary>
 
 
@@ -213,7 +234,7 @@ All API requests are be made to http://localhost:3000/api
 <details>
 <summary>
 <code>GET</code><code>/step_functions/:step_functions_id/hours</code>
-<code>Retrieves <b>hourly</b> average latencies over a span of one <b>day</b> in ascending order</code>
+Retrieves <code>hourly</code> average latencies over a span of one <code>day</code> in ascending order
 </summary>
 
 #### Parameters
@@ -257,7 +278,7 @@ localhost:3000/api/average-latencies/:step_function_id/hours
 <details>
 <summary>
 <code>GET</code><code>/step_functions/:step_functions_id/days</code>
-<code>Retrieves <b>daily</b> average latencies over a span of 7 <b>days</b> in ascending order</code>
+Retrieves <code>daily</code> average latencies over a span of 7 <code>days</code> in ascending order
 </summary>
 
 #### Parameters
@@ -300,7 +321,7 @@ localhost:3000/api/average-latencies/:step_function_id/days
 <details>
 <summary>
 <code>GET</code><code>/step_functions/:step_functions_id/weeks</code>
-<code>Retrieves <b>weekly</b> average latencies over a span of 12 <b>weeks</b> in ascending order</code>
+Retrieves <code>weekly</code> average latencies over a span of 12 <code>weeks</code> in ascending order
 </summary>
 
 #### Parameters
@@ -344,7 +365,7 @@ localhost:3000/api/average-latencies/:step_function_id/weeks
 <details>
 <summary>
 <code>GET</code><code>/step_functions/:step_functions_id/months</code>
-<code>Retrieves <b>monthly</b> average latencies over a span of 12 <b>months</b> in ascending order</code>
+Retrieves <code>monthly</code> average latencies over a span of 12 <code>months</code> in ascending order
 </summary>
 
 #### Parameters
