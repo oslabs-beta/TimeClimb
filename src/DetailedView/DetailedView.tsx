@@ -47,21 +47,12 @@ function DetailedView() {
   // }, [dispatch, definitionID, timeToggle]);
 
   useEffect(() => {
-    const storedLatencies = localStorage.getItem('latencies');
-    if (storedLatencies) {
-      dispatch(setLatencies(JSON.parse(storedLatencies)));
-    }
-  }, [dispatch]);
-  
-  useEffect(() => {
     if (definitionID && timeToggle) {
       dispatch(getLatencies({ id: definitionID, time: timeToggle }))
         .unwrap()
         .then((data) => {
           dispatch(setLatencies(data))
-          localStorage.setItem('latencies', JSON.stringify(data));
       });
-        
     }
   }, [dispatch, definitionID, timeToggle]);
 

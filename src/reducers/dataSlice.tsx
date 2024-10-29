@@ -26,16 +26,12 @@ interface dataState {
 
 const initialState: dataState = {
   stepfunctions: [],
-  currentDefinition: {},
-  currentDefinitionID: 0,
-  latencies: [
-    {
-      steps: null,
-    },
-  ],
+  currentDefinition: JSON.parse(localStorage.getItem('currentDefinition') || '{}'),
+  currentDefinitionID: JSON.parse(localStorage.getItem('currentDefinitionID') || '0'),
+  latencies: JSON.parse(localStorage.getItem('latencies') || '[{steps: null}]'),
   latency: {},
   chartLatencies: [],
-  time: 'hours',
+  time: JSON.parse(localStorage.getItem('timeToggle') || 'hours'),
   bubblePopup: false,
   bubbleName: ''
 };
@@ -48,18 +44,22 @@ export const dataSlice = createSlice({
       //console.log(action.payload);
       state.latencies = action.payload;
       if (state.latencies.length > 0) state.latency = state.latencies[0];
+      localStorage.setItem('latencies', JSON.stringify(action.payload));
     },
     setLatency: (state, action) => {
       if (state.latencies.length > 0)
         state.latency = state.latencies[action.payload];
     },
     setStepFunction: (state, action) => {
-      console.log('Adding step function definion');
+      // console.log('Adding step function definion');
       state.currentDefinition = action.payload;
-      console.log(state.currentDefinition);
+      localStorage.setItem('currentDefinition', JSON.stringify(action.payload));
+
+      // console.log(state.currentDefinition);
     },
     setDefinitionID: (state, action) => {
       state.currentDefinitionID = action.payload;
+      localStorage.setItem('currentDefinitionID', JSON.stringify(action.payload));
     },
     getStepFunctions: (state, action) => {
       state.stepfunctions = action.payload;
@@ -82,7 +82,8 @@ export const dataSlice = createSlice({
       }
     },
     setTimeToggle: (state, action) => {
-      state.time = action.payload
+      state.time = action.payload;
+      localStorage.setItem('timeToggle', JSON.stringify(action.payload));
     },
     setBubblePopup: (state, action) => {
       state.bubblePopup = action.payload
