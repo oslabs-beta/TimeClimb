@@ -2,7 +2,7 @@ import 'dotenv/config';
 import pg from 'pg';
 const { Client } = pg;
 
-// async function setupDatabase() {
+async function setupDatabase() {
   const client = new Client({
     database: 'postgres',
     host: process.env.PGHOST,
