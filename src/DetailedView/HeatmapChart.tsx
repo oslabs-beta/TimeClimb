@@ -169,6 +169,11 @@ function HeatmapChart() {
         title: 'Step Function Action',
       },
       width: 500,
+      // plot_bgcolor: 'black',
+      paper_bgcolor: 'rgb(172,104,197)',
+      //   'opacity-80 bg-gradient-to-br from-purple-600 to-fuchsia-400 rounded-3xl mx-10',
+      // plot_bgcolor: 'rgba(0,0,0,0)',
+      // paper_bgcolor: 'rgba(0,0,0,0)',
     };
 
     if (plotRef.current) {
@@ -183,7 +188,7 @@ function HeatmapChart() {
   }, [currentData, timePeriod]);
 
   return (
-    <div className='rounded bg-gray-600'>
+    <div>
       <div ref={plotRef} />
     </div>
   );

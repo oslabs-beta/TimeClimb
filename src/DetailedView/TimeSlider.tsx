@@ -67,7 +67,7 @@ function TimeSlider() {
         min='0'
         max={max}
         value={sliderValue}
-        className='slider'
+        className='slider accent-purple-200'
         onChange={handleSliderChange}
       />
       {/* <p>Value: <span>{sliderValue}</span></p> */}

@@ -100,7 +100,7 @@ function DataVisualization() {
   // }
 
   return (
-    <div className='my-10 rounded shadow-glow'>
+    <div className='my-10 rounded shadow-glow width-auto'>
       <canvas ref={canvasRef}></canvas>
       {/* <button onClick={handleClose}>Close</button> */}
     </div>

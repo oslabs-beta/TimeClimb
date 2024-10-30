@@ -7,7 +7,7 @@ import { setBubblePopup } from '../reducers/dataSlice';
 import { Background } from '@xyflow/react';
 // import { selectData } from '../reducers/dataSlice';
 
-function StepDataVisualization() {
+export default function StepDataVisualization() {
   const canvasRef = useRef(null);
   const chartInstance = useRef(null);
   const latency = useSelector((state: RootState) => state.data.chartLatencies);
@@ -113,5 +113,3 @@ function StepDataVisualization() {
     </div>
   );
 }
-
-export default StepDataVisualization;
