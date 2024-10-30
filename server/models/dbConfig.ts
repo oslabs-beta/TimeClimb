@@ -12,7 +12,7 @@ const knexDbConfig: Knex.Config = {
     database: "time_climb",
   },
   pool: { min: 2, max: 10 }, // can be optimized later, these are default values
-  debug: true,
+  // debug: true,
 };
 
 export default knexDbConfig;
