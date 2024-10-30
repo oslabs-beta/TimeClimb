@@ -16,7 +16,7 @@ import {
   FilteredLogEvent,
 } from "@aws-sdk/client-cloudwatch-logs";
 import { fromEnv } from "@aws-sdk/credential-providers";
-import { createTracker, Tracker } from "./Tracker";
+import { createTracker, Tracker } from "./Trackers";
 import { createStepFunction } from "./StepFunction";
 
 /**

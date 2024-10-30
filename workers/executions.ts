@@ -72,7 +72,6 @@ const upsertStepFunctionLatency = async (
   startTime: Moment,
   endTime: Moment
 ) => {
-  // insert or update the average data for the overall step function
   if (stepFunctionCurrentLatencyData) {
     const [newAverage, newExecutions] = await calculateNewLatencyData(
       stepFunctionCurrentLatencyData.average,
@@ -115,7 +114,6 @@ const upsertStepLatencies = async (
   startTime: Moment,
   endTime: Moment
 ) => {
-  // insert or update the calcualted average for each step
   const stepsCurrentLatencyObject: StepCurrentLatencies = {};
   stepsCurrentLatencyRows.forEach((row) => {
     stepsCurrentLatencyObject[row.step_id] = {

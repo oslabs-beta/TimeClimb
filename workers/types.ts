@@ -1,6 +1,6 @@
 export interface Executions {
   // step function execution arn as key
-  [key: string]: {
+  [executionArn: string]: {
     logStreamName: string;
     events: Event[];
     eventsFound?: number;
@@ -17,7 +17,7 @@ export interface Event {
 }
 
 export interface FormattedSteps {
-  [key: string]: {
+  [stepName: string]: {
     type: string;
     stepId: number;
   };
@@ -27,7 +27,7 @@ export interface LatencyData {
   executions: number;
   stepFunctionLatencySum: number;
   steps: {
-    [key: string]: {
+    [stepName: string]: {
       executions: number;
       sum: number;
     };
@@ -35,7 +35,7 @@ export interface LatencyData {
 }
 
 export interface StepCurrentLatencies {
-  [key: string]: {
+  [stepName: string]: {
     average: number;
     executions: number;
     latencyId: number;
