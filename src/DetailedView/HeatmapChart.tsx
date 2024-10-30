@@ -49,17 +49,50 @@ function HeatmapChart() {
 
   const currentData = dataset && dataset.length > 0 ? dataset : placeholderData;
 
-  useEffect(() => {
-    if (!currentData || currentData.length === 0 || !currentData[0].steps)
-      return;
+  function generateLast24Hours() {
+    return Array.from({ length: 24 }, (_, i) =>
+      moment()
+        .subtract(23 - i, 'hours')
+        .format('HH:mm')
+    );
+  }
 
-    let xValues = currentData.map((set) => moment(set.date).format('HH:mm'));
+  function generateLast7Days() {
+    return Array.from({ length: 7 }, (_, i) =>
+      moment()
+        .subtract(6 - i, 'days')
+        .format('MM/DD')
+    );
+  }
+  function generateLast12Weeks() {
+    return Array.from({ length: 12 }, (_, i) =>
+      moment()
+        .subtract(11 - i, 'weeks')
+        .format('MM/DD')
+    );
+  }
+
+  function generateLast12Months() {
+    return Array.from({ length: 12 }, (_, i) =>
+      moment()
+        .subtract(11 - i, 'months')
+        .format('MM/YYYY')
+    );
+  }
+
+  useEffect(() => {
+    if (!currentData || currentData.length === 0) return;
+    let xValues;
+    // let xValues = currentData.map((set) => moment(set.date).format('HH:mm'));
+    if (timePeriod === 'hours') {
+      xValues = generateLast24Hours();
+    }
     if (timePeriod === 'days') {
-      xValues = currentData.map((set) => moment(set.date).format('MM/DD'));
+      xValues = generateLast7Days();
     } else if (timePeriod === 'weeks') {
-      xValues = currentData.map((set) => moment(set.date).format('MM/DD'));
+      xValues = generateLast12Weeks();
     } else if (timePeriod === 'months') {
-      xValues = currentData.map((set) => moment(set.date).format('MM/YYYY'));
+      xValues = generateLast12Months();
     }
 
     const addLineBreaks = (label: string, maxLength: number) => {
@@ -78,19 +111,17 @@ function HeatmapChart() {
 
       return { original: label, processed: lines.join('<br>') };
     };
-
-    const yValues = Object.keys(currentData[0].steps || {}).map((label) =>
+    const validData = currentData.find((set) => set.steps);
+    const yValues = Object.keys(validData.steps).map((label) =>
       addLineBreaks(label, 15)
     );
-    console.log('Yvalues: ', yValues);
-    console.log('CurrentData: ', currentData);
     const zValues = currentData.map((set) =>
       yValues.map((step) => {
         /*set.steps[step.original]?.average || 0*/
-        if (set.steps) {
+        if (set.steps && set.steps[step.original]) {
           return set.steps[step.original].average;
         }
-        return 0;
+        return null;
       })
     );
 
@@ -138,6 +169,11 @@ function HeatmapChart() {
         title: 'Step Function Action',
       },
       width: 500,
+      // plot_bgcolor: 'black',
+      paper_bgcolor: 'rgb(172,104,197)',
+      //   'opacity-80 bg-gradient-to-br from-purple-600 to-fuchsia-400 rounded-3xl mx-10',
+      // plot_bgcolor: 'rgba(0,0,0,0)',
+      // paper_bgcolor: 'rgba(0,0,0,0)',
     };
 
     if (plotRef.current) {
@@ -152,7 +188,7 @@ function HeatmapChart() {
   }, [currentData, timePeriod]);
 
   return (
-    <div className='rounded bg-gray-600'>
+    <div>
       <div ref={plotRef} />
     </div>
   );
