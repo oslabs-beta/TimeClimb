@@ -3,7 +3,7 @@ import { Knex } from "knex";
 import definitions from "./utils/step-function-definitions";
 import { StepFunctionsTable } from "../../server/models/types";
 
-// export async function seed(knex: Knex): Promise<void> {
+export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
   await knex("step_functions").del();
 
