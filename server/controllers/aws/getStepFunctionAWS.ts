@@ -3,7 +3,9 @@ import { SFNClient, DescribeStateMachineCommand } from "@aws-sdk/client-sfn";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import stepFunctionsModel from "../../models/stepFunctionsModel";
 import type { Request, Response, NextFunction } from "express";
-import type { StepFunctionsTable } from "../../models/types";
+import stepsModel from "../../models/stepsModel";
+import parseStepFunction from "../../utils/parseStepFunction";
+import { NewStepRow } from "../../models/types";
 
 const getStateMachineDetails = async (
   req: Request,
@@ -28,17 +30,27 @@ const getStateMachineDetails = async (
     const describeStateMachine = new DescribeStateMachineCommand({
       stateMachineArn,
     });
-    //create new instance of sfn
+
+    // arn has region after 3rd ':'
+    const region: string = stateMachineArn.split(":")[3];
     const sfn = new SFNClient({
-      region: stateMachineArn.split(":")[3],
+      region,
       credentials: fromEnv(),
     });
-    // sfn.config.region = stateMachineArn.split(":")
+
     const response = await sfn.send(describeStateMachine);
-    // console.log("getStateMachineDetails response", response);
     const addStepFunction = await stepFunctionsModel.addToStepFunctionTable(
-      response
+      response,
+      region
     );
+
+    const aslObject = JSON.parse(response.definition);
+    const stepRows = await parseStepFunction(
+      aslObject,
+      addStepFunction.step_function_id
+    );
+
+    await stepsModel.insertSteps(stepRows);
 
     res.locals.newTable = addStepFunction;
     return next();
