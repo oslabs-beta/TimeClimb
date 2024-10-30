@@ -82,10 +82,19 @@ const updateOldestExecutionTime = async (
   }
 };
 
+const insertTracker = async (row: StepFunctionTrackersTable): Promise<void> => {
+  try {
+    await db<StepFunctionTrackersTable>("step_function_trackers").insert(row);
+  } catch (err) {
+    console.log(`Error inserting tracker ${err}`);
+  }
+};
+
 const stepFunctionTrackersModel = {
   getAllTrackerDataWithNames,
   updateNewestExecutionTime,
   updateOldestExecutionTime,
+  insertTracker,
 };
 
 export default stepFunctionTrackersModel;

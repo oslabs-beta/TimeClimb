@@ -52,8 +52,8 @@ const processResponses = async (
       startTime,
       endTime
     );
-    await tracker.updateTrackerTimes(startTime, endTime);
   }
+  await tracker.updateTrackerTimes(startTime, endTime);
 };
 
 /**
@@ -62,7 +62,6 @@ const processResponses = async (
  * @returns undefined
  */
 const getCloudWatchData = async (): Promise<void> => {
-  console.log("Getting Cloudwatch data");
   // need the tracker information to see what time period of data to retreive
   const trackerDbRows =
     await stepFunctionTrackersModel.getAllTrackerDataWithNames();
@@ -133,7 +132,6 @@ const getCloudWatchData = async (): Promise<void> => {
       throttledFilteredLogsRequest(tracker);
     }
   }
-  console.log(`Process complete`);
   return;
 };
 

@@ -16,6 +16,7 @@ import type { Request, Response, NextFunction } from "express";
 import stepsModel from "../../models/stepsModel";
 import parseStepFunction from "../../utils/parseStepFunction";
 import { NewStepRow } from "../../models/types";
+import stepFunctionTrackersModel from "../../models/stepFunctionTrackersModel";
 
 /**
  * Gets the creation time for a log group.  This helps determine how far back to
@@ -111,13 +112,10 @@ const getStepFunctionAWS = async (
     // limit max log ingestion to one week ago
     const creationDate = moment(logGroupCreationTime).startOf("hour").utc();
     const oneWeekAgo = moment().subtract(1, "week").startOf("hour").utc();
-    let newerDate: Moment;
-    if (oneWeekAgo.isBefore(creationDate)) {
-      newerDate = creationDate;
-    } else {
-      newerDate = oneWeekAgo;
-    }
-    console.log(newerDate.toString());
+
+    const newerDate = oneWeekAgo.isBefore(creationDate)
+      ? creationDate
+      : oneWeekAgo;
 
     const addStepFunction = await stepFunctionsModel.addToStepFunctionTable(
       response,
@@ -131,6 +129,13 @@ const getStepFunctionAWS = async (
     );
 
     await stepsModel.insertSteps(stepRows);
+
+    await stepFunctionTrackersModel.insertTracker({
+      step_function_id: addStepFunction.step_function_id,
+      log_group_arn: logGroupArn,
+      tracker_start_time: newerDate.toISOString(),
+      active: true,
+    });
 
     res.locals.newTable = addStepFunction;
     return next();
