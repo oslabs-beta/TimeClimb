@@ -1,15 +1,15 @@
-// we use this store database results by time for faster future lookup
+// we use this to store database results by time for faster future lookup
 export interface SFLatenciesByTime {
-  [key: string]: {
+  [isoTimeString: string]: {
     stepFunctionId: number;
     average: number;
     executions?: number;
   };
 }
 
-// we use this store database results by time for faster future lookup
+// we use this to store database results by time for faster future lookup
 export interface StepLatenciesByTime {
-  [key: string]: {
+  [isoTimeString: string]: {
     stepId?: number;
     average?: number;
     executions?: number;
@@ -20,12 +20,11 @@ export interface StepLatenciesByTime {
 export type TimePeriod = "hours" | "days" | "weeks" | "months";
 
 // api data reponse to average-latencies endpoints
-
 export interface AverageLatenciesResponse {
   date?: string;
   stepFunctionAverageLatency?: number;
   steps?: {
-    [key: string]: {
+    [stepName: string]: {
       average?: number;
       executions?: number;
     };
