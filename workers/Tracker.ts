@@ -128,7 +128,7 @@ const trackerPrototype = {
   },
   /**
    * Updates the tracker table in the database with the newest and oldest logs
-   * scanned of appropriate.
+   * scanned if appropriate.
    * @param this Tracker object
    * @param startTime Moment object for the oldest update
    * @param endTime Moment object for the newest update
@@ -142,24 +142,20 @@ const trackerPrototype = {
       this.trackerDbRow.newest_execution_time === null ||
       moment(this.trackerDbRow.newest_execution_time).isBefore(endTime)
     ) {
-      const updatedRows =
-        await stepFunctionTrackersModel.updateNewestExecutionTime(
-          this.trackerDbRow.tracker_id,
-          endTime.toISOString()
-        );
-      console.log("updated this many new date rows", updatedRows);
+      await stepFunctionTrackersModel.updateNewestExecutionTime(
+        this.trackerDbRow.tracker_id,
+        endTime.toISOString()
+      );
     }
 
     if (
       this.trackerDbRow.oldest_execution_time === null ||
       moment(this.trackerDbRow.oldest_execution_time).isAfter(startTime)
     ) {
-      const updatedRows =
-        await stepFunctionTrackersModel.updateOldestExecutionTime(
-          this.trackerDbRow.tracker_id,
-          startTime.toISOString()
-        );
-      console.log("updated this many old date rows", updatedRows);
+      await stepFunctionTrackersModel.updateOldestExecutionTime(
+        this.trackerDbRow.tracker_id,
+        startTime.toISOString()
+      );
     }
   },
 };

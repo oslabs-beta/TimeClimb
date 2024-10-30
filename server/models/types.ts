@@ -16,21 +16,6 @@ export interface StepFunctionsTable {
   parent_id?: number | null;
 }
 
-export interface NewStepFucntionRow {
-  step_function_id?: number;
-  name: string;
-  arn: string;
-  region: string;
-  type: string;
-  definition: string;
-  description?: string | null;
-  comment?: string | null;
-  has_versions: boolean;
-  is_version: boolean;
-  revision_id?: string;
-  parent_id?: number | null;
-}
-
 export interface StepsTable {
   step_id?: number;
   step_function_id?: number;

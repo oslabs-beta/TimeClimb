@@ -1,5 +1,4 @@
 import "dotenv/config";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 import { Moment } from "moment";
 import Bottleneck from "bottleneck";
 import stepFunctionTrackersModel from "../server/models/stepFunctionTrackersModel";
@@ -20,7 +19,7 @@ import { createTracker, Tracker } from "./Tracker";
 import { createStepFunction } from "./StepFunction";
 
 /**
- * Processed the aws api responses by grouping events by execution arn and
+ * Processes the aws api responses by grouping events by execution arn and
  * calculating the latencies for each execution.  Also adds the latency data to
  * the database and stores the hour as processed in the database.
  * @param tracker Tracker object
@@ -63,8 +62,7 @@ const processResponses = async (
  * @returns undefined
  */
 const getCloudWatchData = async (): Promise<void> => {
-  console.log("Getting cloud watch data.");
-  let totalRequests = 0;
+  console.log("Getting Cloudwatch data");
   // need the tracker information to see what time period of data to retreive
   const trackerDbRows =
     await stepFunctionTrackersModel.getAllTrackerDataWithNames();
@@ -92,7 +90,6 @@ const getCloudWatchData = async (): Promise<void> => {
       const response = await filteredLogsRequestBottleneck.schedule(
         async () => {
           const response = await getFilteredLogEvents(tracker);
-          totalRequests++;
           return response;
         }
       );
@@ -136,7 +133,7 @@ const getCloudWatchData = async (): Promise<void> => {
       throttledFilteredLogsRequest(tracker);
     }
   }
-  console.log(`Completed after making ${totalRequests} total api calls.`);
+  console.log(`Process complete`);
   return;
 };
 

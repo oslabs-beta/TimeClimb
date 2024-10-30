@@ -7,7 +7,7 @@ import stepsModel from "../../models/stepsModel";
 import parseStepFunction from "../../utils/parseStepFunction";
 import { NewStepRow } from "../../models/types";
 
-const getStateMachineDetails = async (
+const getStepFunctionAWS = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -45,7 +45,7 @@ const getStateMachineDetails = async (
     );
 
     const aslObject = JSON.parse(response.definition);
-    const stepRows = await parseStepFunction(
+    const stepRows: NewStepRow[] = await parseStepFunction(
       aslObject,
       addStepFunction.step_function_id
     );
@@ -59,4 +59,4 @@ const getStateMachineDetails = async (
   }
 };
 
-export default getStateMachineDetails;
+export default getStepFunctionAWS;
