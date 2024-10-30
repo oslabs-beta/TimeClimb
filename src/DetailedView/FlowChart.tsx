@@ -11,12 +11,12 @@ function FlowChart() {
     (state: RootState) => state.data.currentDefinition
   );
   return (
-    <div className='opacity-80 bg-gradient-to-br from-purple-600 to-fuchsia-400 rounded-3xl mx-10 flex flex-col items-center'>
+    <div className='opacity-80 bg-gradient-to-br from-purple-600 to-fuchsia-400 rounded-3xl mx-10 flex flex-col items-center shadow-inner'>
       {/* This is the flow chart */}
-      <FlowChartView size='size-124'definition={definition} />
+      <FlowChartView size='size-124' definition={definition} />
       {/* <FlowChartDataSelector /> */}
       <StepFunctionSelector />
-      <TimeSlice/>
+      <TimeSlice />
     </div>
   );
 }

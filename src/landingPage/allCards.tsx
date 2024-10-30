@@ -64,16 +64,18 @@ function AllCards() {
 
   let filteredCards = [];
 
-  if (card.currentRegion) {
-    filteredCards = cards.filter((c) => c.region === card.currentRegion);
-  } else filteredCards = cards;
+  // if (card.currentRegion) {
+  //   filteredCards = cards.filter((c) => c.region === card.currentRegion);
+  // } else filteredCards = cards;
+
+  // console.log('filteredcards: ', filteredCards);
 
   // console.log('filter', filteredCards)
   //if (filteredCards.length > 0) console.log(filteredCards);
 
   return (
     <div className='grid grid-cols-2 gap-x-20 gap-y-20 h-fit'>
-      {filteredCards.map((card, index) => (
+      {cards.map((card, index) => (
         <FunctionCards
           key={index}
           name={card.name}
