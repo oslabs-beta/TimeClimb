@@ -8,6 +8,11 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["server/**/*", "workers/**/*", "database/migrations"],
+  "include": [
+    "server/**/*",
+    "workers/**/*",
+    "database/migrations",
+    "knexfile.ts"
+  ],
   "exclude": ["node_modules", "src", "database/docs"]
 }

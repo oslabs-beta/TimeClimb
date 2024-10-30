@@ -16,17 +16,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static("src"));
-app.get("/home", (req: Request, res: Response) => {
-  return res.status(200).sendFile("/home/pauluhlenkott/TimeClimb/index.html");
-});
-app.get("/src/main.tsx", (req: Request, res: Response) => {
-  return res.status(200).sendFile("/home/pauluhlenkott/TimeClimb/src/main.js");
-});
-// API router
+// api router
 app.use("/api", apiRouter);
 
-// for react app - not yet implemented
+// react app
 app.use(clientRouter);
 
 app.use(

@@ -111,7 +111,7 @@ const getStepFunctionAWS = async (
 
     // limit max log ingestion to one week ago
     const creationDate = moment(logGroupCreationTime).startOf("hour").utc();
-    const oneWeekAgo = moment().subtract(1, "day").startOf("hour").utc();
+    const oneWeekAgo = moment().subtract(1, "week").startOf("hour").utc();
 
     const newerDate = oneWeekAgo.isBefore(creationDate)
       ? creationDate

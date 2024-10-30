@@ -86,7 +86,6 @@ const getStepFunctionLatenciesMonthly = async (
       .where("step_function_id", step_function_id)
       .groupBy(db.raw("DATE_TRUNC('month', \"start_time\")"))
       .orderBy("start_time");
-    console.log(latenciesObj);
     return latenciesObj;
   } catch (err) {
     return err;
