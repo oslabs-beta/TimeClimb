@@ -1,11 +1,66 @@
 import "dotenv/config";
-import { SFNClient, DescribeStateMachineCommand } from "@aws-sdk/client-sfn";
+import moment, { Moment } from "moment";
+import {
+  SFNClient,
+  DescribeStateMachineCommand,
+  LoggingConfiguration,
+} from "@aws-sdk/client-sfn";
+import {
+  CloudWatchLogsClient,
+  DescribeLogGroupsCommand,
+  DescribeLogGroupsCommandInput,
+} from "@aws-sdk/client-cloudwatch-logs";
 import { fromEnv } from "@aws-sdk/credential-providers";
 import stepFunctionsModel from "../../models/stepFunctionsModel";
 import type { Request, Response, NextFunction } from "express";
 import stepsModel from "../../models/stepsModel";
 import parseStepFunction from "../../utils/parseStepFunction";
 import { NewStepRow } from "../../models/types";
+
+/**
+ * Gets the creation time for a log group.  This helps determine how far back to
+ * query logs for step function executions.
+ *
+ * @param {string} logGroupName The log group name to filter results by,
+ * without the full arn
+ * @returns {Promise<number | undefined>}Promise that resolves to a number,
+ * which is an epoch time in milliseconds, or undefined
+ */
+const getLogGroupCreationTime = async (
+  logGroupName: string,
+  region: string
+): Promise<number | undefined> => {
+  const client = new CloudWatchLogsClient({
+    region,
+    credentials: fromEnv(),
+  });
+
+  const params: DescribeLogGroupsCommandInput = {
+    logGroupNamePrefix: logGroupName,
+  };
+
+  const command = new DescribeLogGroupsCommand(params);
+  const response = await client.send(command);
+  console.log("DescribeLogGroupsCommand Response", response);
+  const creationTime = response?.logGroups[0]?.creationTime;
+  return creationTime;
+};
+
+const getLoggingConfiguration = async (
+  config: LoggingConfiguration
+): Promise<string[]> => {
+  let logGroupArn = "";
+  let logGroupName = "";
+  for (const logs of config.destinations) {
+    if (logs.cloudWatchLogsLogGroup.logGroupArn) {
+      logGroupArn = logs.cloudWatchLogsLogGroup.logGroupArn;
+      logGroupName = logGroupArn.split("log-group:")[1];
+      if (logGroupName.endsWith(":*")) logGroupName = logGroupName.slice(0, -2);
+      break;
+    }
+  }
+  return [logGroupArn, logGroupName];
+};
 
 const getStepFunctionAWS = async (
   req: Request,
@@ -39,6 +94,31 @@ const getStepFunctionAWS = async (
     });
 
     const response = await sfn.send(describeStateMachine);
+
+    const [logGroupArn, logGroupName] = await getLoggingConfiguration(
+      response.loggingConfiguration
+    );
+
+    if (logGroupArn.length <= 0 || logGroupName.length <= 0) {
+      return next("No log group found for step function");
+    }
+
+    const logGroupCreationTime = await getLogGroupCreationTime(
+      logGroupName,
+      region
+    );
+
+    // limit max log ingestion to one week ago
+    const creationDate = moment(logGroupCreationTime).startOf("hour").utc();
+    const oneWeekAgo = moment().subtract(1, "week").startOf("hour").utc();
+    let newerDate: Moment;
+    if (oneWeekAgo.isBefore(creationDate)) {
+      newerDate = creationDate;
+    } else {
+      newerDate = oneWeekAgo;
+    }
+    console.log(newerDate.toString());
+
     const addStepFunction = await stepFunctionsModel.addToStepFunctionTable(
       response,
       region
