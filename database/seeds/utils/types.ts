@@ -12,7 +12,8 @@ export interface StepFunctionsTable {
   comment?: string | null;
   has_versions: boolean;
   is_version: boolean;
-  revision_id?: number;
+  revision_id?: string;
+  log_group?: string;
   parent_id?: number | null;
 }
 
