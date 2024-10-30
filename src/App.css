@@ -26,12 +26,12 @@ body {
   /* background-color: rgb(247, 247, 247); */
 }
 
-.react-flow .react-flow__controls{
- color: black
+.react-flow .react-flow__controls {
+  color: black;
 }
 
-.plot-container{
-  border-radius: .5rem;
+.plot-container {
+  border-radius: 0.5rem;
 }
 
 .landingPage {
@@ -157,7 +157,7 @@ body {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 25px;
+  width: 10px;
   height: 25px;
   background: #4e77ff;
   cursor: pointer;
@@ -207,9 +207,6 @@ height: auto;
   background-color: blue;
 } */
 
-
-
-
 .popupLineGraph {
   position: fixed;
   top: 50%;
@@ -222,10 +219,10 @@ height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80vw; 
-  max-width: 800px; 
-  height: 55vh; 
-  max-height: 600px
+  width: 80vw;
+  max-width: 800px;
+  height: 55vh;
+  max-height: 600px;
 }
 
 .popupOverlay {
@@ -240,5 +237,5 @@ height: auto;
 
 .popupLineGraph button {
   border-radius: 5px;
-  width: 25%
+  width: 25%;
 }
