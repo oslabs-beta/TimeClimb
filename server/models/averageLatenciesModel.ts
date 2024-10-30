@@ -1,12 +1,12 @@
 import db from "./db";
-import moment from "moment";
-import { StepFunctionAverageLatenciesTable } from "./types";
+import { AverageLatencies, StepFunctionAverageLatenciesTable } from "./types";
 
+//hourly latencies
 const getStepFunctionLatencies = async (
   step_function_id: number,
   start_time: string,
   end_time: string
-) => {
+): Promise<AverageLatencies[]> => {
   try {
     const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
       "step_function_average_latencies"
@@ -21,31 +21,76 @@ const getStepFunctionLatencies = async (
   }
 };
 
-const averageLatenciesModel = {
-  // methods
-  getStepFunctionLatencies,
+//daily latencies
+const getStepFunctionLatenciesDaily = async (
+  step_function_id: number,
+  start_time: string,
+  end_time: string
+): Promise<AverageLatencies[]> => {
+  try {
+    const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
+      "step_function_average_latencies"
+    )
+      .select(db.raw("DATE(start_time) AS start_time"))
+      .avg("average AS average")
+      .whereBetween("start_time", [start_time, end_time])
+      .where("step_function_id", step_function_id)
+      .groupBy(db.raw("DATE(start_time)"))
+      .orderBy("start_time");
+    return latenciesObj;
+  } catch (err) {
+    console.log(`Error getting latencies for step function: ${err}`);
+  }
+};
+//weekly latencies
+const getStepFunctionLatenciesWeekly = async (
+  step_function_id: number,
+  start_time: string,
+  end_time: string
+): Promise<AverageLatencies[]> => {
+  try {
+    const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
+      "step_function_average_latencies"
+    )
+      .select(db.raw("DATE_TRUNC('week', \"start_time\") as start_time"))
+      .avg("average AS average")
+      .whereBetween("start_time", [start_time, end_time])
+      .where("step_function_id", step_function_id)
+      .groupBy(db.raw("DATE_TRUNC('week', \"start_time\")"))
+      .orderBy("start_time");
+    return latenciesObj;
+  } catch (err) {
+    return err;
+  }
+};
+//monthly latencies
+const getStepFunctionLatenciesMonthly = async (
+  step_function_id: number,
+  start_time: string,
+  end_time: string
+): Promise<AverageLatencies[]> => {
+  try {
+    const latenciesObj = await db<StepFunctionAverageLatenciesTable>(
+      "step_function_average_latencies"
+    )
+      .select(db.raw("DATE_TRUNC('month', \"start_time\") AS start_time"))
+      .avg("average AS average")
+      .whereBetween("start_time", [start_time, end_time])
+      .where("step_function_id", step_function_id)
+      .groupBy(db.raw("DATE_TRUNC('month', \"start_time\")"))
+      .orderBy("start_time");
+    console.log(latenciesObj);
+    return latenciesObj;
+  } catch (err) {
+    return err;
+  }
 };
 
-// const endOfYesterday = moment.utc().subtract(1, 'day').endOf("day");
-// const startOfYesterday = moment.utc().subtract(1, 'day').startOf("day");
+const averageLatenciesModel = {
+  getStepFunctionLatencies,
+  getStepFunctionLatenciesDaily,
+  getStepFunctionLatenciesWeekly,
+  getStepFunctionLatenciesMonthly,
+};
 
-// async function whatever() {
-//   console.log(
-//     await averageLatenciesModel.getStepFunctionLatencies(
-//       1,
-//       startOfYesterday.toISOString(),
-//       endOfYesterday.toISOString()
-//     )
-//   );
-// }
-//whatever();
 export default averageLatenciesModel;
-
-// export interface StepFunctionAverageLatenciesTable {
-//   latency_id?: number;
-//   step_function_id: number;
-//   average: number;
-//   executions: number;
-//   start_time: string;
-//   end_time: string;
-// }

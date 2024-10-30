@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .chartBubble {
   height: 100px;
   width: 150px;
@@ -18,7 +22,16 @@ body {
   margin: 0;
   color: var(--main-white);
   background-color: var(--main-black);
+  overflow-x: hidden;
   /* background-color: rgb(247, 247, 247); */
+}
+
+.react-flow .react-flow__controls {
+  color: black;
+}
+
+.plot-container {
+  border-radius: 0.5rem;
 }
 
 .landingPage {
@@ -68,6 +81,8 @@ body {
 .addCard .add {
   height: 100px;
   width: 100px;
+  margin: 0px;
+  padding: 0%;
   background-color: var(--main-blue);
   opacity: 0.9;
   border-radius: 5px;
@@ -118,7 +133,7 @@ body {
 
 /* slider */
 .slidecontainer {
-  width: 75%;
+  width: 300px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -142,7 +157,7 @@ body {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 25px;
+  width: 10px;
   height: 25px;
   background: #4e77ff;
   cursor: pointer;
@@ -167,11 +182,15 @@ body {
 }
 
 .dv-btn {
+  display: block;
   background-color: var(--main-blue);
   opacity: 0.9;
   height: 30px;
   width: 60px;
   margin: 5px;
+  border-radius: 5px;
+  float: right;
+  position: relative;
   box-shadow: 3px 3px 0px 0px black;
 }
 .detailedView {
@@ -184,7 +203,39 @@ body {
   height: 50px; */
 }
 /* #detailed-view{
-
-  width: 40%;
+height: auto;
   background-color: blue;
 } */
+
+.popupLineGraph {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 5px;
+  padding: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80vw;
+  max-width: 800px;
+  height: 55vh;
+  max-height: 600px;
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+}
+
+.popupLineGraph button {
+  border-radius: 5px;
+  width: 25%;
+}

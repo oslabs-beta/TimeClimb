@@ -34,7 +34,7 @@ app.get('/src/main.tsx', (req: Request, res: Response) => {
 // API router
 app.use('/api', apiRouter);
 
-// for react app - not yet implemented
+// react app
 app.use(clientRouter);
 
 app.use(

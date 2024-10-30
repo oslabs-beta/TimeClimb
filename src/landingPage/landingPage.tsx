@@ -24,8 +24,7 @@ function LandingPage() {
 
   return (
     <div className='landingPage'>
-      <NavBar />
-      <FilterRegions />
+      {/* <FilterRegions /> */}
       <AddCard />
       {/* <StepFunctionInput /> */}
       <AllCard />

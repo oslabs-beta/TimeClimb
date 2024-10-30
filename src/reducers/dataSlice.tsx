@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../store.tsx';
 import { StateEnteredEventDetailsFilterSensitiveLog } from '@aws-sdk/client-sfn';
+import { current } from '@reduxjs/toolkit';
 
 type stepfunction = {
   definition?: object;
@@ -21,19 +22,27 @@ interface dataState {
   ];
   latency: any;
   chartLatencies: number[];
+  time: string;
+  bubblePopup: boolean;
+  bubbleName: string;
 }
 
 const initialState: dataState = {
   stepfunctions: [],
-  currentDefinition: {},
-  currentDefinitionID: 0,
-  latencies: [
-    {
-      steps: null,
-    },
-  ],
+  currentDefinition: JSON.parse(
+    localStorage.getItem('currentDefinition') || '{}'
+  ),
+  currentDefinitionID:
+    JSON.parse(localStorage.getItem('currentDefinitionID') /*|| '0'*/) || 0,
+  latencies: JSON.parse(
+    localStorage.getItem('latencies') /*|| '[{steps: null}]'*/
+  ) || [{ steps: null }],
   latency: {},
   chartLatencies: [],
+  time:
+    JSON.parse(localStorage.getItem('timeToggle') /*|| 'hours'*/) || 'hours',
+  bubblePopup: false,
+  bubbleName: '',
 };
 
 export const dataSlice = createSlice({
@@ -44,18 +53,25 @@ export const dataSlice = createSlice({
       //console.log(action.payload);
       state.latencies = action.payload;
       if (state.latencies.length > 0) state.latency = state.latencies[0];
+      localStorage.setItem('latencies', JSON.stringify(action.payload));
     },
     setLatency: (state, action) => {
       if (state.latencies.length > 0)
         state.latency = state.latencies[action.payload];
     },
     setStepFunction: (state, action) => {
-      console.log('Adding step function definion');
+      // console.log('Adding step function definion');
       state.currentDefinition = action.payload;
-      console.log(state.currentDefinition);
+      localStorage.setItem('currentDefinition', JSON.stringify(action.payload));
+
+      // console.log(state.currentDefinition);
     },
     setDefinitionID: (state, action) => {
       state.currentDefinitionID = action.payload;
+      localStorage.setItem(
+        'currentDefinitionID',
+        JSON.stringify(action.payload)
+      );
     },
     getStepFunctions: (state, action) => {
       state.stepfunctions = action.payload;
@@ -63,19 +79,29 @@ export const dataSlice = createSlice({
       //   state.currentDefinition = state.stepfunctions[0].definition;
     },
     appendStepFunction: (state, action) => {
-      console.log('Appending step function');
       state.stepfunctions.push(action.payload);
-      console.log(state.stepfunctions);
     },
     setChartLatencies: (state, action) => {
       if (action.payload) {
-        const newChart: number[] = [];
+        const newChart: any[] = [];
         state.latencies.forEach((ele) => {
-          //console.log(ele);
-          newChart.push(ele.steps[action.payload].average);
+          if (ele.steps) {
+            if (ele.steps[action.payload])
+              newChart.push(ele.steps[action.payload].average);
+          } else newChart.push(null);
         });
         state.chartLatencies = newChart;
       }
+    },
+    setTimeToggle: (state, action) => {
+      state.time = action.payload;
+      localStorage.setItem('timeToggle', JSON.stringify(action.payload));
+    },
+    setBubblePopup: (state, action) => {
+      state.bubblePopup = action.payload;
+    },
+    setBubbleName: (state, action) => {
+      state.bubbleName = action.payload;
     },
   },
 });
@@ -94,9 +120,8 @@ export const getStepFunctionList = createAsyncThunk(
 
 export const getLatencies = createAsyncThunk(
   'data/getLatencies',
-  async (id: number) => {
-    console.log(`Geeting latency for id: ${id}`);
-    const res = await fetch(`/api/average-latencies/${id}`);
+  async ({ id, time }: { id: number; time: string }) => {
+    const res = await fetch(`/api/average-latencies/${id}/${time}`);
     if (!res.ok) {
       throw new Error('Cannot fetch stepfunctions');
     }
@@ -131,10 +156,11 @@ export const {
   getStepFunctions,
   appendStepFunction,
   setChartLatencies,
+  setTimeToggle,
+  setBubblePopup,
+  setBubbleName,
 } = dataSlice.actions;
 
-export const selectData = (state: RootState) => {
-  state.data;
-};
+export const selectData = (state: RootState) => state.data;
 
 export default dataSlice.reducer;

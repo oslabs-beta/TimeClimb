@@ -12,12 +12,19 @@ export interface StepFunctionsTable {
   comment?: string | null;
   has_versions: boolean;
   is_version: boolean;
-  revision_id?: number;
+  revision_id?: string;
   parent_id?: number | null;
 }
 
 export interface StepsTable {
   step_id?: number;
+  step_function_id?: number;
+  name: string;
+  type: string;
+  comment?: string | null;
+}
+
+export interface NewStepRow {
   step_function_id: number;
   name: string;
   type: string;
@@ -42,14 +49,19 @@ export interface StepFunctionAverageLatenciesTable {
   end_time: string;
 }
 
-export interface StepFunctionMonitoringTable {
-  id?: number;
+export interface StepFunctionTrackersTable {
+  tracker_id?: number;
   step_function_id: number;
-  newest_update: string;
-  oldest_update: string;
-  start_time: string;
-  end_time?: string | null;
+  newest_execution_time?: string | null;
+  oldest_execution_time?: string | null;
+  tracker_start_time?: string | null;
+  tracker_end_time?: string | null;
+  log_group_arn: string;
   active?: boolean;
+}
+
+export interface NewTrackerRowResult {
+  tracker_id: number;
 }
 
 export interface StepFunctionAliasesTable {
@@ -64,4 +76,51 @@ export interface AliasRoutesTable {
   alias_id: number;
   step_function_id: number;
   weight: number;
+}
+
+export interface IncompleteStreamsTable {
+  stream_id?: number;
+  step_function_id: number;
+  stream_name: string;
+  log_group_arn: string;
+}
+
+export type TrackerStepFunctionsJoinTable = StepFunctionTrackersTable &
+  StepFunctionsTable;
+//for step average latencies from database
+export interface StepAverageLatencies {
+  latency_id?: number;
+  step_id: number;
+  average: number;
+  start_time: string;
+  executions?: number;
+}
+
+export interface AverageLatencies {
+  latency_id?: number;
+  step_function_id: number;
+  average: number;
+  start_time: string;
+  executions?: number;
+}
+
+export type StepsByStepFunctionId = Pick<
+  StepsTable,
+  "step_id" | "name" | "type" | "step_function_id" | "comment"
+>;
+
+export interface LatenciesObj {
+  date: string;
+  stepFunctionAverageLatency: number;
+  steps: {
+    [key: string]: { average?: number };
+  };
+}
+
+//for stepFunctionsApiController.getStepFunctions
+export interface StepFunctionSubset {
+  step_function_id?: number;
+  name: string;
+  definition: string;
+  description?: string | null;
 }
