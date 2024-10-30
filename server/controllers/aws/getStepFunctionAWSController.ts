@@ -1,5 +1,5 @@
 import "dotenv/config";
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 import {
   SFNClient,
   DescribeStateMachineCommand,
