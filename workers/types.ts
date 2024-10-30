@@ -11,7 +11,7 @@ export interface Executions {
 export interface Event {
   id: number;
   type: string;
-  name?: string; // some events like start and end dont hava name
+  name?: string; // some events like start and end dont have a name
   timestamp: number; // epoch milliseconds
   eventId: string; // actually a long string of numbers
 }
@@ -41,3 +41,5 @@ export interface StepCurrentLatencies {
     latencyId: number;
   };
 }
+
+export type JobQueue = () => Promise<void>;

@@ -25,7 +25,7 @@ export async function seed(knex: Knex): Promise<void> {
     {
       step_function_id: 2,
       name: "HelloWorld",
-      arn: process.env.HT_STEP_FUNCTION_ARN,
+      arn: "arn:aws:states:us-east-1:123456789012:stateMachine:HelloWorld",
       region: "us-east-1",
       type: "STANDARD",
       definition: definitions[1],
@@ -35,22 +35,9 @@ export async function seed(knex: Knex): Promise<void> {
       is_version: false,
       revision_id: "afq0c4c8a0b503b8059f2b9f876egg56",
     },
-    {
-      step_function_id: 3,
-      name: "HelloTest",
-      arn: process.env.HT_STEP_FUNCTION_ARN,
-      region: "us-east-1",
-      type: "STANDARD",
-      definition: definitions[2],
-      comment:
-        "A Hello World example demonstrating various state types of the Amazon States Language. It is composed of flow control states only, so it does not need resources to run.",
-      has_versions: false,
-      is_version: false,
-      revision_id: "afq0c4c8a0b503b8059f2b9f876egg56",
-    },
   ]);
 
   await knex.raw(`
-    SELECT setval('step_functions_step_function_id_seq', 3, true);
+    SELECT setval('step_functions_step_function_id_seq', 2, true);
   `);
 }

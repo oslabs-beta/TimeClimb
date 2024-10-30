@@ -111,7 +111,7 @@ const getStepFunctionAWS = async (
 
     // limit max log ingestion to one week ago
     const creationDate = moment(logGroupCreationTime).startOf("hour").utc();
-    const oneWeekAgo = moment().subtract(1, "week").startOf("hour").utc();
+    const oneWeekAgo = moment().subtract(1, "day").startOf("hour").utc();
 
     const newerDate = oneWeekAgo.isBefore(creationDate)
       ? creationDate
@@ -130,13 +130,14 @@ const getStepFunctionAWS = async (
 
     await stepsModel.insertSteps(stepRows);
 
-    await stepFunctionTrackersModel.insertTracker({
+    const { tracker_id } = await stepFunctionTrackersModel.insertTracker({
       step_function_id: addStepFunction.step_function_id,
       log_group_arn: logGroupArn,
       tracker_start_time: newerDate.toISOString(),
       active: true,
     });
-
+    res.locals.trackerId = tracker_id;
+    console.log("tracker_id", tracker_id);
     res.locals.newTable = addStepFunction;
     return next();
   } catch (error) {

@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
     table.text("comment");
     table.boolean("has_versions").notNullable().defaultTo(false);
     table.boolean("is_version").notNullable().defaultTo(false);
-    table.string("revision_id", 32);
+    table.string("revision_id");
     table.integer("parent_id").unsigned();
     table
       .foreign("parent_id")

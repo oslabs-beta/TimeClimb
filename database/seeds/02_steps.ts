@@ -81,65 +81,9 @@ export async function seed(knex: Knex): Promise<void> {
       name: "Hello World",
       type: "Pass",
     },
-
-    // begin of HelloTest step function steps
-    {
-      step_id: 13,
-      step_function_id: 3,
-      name: "Pass",
-      type: "Pass",
-    },
-    {
-      step_id: 14,
-      step_function_id: 3,
-      name: "Hello Test example?",
-      type: "Choice",
-    },
-    {
-      step_id: 15,
-      step_function_id: 3,
-      name: "Yes",
-      type: "Pass",
-    },
-    {
-      step_id: 16,
-      step_function_id: 3,
-      name: "No",
-      type: "Fail",
-    },
-    {
-      step_id: 17,
-      step_function_id: 3,
-      name: "Wait 3 sec",
-      type: "Wait",
-    },
-    {
-      step_id: 18,
-      step_function_id: 3,
-      name: "Parallel State",
-      type: "Parallel",
-    },
-    {
-      step_id: 19,
-      step_function_id: 3,
-      name: "Hello",
-      type: "Pass",
-    },
-    {
-      step_id: 20,
-      step_function_id: 3,
-      name: "Test",
-      type: "Pass",
-    },
-    {
-      step_id: 21,
-      step_function_id: 3,
-      name: "Hello Test",
-      type: "Pass",
-    },
   ]);
 
   await knex.raw(`
-    SELECT setval('steps_step_id_seq', 21, true);
+    SELECT setval('steps_step_id_seq', 12, true);
   `);
 }

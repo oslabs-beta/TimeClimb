@@ -3,6 +3,7 @@ import type {
   TrackerStepFunctionsJoinTable,
   StepFunctionsTable,
   StepFunctionTrackersTable,
+  NewTrackerRowResult,
 } from "./types";
 
 const getAllTrackerDataWithNames = async (): Promise<
@@ -18,6 +19,25 @@ const getAllTrackerDataWithNames = async (): Promise<
         "t.step_function_id"
       )
       .select("t.*", "sf.name");
+    return rows;
+  } catch (err) {
+    console.log("Error getting tracker data:", err);
+  }
+};
+
+const getTrackerDataWithName = async (
+  trackerId: number
+): Promise<TrackerStepFunctionsJoinTable[]> => {
+  try {
+    const rows: TrackerStepFunctionsJoinTable[] =
+      await db<StepFunctionTrackersTable>("step_function_trackers as t")
+        .join<StepFunctionsTable>(
+          "step_functions as sf",
+          "sf.step_function_id",
+          "t.step_function_id"
+        )
+        .select("t.*", "sf.name")
+        .where("tracker_id", trackerId);
     return rows;
   } catch (err) {
     console.log("Error getting tracker data:", err);
@@ -82,9 +102,15 @@ const updateOldestExecutionTime = async (
   }
 };
 
-const insertTracker = async (row: StepFunctionTrackersTable): Promise<void> => {
+const insertTracker = async (
+  row: StepFunctionTrackersTable
+): Promise<NewTrackerRowResult> => {
   try {
-    await db<StepFunctionTrackersTable>("step_function_trackers").insert(row);
+    const [rowInserted]: NewTrackerRowResult[] =
+      await db<StepFunctionTrackersTable>("step_function_trackers")
+        .insert(row)
+        .returning("tracker_id");
+    return rowInserted;
   } catch (err) {
     console.log(`Error inserting tracker ${err}`);
   }
@@ -92,6 +118,7 @@ const insertTracker = async (row: StepFunctionTrackersTable): Promise<void> => {
 
 const stepFunctionTrackersModel = {
   getAllTrackerDataWithNames,
+  getTrackerDataWithName,
   updateNewestExecutionTime,
   updateOldestExecutionTime,
   insertTracker,

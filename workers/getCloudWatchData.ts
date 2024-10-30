@@ -3,6 +3,7 @@ import { Moment } from "moment";
 import Bottleneck from "bottleneck";
 import stepFunctionTrackersModel from "../server/models/stepFunctionTrackersModel";
 import stepsModel from "../server/models/stepsModel";
+import type { TrackerStepFunctionsJoinTable } from "../server/models/types";
 import executionsObject from "./executions";
 import type { Executions } from "./types";
 import logs from "./logs";
@@ -61,10 +62,25 @@ const processResponses = async (
  * the local postegres database.
  * @returns undefined
  */
-const getCloudWatchData = async (): Promise<void> => {
+const getCloudWatchData = async (
+  trackerId: number | undefined = undefined
+): Promise<number> => {
   // need the tracker information to see what time period of data to retreive
-  const trackerDbRows =
-    await stepFunctionTrackersModel.getAllTrackerDataWithNames();
+
+  let trackerDbRows: TrackerStepFunctionsJoinTable[];
+  if (trackerId !== undefined) {
+    trackerDbRows = await stepFunctionTrackersModel.getTrackerDataWithName(
+      trackerId
+    );
+  } else {
+    trackerDbRows =
+      await stepFunctionTrackersModel.getAllTrackerDataWithNames();
+  }
+
+  if (trackerDbRows === undefined || trackerDbRows.length === 0) {
+    console.log("No trackers to run, exiting.");
+    return;
+  }
   const trackers: Tracker[] = [];
   for (const trackerDbRow of trackerDbRows) {
     // get steps for this step function
@@ -127,12 +143,17 @@ const getCloudWatchData = async (): Promise<void> => {
     return;
   };
 
-  for (const tracker of trackers) {
+  // create an array of async function calls to provide
+  // Promise.all with to allow bottleneck to process more than one
+  // tracker at a time, but still wait for all to be completed
+  const asyncFunctionCalls = trackers.map(async (tracker) => {
     if (!(await tracker.isFinished())) {
-      throttledFilteredLogsRequest(tracker);
+      await throttledFilteredLogsRequest(tracker);
     }
-  }
-  return;
+  });
+
+  await Promise.all(asyncFunctionCalls);
+  return 1;
 };
 
 /**
@@ -210,4 +231,4 @@ const parseEvents = async (
 };
 
 // invoked to test functionality
-getCloudWatchData();
+export default getCloudWatchData;

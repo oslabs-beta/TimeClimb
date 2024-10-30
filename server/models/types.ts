@@ -60,6 +60,10 @@ export interface StepFunctionTrackersTable {
   active?: boolean;
 }
 
+export interface NewTrackerRowResult {
+  tracker_id: number;
+}
+
 export interface StepFunctionAliasesTable {
   alias_id?: number;
   name: string;
