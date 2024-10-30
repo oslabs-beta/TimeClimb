@@ -1,18 +1,6 @@
 import { describe, it, expect, vi, beforeEach,  beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import LandingPage from '../src/landingPage/landingPage.tsx'
-import NavBar from  '../src/landingPage/navbar/navBar.tsx'
-import AllCard from '../src/landingPage/allCard.tsx';
-import AddCard from '../src/landingPage/addCard.tsx';
-import FilterRegions from '../src/landingPage/filterRegions.tsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { getStepFunctionList, getStepFunctions } from '../src/reducers/dataSlice.tsx';
-import { Provider } from 'react-redux'; // Import Provider
-import store from '../store.tsx'
-
 import FlowChartView from '../src/DetailedView/FlowChartView.tsx';
-
-
 import '@testing-library/jest-dom';
 
 // Mock the external dependencies
@@ -40,7 +28,7 @@ describe('FlowChartView', () => {
   let nodes;
   let edges;
 
-  // Complex step function definition with various patterns
+  // Complex step function definition with parallel states
   const complexDefinition = {
     StartAt: "InitialCheck",
     States: {
