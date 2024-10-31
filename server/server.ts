@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import type {
   Request,
@@ -49,6 +50,7 @@ app.use(
       status: 500,
       message: 'Error caught by global error handler',
     };
+    console.log(err);
     const newErrObj = Object.assign({}, errObj, err);
     res.status(newErrObj.status).json(newErrObj.message);
     return;

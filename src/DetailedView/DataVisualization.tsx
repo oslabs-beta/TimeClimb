@@ -19,14 +19,18 @@ function DataVisualization() {
 
   Chart.register(...registerables);
 
-  function generateLast24Hours() {
-    return Array.from({ length: 24 }, (_, i) =>
-      moment()
-        .subtract(23 - i, 'hours')
-        .format('HH:mm')
+  // function generateLast24Hours() {
+  //   return Array.from({ length: 24 }, (_, i) =>
+  //     moment()
+  //       .subtract(23 - i, 'hours')
+  //       .format('HH:mm')
+  //   );
+  // }
+  function generateTimes() {
+    return Array.from({ length: 24 }, (_, i) => 
+      `${String(i).padStart(2, '0')}:00`
     );
   }
-
   function generateLast7Days() {
     return Array.from({ length: 7 }, (_, i) =>
       moment()
@@ -57,7 +61,7 @@ function DataVisualization() {
     }
 
     // let xValues = latency.map((set) => moment(set.date).format('HH:mm'))
-    let xValues = generateLast24Hours();
+    let xValues = generateTimes();
     let timeLabel = '24 Hours';
 
     if (latency) {
@@ -86,6 +90,7 @@ function DataVisualization() {
         ],
       },
       options: {
+        responsive:true,
         spanGaps: false,
       },
     });
@@ -100,7 +105,7 @@ function DataVisualization() {
   // }
 
   return (
-    <div className='my-10 rounded shadow-glow width-auto'>
+    <div className='my-10 rounded shadow-glow size-full'>
       <canvas ref={canvasRef}></canvas>
       {/* <button onClick={handleClose}>Close</button> */}
     </div>
