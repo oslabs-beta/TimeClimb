@@ -13,7 +13,7 @@ import { getStepFunctionList } from '../reducers/dataSlice.tsx';
 // const data = useSelector(getStepFunctions);
 
 function AllCards() {
-  const desMap = new Map();
+  
   const cards = useSelector(
     (state: RootState) => state.card.allCards
   ) as card[];
@@ -21,18 +21,12 @@ function AllCards() {
     (state: RootState) => state.data.stepfunctions
   );
 
-  // console.log('card', cards)
-  useEffect(() => {
-    // stepFunctionList.forEach((el) => {
-    //   desMap.set(el.name, el.description);
-    // });
-  }, [stepFunctionList]);
 
   // const user = useSelector(selectUser);
   const card = useSelector(selectCard);
   const dispatch: AppDispatch = useDispatch();
 
-  //start
+
   const stepfunctions = useSelector(
     (state: RootState) => state.data.stepfunctions
   );
@@ -64,16 +58,18 @@ function AllCards() {
 
   let filteredCards = [];
 
-  if (card.currentRegion) {
-    filteredCards = cards.filter((c) => c.region === card.currentRegion);
-  } else filteredCards = cards;
+  // if (card.currentRegion) {
+  //   filteredCards = cards.filter((c) => c.region === card.currentRegion);
+  // } else filteredCards = cards;
+
+  // console.log('filteredcards: ', filteredCards);
 
   // console.log('filter', filteredCards)
   //if (filteredCards.length > 0) console.log(filteredCards);
 
   return (
     <div className='grid grid-cols-2 gap-x-20 gap-y-20 h-fit'>
-      {filteredCards.map((card, index) => (
+      {cards.map((card, index) => (
         <FunctionCards
           key={index}
           name={card.name}
