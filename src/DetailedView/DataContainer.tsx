@@ -8,11 +8,15 @@ import { selectData } from '../reducers/dataSlice';
 function DataContainer() {
   const data = useSelector(selectData)
   return (
-    <div>
+    <div className='dataContainer'>
       {/* This is the Data Container */}
       <TimePeriodToggle />
+      <div>
       <DataVisualization />
+      </div>
+      <div className='heatmapContainer'>
       <HeatmapChart />
+      </div>
       {data.bubblePopup && (
           <div className="popupOverlay">
           <StepDataVisualization />

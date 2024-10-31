@@ -38,6 +38,7 @@ type yaxis = {
 function HeatmapChart() {
   const plotRef = useRef(null);
   const dataset = useSelector((state: RootState) => state.data.latencies);
+  console.log('dat',dataset)
   const timePeriod = useSelector((state: RootState) => state.data.time);
 
   const placeholderData = [
@@ -49,11 +50,16 @@ function HeatmapChart() {
 
   const currentData = dataset && dataset.length > 0 ? dataset : placeholderData;
 
-  function generateLast24Hours() {
-    return Array.from({ length: 24 }, (_, i) =>
-      moment()
-        .subtract(23 - i, 'hours')
-        .format('HH:mm')
+  // function generateLast24Hours() {
+  //   return Array.from({ length: 24 }, (_, i) =>
+  //     moment()
+  //       .subtract(23 - i, 'hours')
+  //       .format('HH:mm')
+  //   );
+  // }
+  function generateTimes() {
+    return Array.from({ length: 24 }, (_, i) => 
+      `${String(i).padStart(2, '0')}:00`
     );
   }
 
@@ -85,7 +91,9 @@ function HeatmapChart() {
     let xValues;
     // let xValues = currentData.map((set) => moment(set.date).format('HH:mm'));
     if (timePeriod === 'hours') {
-      xValues = generateLast24Hours();
+      // xValues = generateLast24Hours();
+      xValues = generateTimes();
+
     }
     if (timePeriod === 'days') {
       xValues = generateLast7Days();
@@ -168,7 +176,7 @@ function HeatmapChart() {
         automargin: true,
         title: 'Step Function Action',
       },
-      width: 500,
+      width: '100%',
       // plot_bgcolor: 'black',
       paper_bgcolor: 'rgb(172,104,197)',
       //   'opacity-80 bg-gradient-to-br from-purple-600 to-fuchsia-400 rounded-3xl mx-10',
@@ -188,7 +196,7 @@ function HeatmapChart() {
   }, [currentData, timePeriod]);
 
   return (
-    <div>
+    <div className='heatmapChart'>
       <div ref={plotRef} />
     </div>
   );

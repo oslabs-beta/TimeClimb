@@ -44,7 +44,7 @@ const initialState: cardState = {
   error: '',
   addCardform: false,
   currentLink: '',
-  currentName: '',
+  // currentName: '',
   currentRegion: '',
 };
 

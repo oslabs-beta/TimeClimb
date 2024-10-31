@@ -25,11 +25,17 @@ export default function StepDataVisualization() {
 
   Chart.register(...registerables);
 
-  function generateLast24Hours() {
-    return Array.from({ length: 24 }, (_, i) =>
-      moment()
-        .subtract(23 - i, 'hours')
-        .format('HH:mm')
+  // function generateLast24Hours() {
+  //   return Array.from({ length: 24 }, (_, i) =>
+  //     moment()
+  //       .subtract(23 - i, 'hours')
+  //       .format('HH:mm')
+  //   );
+  // }
+
+  function generateTimes() {
+    return Array.from({ length: 24 }, (_, i) => 
+      `${String(i).padStart(2, '0')}:00`
     );
   }
 
@@ -62,7 +68,7 @@ export default function StepDataVisualization() {
       chartInstance.current.destroy();
     }
 
-    let xValues = generateLast24Hours();
+    let xValues = generateTimes();
     let timeLabel = '24 Hours';
 
     if (times) {
