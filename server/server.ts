@@ -8,7 +8,7 @@ import type {
 } from 'express';
 import cors from 'cors';
 import apiRouter from './routes/api/index';
-//import clientRouter from './routes/client/index';
+import clientRouter from './routes/client/index';
 import path from 'path';
 
 const PORT = 3000;
@@ -36,7 +36,7 @@ app.get('/src/main.tsx', (req: Request, res: Response) => {
 app.use('/api', apiRouter);
 
 // react app
-//app.use(clientRouter);
+app.use(clientRouter);
 
 app.use(
   (
