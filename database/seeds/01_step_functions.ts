@@ -1,12 +1,14 @@
+import "dotenv/config";
 import { Knex } from "knex";
 import definitions from "./utils/step-function-definitions";
+import { StepFunctionsTable } from "../../server/models/types";
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
   await knex("step_functions").del();
 
   // Inserts seed entries
-  await knex("step_functions").insert([
+  await knex<StepFunctionsTable>("step_functions").insert([
     {
       step_function_id: 1,
       name: "CallbackExample",
@@ -23,8 +25,8 @@ export async function seed(knex: Knex): Promise<void> {
     {
       step_function_id: 2,
       name: "HelloWorld",
-      arn: "arn:aws:states:us-west-2:123456789012:stateMachine:HelloWorld",
-      region: "us-west-2",
+      arn: "arn:aws:states:us-east-1:123456789012:stateMachine:HelloWorld",
+      region: "us-east-1",
       type: "STANDARD",
       definition: definitions[1],
       comment:

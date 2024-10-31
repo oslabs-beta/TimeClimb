@@ -98,13 +98,13 @@ export async function seed(knex: Knex): Promise<void> {
         executionOffset: 50,
         executionRange: 30,
       },
-      // {
-      //   step_id: 10,
-      //   averageRange: 4.5,
-      //   averageOffset: 0.25,
-      //   executionOffset: 50,
-      //   executionRange: 30,
-      // },
+      {
+        step_id: 10,
+        averageRange: 4.5,
+        averageOffset: 0.25,
+        executionOffset: 50,
+        executionRange: 30,
+      },
       {
         step_id: 11,
         averageRange: 2,

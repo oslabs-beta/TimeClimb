@@ -69,7 +69,7 @@ const latenciesGenerator = async (
       end_time: endOfCurrentHour.toISOString(),
     });
 
-    now.subtract(2, "day");
+    now.subtract(1, "hour");
   }
   return data;
 };

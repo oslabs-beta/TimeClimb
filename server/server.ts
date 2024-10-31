@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import type {
   Request,
@@ -16,17 +17,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('src'));
-app.get('/home', (req: Request, res: Response) => {
-  return res.status(200).sendFile('/home/pauluhlenkott/TimeClimb/index.html');
-});
-app.get('/src/main.tsx', (req: Request, res: Response) => {
-  return res.status(200).sendFile('/home/pauluhlenkott/TimeClimb/src/main.js');
-});
-// API router
+// api router
 app.use("/api", apiRouter);
 
-// for react app - not yet implemented
+// react app
 app.use(clientRouter);
 
 app.use(
@@ -37,10 +31,11 @@ app.use(
     next: NextFunction
   ): void => {
     const errObj = {
-      log: 'Error caught by global error handler',
+      log: "Error caught by global error handler",
       status: 500,
-      message: 'Error caught by global error handler',
+      message: "Error caught by global error handler",
     };
+    console.log(err)
     const newErrObj = Object.assign({}, errObj, err);
     res.status(newErrObj.status).json(newErrObj.message);
     return;
