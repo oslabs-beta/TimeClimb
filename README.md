@@ -441,12 +441,15 @@ localhost:3000/api/average-latencies/:step_function_id/months
     }
 ]
 ```
+</details>
 
 ## Contributers 
+
 Austin Cheng
 Andrew Mott
 Paul Uhlenkott
 Sharon Patterson
 Alex Stewart
+
 <!-- PICK UP HERE -->
 
