@@ -131,6 +131,12 @@ body {
   border-radius: 5px;
 }
 
+.stepFunc form input,
+.stepFunc form button {
+  border: 1px solid black;
+  border-radius: 5px;
+
+}
 /* slider */
 .slidecontainer {
   width: 300px;
@@ -176,8 +182,8 @@ body {
   width: 500px;
 } */
 #graph-style {
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
   border: solid black;
 }
 
@@ -238,4 +244,21 @@ height: auto;
 .popupLineGraph button {
   border-radius: 5px;
   width: 25%;
+}
+
+
+.heatmapChart {
+  border-radius: 5px; 
+  overflow: hidden; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.detailedView {
+  /* margin-right: 200px; Adjust as needed */
+  margin-left: 0%;
+}
+
+.my-10 {
+  width: 100%; /* or a fixed width, e.g., 600px */
+  height: 350px; /* Set a fixed height to maintain aspect ratio */
 }

@@ -1,6 +1,6 @@
 <img src='./ReadMeUtils/Climb.png' width="300px">
 
-# TimeClimb 
+# TimeClimb
 
 TimeClimb is an app that visualizes AWS Step Function latency averages over custom time ranges (day, week, month, or year), displaying overall step function and individual step latencies. Users can view line charts for time-based latency trends and click on individual steps to see detailed latency metrics on a line chart. A heat map displaying each step's latencies over the selected period of time will display by default. 
 
@@ -12,7 +12,7 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 
 ### Database
 
- #### This application is deployed locally on each user's machine using Docker. As long as the user has PostgresDB installed on their machine and has provide the required credentials in a .env file, the program will create a local database in which to store AWS State Machine (Step Function) latency averages.
+#### This application is deployed locally on each user's machine using Docker. As long as the user has PostgresDB installed on their machine and has provide the required credentials in a .env file, the program will create a local database in which to store AWS State Machine (Step Function) latency averages.
 
 #### A user will select which State Machine they would like to see latency averages for by providing the State Machine's arn. As long as the correct permissions have been set in AWS for this user (details found in User Setup below) this application will query the database for latency averages for the desired State Machine and display it.
 
@@ -25,17 +25,18 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
       <li>Months : Will display hourly averages over a 12 month period</li>
   </ul>
 
-#### A user will use a slider to view State Machine averages at certain points within the desired time period 
+#### A user will use a slider to view State Machine averages at certain points within the desired time period
 
-#### A user may view a line graph of the State Machine's latency averages in a line graph 
+#### A user may view a line graph of the State Machine's latency averages in a line graph
 
 #### A user may view the individual Action's (Step's) average latencies in the form of a heat map
 
 #### A user may view a line graph of each Action's average latencies by selecting the desired Action in the display
 
-### Demonstrations 
+### Demonstrations
 
-## Choose a time period 
+## Choose a time period
+
 <p>A user will select a period of time for which they would like to view their State Machine's latency averages in a drop down.
 </p>
 <p>
@@ -43,11 +44,13 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 </p>
 
 ## Select desired hour, day, week or month
+
 <p>Use slider to view latencies at a specific hour, day, week or month.</p>
 <p><img src="./ReadMeUtils/slider.gif" width="250" height="250" style = "block"/>
 </p>
 
 ## View individual step latency averages as chart
+
 <p>To view the latency averages for each indivual action (step) as a chart, click on desired action.
 </p>
 <p>
@@ -55,6 +58,7 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 </p>
 
 ## View individual step latency averages on a heat map
+
 <p>To view the latency averages for each indivual action (step) on head map, hover over desired action within desired time period.
 </p>
 <p>
@@ -62,15 +66,8 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 </p>
 
 ## User Setup
- #### Note: See complete example of .env file in .env.example
-  ### 1. Insert environment variables to .env file
-  ```json
-          PGHOST='localhost'
-          PGPORT='5432'
-          PGUSER='yourUserName'
-          PGPASSWORD='yourPassword'  
-  ```
-  ### 2. Important AWS Information
+
+### 1. Important AWS Information
 
 #### Permissions
  
@@ -89,31 +86,42 @@ Take note of AWS Pricing associated with the use of this application
 
 #### Note: TimeClimb is not responsible for any incurred cost for using this software. This pricing information is included for convenience and may not be up to date with AWS's current pricing. See links below for detail information:
 
-AWS CloudWatch Pricing: https://aws.amazon.com/cloudwatch/pricing/?nc1=h_ls 
+AWS CloudWatch Pricing: https://aws.amazon.com/cloudwatch/pricing/?nc1=h_ls
 
-EC2: Data Transwer Pricing: https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer 
+EC2: Data Transwer Pricing: https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer
 
-  ### 3. Insert AWS Access Key and Secret Access Key ###
-  ```json
-          AWS_ACCESS_KEY_ID=yourAcessKey
-          AWS_SECRET_ACCESS_KEY=yourSecretAccessKey
-  ```
+### 3. Insert AWS Access Key and Secret Access Key
+
+```yml
+- AWS_ACCESS_KEY_ID=[INSERT_YOUR_AWS_KEY_ID]
+- AWS_SECRET_ACCESS_KEY=[INSERT_YOUR_AWS_SECRET_KEY]
+- AWS_REGION=[INSERT_YOUR_AWS_REGION]
+```
+
+### 4. Ensure Docker Desktop is running on your machine.
+
+### 5. Run `docker compose up` in your terminal
 
 # Contribution Information:
 
 ## Creating and Updating the database time_climb
- #### Note: See complete example of .env file in .env.example
+
+#### Note: See complete example of .env file in .env.example
+
 <details>
 <summary>1. Create a .env file and insert environment variables to file</summary>
 
 #### Note: Be sure this file is added to your gitignore
+
 Example:
+
 ```json
           PGHOST='localhost'
           PGPORT='5432'
           PGUSER='yourUserName'
-          PGPASSWORD='yourPassword'  
+          PGPASSWORD='yourPassword'
 ```
+
 </details>
 
 <details>
@@ -124,10 +132,11 @@ Example:
 #### Note: Be sure this file is added to your gitignore
 
 Example:
-  ```json
-          AWS_ACCESS_KEY_ID=yourAcessKey
-          AWS_SECRET_ACCESS_KEY=yourSecretAccessKey
-  ```
+
+```json
+        AWS_ACCESS_KEY_ID=yourAcessKey
+        AWS_SECRET_ACCESS_KEY=yourSecretAccessKey
+```
 
 </details>
 
@@ -147,12 +156,12 @@ Example:
 `npm run seed:run` will populate the database with test data. This will erase any existing data you might have in your database.
 
 ### Updating database with Seed Data
+
 <code>npm run migrate:latest</code> to update the database with the latest schema.
 
 Updating to the latest migration will typically erase all data in your database
 unless the migration script specifically is set up to migrate your data, which
 it currently is not.
-
 
 <details>
 <summary> <b>Knex Detailed Usage<b> </summary>
@@ -162,7 +171,7 @@ Convenience scripts are set up in package.json to run common knex migration func
 - `npm run migrate:latest` Updating the database with the latest schema changes
 - `npm run migrate:rollback` Rolling back a change to the database
 
-These are partially necessary because both the configuration files and migrations are written in TypeScript. Knex's command line tool does not natively support TypeScript. 
+These are partially necessary because both the configuration files and migrations are written in TypeScript. Knex's command line tool does not natively support TypeScript.
 
 ### Creating a migration
 
@@ -185,16 +194,19 @@ This will update the database with latest schema changes. If necessary its possi
 This will roll back only the very latest migration unit. You can pass in an argument `--all` to rollback all of the completed migrations this way:
 
 `npm run migrate:rollback -- --all`
+
 </details>
 
 </details>
 
 4. Run<code>npm run dev</code>
 
-5. Run<code>npm run dev:server</code> 
+5. Run<code>npm run dev:server</code>
 
 ## API Documentation
+
 ### Base URL
+
 #### **`http://localhost:3000/api`**
 
 All API requests are made to http://localhost:3000/api
@@ -211,6 +223,7 @@ All API requests are made to http://localhost:3000/api
 > None
 
 #### Responses
+
 > | http code | content-type                     | response |
 > | --------- | -------------------------------- | -------- |
 > | `200`     | `application/json;charset=UTF-8` | JSON     |
@@ -227,6 +240,7 @@ All API requests are made to http://localhost:3000/api
   }
 ]
 ```
+
 </details>
 
 <details>
@@ -236,12 +250,11 @@ All API requests are made to http://localhost:3000/api
 Adds a step function to the database
 </summary>
 
-
 #### Parameters
 
 > | name | type     | data type | description                                          |
-> | ---- | -------- | --------- | ---------------------------------------------------- |
-> | body | required | object    | the arn that corresponds to a specific state machine | |
+> | ---- | -------- | --------- | ---------------------------------------------------- | --- |
+> | body | required | object    | the arn that corresponds to a specific state machine |     |
 
 #### Example Body - JSON
 
@@ -276,11 +289,12 @@ Retrieves <code>hourly</code> average latencies over a span of one <code>day</co
 
 #### Parameters
 
-> | name                    | type     | data type |  description                             |
-> | ------------------------| -------- | --------- | ---------------------------------------- |
+> | name                    | type     | data type | description                                                                                                      |
+> | ----------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
 > | `path.step_function_id` | required | string    | The unique ID associated with this step function in database passed in the URL path (`/:step_function_id/hours`) |
 
 #### Example Request
+
 localhost:3000/api/average-latencies/:step_function_id/hours
 
 ### Responses
@@ -290,24 +304,26 @@ localhost:3000/api/average-latencies/:step_function_id/hours
 > | `200`     | `application/json;charset=UTF-8` | JSON     |
 
 #### Example Response for 200 Ok
+
 ##### Note: If a step function's latencies are not found in database, the elements value in the response will be an empty object
+
 ```json
 [
- {
-        "date": "2024-10-23T04:00:00.000Z",
-        "stepFunctionAverageLatency": 18.144353388646543,
-        "steps": {
-            "Start Task And Wait For Callback": {
-                "average": 14.44404914949289
-            },
-            "Notify Success": {
-                "average": 0.6627415526268704
-            },
-            "Notify Failure": {
-                "average": 3.037562686526782
-            }
-        }
+  {
+    "date": "2024-10-23T04:00:00.000Z",
+    "stepFunctionAverageLatency": 18.144353388646543,
+    "steps": {
+      "Start Task And Wait For Callback": {
+        "average": 14.44404914949289
+      },
+      "Notify Success": {
+        "average": 0.6627415526268704
+      },
+      "Notify Failure": {
+        "average": 3.037562686526782
+      }
     }
+  }
 ]
 ```
 
@@ -320,11 +336,12 @@ Retrieves <code>daily</code> average latencies over a span of 7 <code>days</code
 
 #### Parameters
 
-> | name                    | type     | data type |  description                             |
-> | ------------------------| -------- | --------- | ---------------------------------------- |
+> | name                    | type     | data type | description                                                                                                     |
+> | ----------------------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------- |
 > | `path.step_function_id` | required | string    | The unique ID associated with this step function in database passed in the URL path (`/:step_function_id/days`) |
 
 #### Example Request
+
 localhost:3000/api/average-latencies/:step_function_id/days
 
 ### Responses
@@ -334,26 +351,29 @@ localhost:3000/api/average-latencies/:step_function_id/days
 > | `200`     | `application/json;charset=UTF-8` | JSON     |
 
 #### Example Response for 200 Ok
+
 ##### Note: If a step function's latencies are not found in database, the elements value in the response will be an empty object
+
 ```json
 [
- {
-        "date": "2024-10-23T04:00:00.000Z",
-        "stepFunctionAverageLatency": 18.144353388646543,
-        "steps": {
-            "Start Task And Wait For Callback": {
-                "average": 14.44404914949289
-            },
-            "Notify Success": {
-                "average": 0.6627415526268704
-            },
-            "Notify Failure": {
-                "average": 3.037562686526782
-            }
-        }
+  {
+    "date": "2024-10-23T04:00:00.000Z",
+    "stepFunctionAverageLatency": 18.144353388646543,
+    "steps": {
+      "Start Task And Wait For Callback": {
+        "average": 14.44404914949289
+      },
+      "Notify Success": {
+        "average": 0.6627415526268704
+      },
+      "Notify Failure": {
+        "average": 3.037562686526782
+      }
     }
+  }
 ]
 ```
+
 </details>
 <details>
 <summary>
@@ -363,11 +383,12 @@ Retrieves <code>weekly</code> average latencies over a span of 12 <code>weeks</c
 
 #### Parameters
 
-> | name                    | type     | data type |  description                             |
-> | ------------------------| -------- | --------- | ---------------------------------------- |
+> | name                    | type     | data type | description                                                                                                      |
+> | ----------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
 > | `path.step_function_id` | required | string    | The unique ID associated with this step function in database passed in the URL path (`/:step_function_id/weeks`) |
 
 #### Example Request
+
 localhost:3000/api/average-latencies/:step_function_id/weeks
 
 ### Responses
@@ -377,24 +398,26 @@ localhost:3000/api/average-latencies/:step_function_id/weeks
 > | `200`     | `application/json;charset=UTF-8` | JSON     |
 
 #### Example Response for 200 Ok
+
 ##### Note: If a step function's latencies are not found in database, the elements value in the response will be an empty object
+
 ```json
 [
- {
-        "date": "2024-08-12T04:00:00.000Z",
-        "stepFunctionAverageLatency": 18.144353388646543,
-        "steps": {
-            "Start Task And Wait For Callback": {
-                "average": 14.44404914949289
-            },
-            "Notify Success": {
-                "average": 0.6627415526268704
-            },
-            "Notify Failure": {
-                "average": 3.037562686526782
-            }
-        }
+  {
+    "date": "2024-08-12T04:00:00.000Z",
+    "stepFunctionAverageLatency": 18.144353388646543,
+    "steps": {
+      "Start Task And Wait For Callback": {
+        "average": 14.44404914949289
+      },
+      "Notify Success": {
+        "average": 0.6627415526268704
+      },
+      "Notify Failure": {
+        "average": 3.037562686526782
+      }
     }
+  }
 ]
 ```
 
@@ -407,11 +430,12 @@ Retrieves <code>monthly</code> average latencies over a span of 12 <code>months<
 
 #### Parameters
 
-> | name                    | type     | data type |  description                             |
-> | ------------------------| -------- | --------- | ---------------------------------------- |
+> | name                    | type     | data type | description                                                                                                       |
+> | ----------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
 > | `path.step_function_id` | required | string    | The unique ID associated with this step function in database passed in the URL path (`/:step_function_id/months`) |
 
 #### Example Request
+
 localhost:3000/api/average-latencies/:step_function_id/months
 
 ### Responses
@@ -421,35 +445,45 @@ localhost:3000/api/average-latencies/:step_function_id/months
 > | `200`     | `application/json;charset=UTF-8` | JSON     |
 
 #### Example Response for 200 Ok
+
 ##### Note: If a step function's latencies are not found in database, the elements value in the response will be an empty object
+
 ```json
 [
- {
-        "date": "2023-11-01T04:00:00.000Z",
-        "stepFunctionAverageLatency": 18.144353388646543,
-        "steps": {
-            "Start Task And Wait For Callback": {
-                "average": 14.44404914949289
-            },
-            "Notify Success": {
-                "average": 0.6627415526268704
-            },
-            "Notify Failure": {
-                "average": 3.037562686526782
-            }
-        }
+  {
+    "date": "2023-11-01T04:00:00.000Z",
+    "stepFunctionAverageLatency": 18.144353388646543,
+    "steps": {
+      "Start Task And Wait For Callback": {
+        "average": 14.44404914949289
+      },
+      "Notify Success": {
+        "average": 0.6627415526268704
+      },
+      "Notify Failure": {
+        "average": 3.037562686526782
+      }
     }
+  }
 ]
 ```
 </details>
 
+<<<<<<< HEAD
 ## Contributers 
+=======
+## Contributers
+>>>>>>> Backend
 
 Austin Cheng
 Andrew Mott
 Paul Uhlenkott
 Sharon Patterson
 Alex Stewart
+<<<<<<< HEAD
 
 <!-- PICK UP HERE -->
+=======
+>>>>>>> Backend
 
+<!-- PICK UP HERE -->

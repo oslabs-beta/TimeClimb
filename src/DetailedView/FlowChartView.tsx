@@ -6,6 +6,7 @@ import {
   BackgroundVariant,
   NodeTypes,
   BuiltInNode,
+  ReactFlowProvider,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useEffect, useMemo, useState } from 'react';
@@ -36,7 +37,7 @@ function FlowChartView({ size, definition }) {
   const nodeTypes = useMemo(() => ({ flowChartBubble: FlowChartBubble }), []);
   // const [initialNodes, setInitialNodes] = useState<FlowChartNode[]>([]);
   // const [initialEdges, setInitialEdges] = useState<FlowChartEdge[]>([]);
-  
+
   const g = new dagre.graphlib.Graph();
 
   g.setGraph({});
@@ -105,7 +106,7 @@ function FlowChartView({ size, definition }) {
         source: e.v,
         target: e.w,
         type: 'simplebezier',
-        style: { stroke: 'rgb(50, 50, 50)', strokeWidth: 5}
+        style: { stroke: 'rgb(50, 50, 50)', strokeWidth: 5 },
       };
       initialEdges.push(newEdge);
     });
@@ -118,14 +119,17 @@ function FlowChartView({ size, definition }) {
 
   return (
     <div id='graph-style' className={`${size}`}>
+       <ReactFlowProvider>
       <ReactFlow
         nodes={initialNodes}
         edges={initialEdges}
         nodeTypes={nodeTypes}
+        onInit={(instance) => instance.fitView()}
       >
         <Controls />
         <Background variant={BackgroundVariant.Cross} gap={25} size={4} />
       </ReactFlow>
+      </ReactFlowProvider>
     </div>
   );
 }

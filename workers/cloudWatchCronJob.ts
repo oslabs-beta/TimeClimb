@@ -1,3 +1,4 @@
+import "dotenv/config";
 import nodeCron, { CronJob } from "node-cron";
 import Bottleneck from "bottleneck";
 import getCloudWatchData from "./getCloudWatchData";
