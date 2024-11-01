@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: tc-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=postgres
+    ports:
+      - '5432:5432'
+  app:
+    depends_on:
+      - db
+    build: .
+    environment:
+      - PGUSER=postgres
+      - PGPASSWORD=admin
+      - PGHOST=db
+      - PGPORT=5432
+      - AWS_ACCESS_KEY_ID=[INSERT_AWS_KEY]
+      - AWS_SECRET_ACCESS_KEY=[INSERT_AWS_SECRET_KEY]
+      - AWS_REGION=[INSERT_YOUR_AWS_REGION]
+    ports:
+      - 3000:3000
+    command: npm run create:server

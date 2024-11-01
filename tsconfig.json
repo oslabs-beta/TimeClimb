@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["vitest/globals"],
+    //"types": ["vitest/globals"],
     "typeRoots": ["./node_modules/@types"]
   },
   "files": [],

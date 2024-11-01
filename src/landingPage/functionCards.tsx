@@ -41,11 +41,19 @@ function FunctionCards({
       {/* <div className=''>{region}</div> */}
 
       <div className=''>
+<<<<<<< HEAD
+        {visual} <FlowChartView size='size-80' definition={definition} />
+=======
         {/* {visual}{' '} */}
         <FlowChartView size='size-80' definition={definition} />
+>>>>>>> 5f2d6a94d3d47de424ae8574339079e754df4aa8
       </div>
 
-      <button className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 my-6" id='viewButton' onClick={() => handleView(name)}>
+      <button
+        className='inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 my-6'
+        id='viewButton'
+        onClick={() => handleView(name)}
+      >
         {view}
       </button>
 
@@ -57,3 +65,4 @@ function FunctionCards({
 }
 
 export default FunctionCards;
+

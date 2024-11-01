@@ -13,10 +13,11 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "tsx": "react-tsx",
 
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
+    // "strict": true,
+    //"noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },

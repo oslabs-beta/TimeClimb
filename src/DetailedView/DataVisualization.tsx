@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { Chart, registerables } from 'chart.js';
 import { useSelector } from 'react-redux';
 import moment from 'moment';

@@ -48,7 +48,7 @@ function StepFunctionInput() {
   };
 
   return (
-    <div className='stepFunc'>
+    <div className='stepFunc' style={{color: "black"}}>
       <form name={'form'} onSubmit={handleSubmit}>
         {/* <label htmlFor='name'> Name of Function</label>
         <input

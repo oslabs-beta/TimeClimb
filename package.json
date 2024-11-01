@@ -2,11 +2,10 @@
   "name": "time-climb",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "test": "vitest",
+    "build": "tsc && vite build",
+    "test": "vitest --coverage",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:server": "tsc -b tsconfig.server.json",
@@ -17,7 +16,8 @@
     "migrate:latest": "npx tsx ./node_modules/.bin/knex migrate:latest",
     "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback",
     "seed:make": "npx tsx ./node_modules/.bin/knex seed:make",
-    "seed:run": "npx tsx ./node_modules/.bin/knex seed:run"
+    "seed:run": "npx tsx ./node_modules/.bin/knex seed:run",
+    "create:server": "npx tsx ./database/setupDatabase && npx tsx ./node_modules/.bin/knex migrate:latest && npx tsx ./node_modules/.bin/knex seed:run && node dist/server/server.js"
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.675.0",
@@ -59,6 +59,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
+    "@vitest/coverage-v8": "^2.1.4",
     "eslint": "^9.11.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.12",
