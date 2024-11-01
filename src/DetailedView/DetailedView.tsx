@@ -2,10 +2,10 @@
 import FlowChart from './FlowChart';
 import DataContainer from './DataContainer';
 import TimeSlice from './TimeSlice';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
-import { getLatencies, setLatencies, setLatency } from '../reducers/dataSlice';
+import { getLatencies, setLatencies } from '../reducers/dataSlice';
 
 function DetailedView() {
   //const [function, setFunction] = useState({});

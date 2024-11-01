@@ -6,12 +6,12 @@ async function setupDatabase() {
   const client = new Client({
     database: 'postgres',
     host: process.env.PGHOST,
+    port: 5432,
     user: process.env.PGUSER,
     password: process.env.PGPASSWORD,
   });
   try {
     await client.connect();
-
     const query = "SELECT 1 FROM pg_database WHERE datname = 'time_climb';";
     const result = await client.query(query);
 
@@ -33,7 +33,9 @@ async function setupDatabase() {
       console.log(`Database time_climb already exists`);
     }
   } catch (err) {
-    console.log(`Error setting up database time_climb: ${err}`);
+    console.log(
+      `Error setting up database time_climb: ${err} ${process.env.PGPASSWORD} ${process.env.PGUSER} ${process.env.PGHOST}`
+    );
   } finally {
     await client.end();
   }

@@ -16,8 +16,8 @@
     "tsx": "react-tsx",
 
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
+    // "strict": true,
+    //"noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },

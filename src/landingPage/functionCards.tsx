@@ -21,9 +21,9 @@ function FunctionCards({
   const navigate = useNavigate();
   //console.log(definition);
 
-  const handleDelete = (name: string) => {
-    dispatch(deleteCard(name));
-  };
+  // const handleDelete = (name: string) => {
+  //   dispatch(deleteCard(name));
+  // };
 
   const handleView = (name: string) => {
     navigate(`/expandView`, { state: { cardName: name } });
@@ -36,16 +36,20 @@ function FunctionCards({
 
   return (
     <div className='hover:opacity-100  opacity-90 p-3 size-100 bg-gradient-to-br from-purple-600 to-fuchsia-400 rounded-3xl flex flex-col items-center'>
-      <div className=''>{name}</div>
+      <div className='m-3'>{name}</div>
 
-      <div className=''>{region}</div>
+      {/* <div className=''>{region}</div> */}
 
       <div className=''>
-        {visual}{' '}
+        {/* {visual}{' '} */}
         <FlowChartView size='size-80' definition={definition} />
       </div>
 
-      <button className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 my-6" id='viewButton' onClick={() => handleView(name)}>
+      <button
+        className='inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 my-6'
+        id='viewButton'
+        onClick={() => handleView(name)}
+      >
         {view}
       </button>
 

@@ -1,4 +1,5 @@
 import "dotenv/config";
+// const require('dotenv').config()
 import moment, { Moment } from "moment";
 import {
   SFNClient,
@@ -93,7 +94,7 @@ const getStepFunctionAWS = async (
       region,
       credentials: fromEnv(),
     });
-
+    console.log('env', process.env)
     const response = await sfn.send(describeStateMachine);
 
     const [logGroupArn, logGroupName] = await getLoggingConfiguration(
