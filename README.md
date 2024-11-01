@@ -2,7 +2,11 @@
 
 # TimeClimb
 
-TimeClimb is an app that visualizes AWS Step Function latency averages over custom time ranges (day, week, month, or year), displaying overall step function and individual step latencies. Users can view line charts for time-based latency trends and click on individual steps to see detailed latency metrics on a line chart. A heat map displaying each step's latencies over the selected period of time will display by default.
+TimeClimb is an app that visualizes AWS Step Function latency averages over custom time ranges (day, week, month, or year), displaying overall step function and individual step latencies. Users can view line charts for time-based latency trends and click on individual steps to see detailed latency metrics on a line chart. A heat map displaying each step's latencies over the selected period of time will display by default. 
+
+Website: https://www.timeclimb.com/
+
+GitHub: https://github.com/oslabs-beta/TimeClimb.git
 
 ## Features
 
@@ -66,13 +70,8 @@ TimeClimb is an app that visualizes AWS Step Function latency averages over cust
 ### 1. Important AWS Information
 
 #### Permissions
-
-To use this application, a user must be granted certain permissions. Permissions are defined by policies attached to the user directly or through groups in AWS. The following permissions must be granted:
-
-  <ol>
-  <li> To pull state machine information from AWS: DescribeStateMachine</li>
-  <li> To retrieve execution log data for each step function: read access to FilterLogEvents</li>
-  </ol>
+ 
+To grant users permission to perform actions on the resources required for this application, an IAM administrator will need to create an IAM policy for CloudWatch Logs that includes the actions FilterLogEvents as well as DescribeLogGroups. A Step Functions policy will also need to be created including the action DescribeStateMachine. These policies can then be attached to individual users, groups, or roles. Click <a href="https://www.youtube.com/watch?v=9n28d8ezrLQ">here</a> to learn more about how to create policy's, users and roles.
 
 #### AWS Pricing
 
@@ -468,13 +467,23 @@ localhost:3000/api/average-latencies/:step_function_id/months
   }
 ]
 ```
+</details>
 
+<<<<<<< HEAD
+## Contributers 
+=======
 ## Contributers
+>>>>>>> Backend
 
 Austin Cheng
 Andrew Mott
 Paul Uhlenkott
 Sharon Patterson
 Alex Stewart
+<<<<<<< HEAD
+
+<!-- PICK UP HERE -->
+=======
+>>>>>>> Backend
 
 <!-- PICK UP HERE -->
