@@ -469,21 +469,12 @@ localhost:3000/api/average-latencies/:step_function_id/months
 ```
 </details>
 
-<<<<<<< HEAD
 ## Contributers 
-=======
-## Contributers
->>>>>>> Backend
 
 Austin Cheng
 Andrew Mott
 Paul Uhlenkott
 Sharon Patterson
 Alex Stewart
-<<<<<<< HEAD
-
-<!-- PICK UP HERE -->
-=======
->>>>>>> Backend
 
 <!-- PICK UP HERE -->
