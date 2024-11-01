@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "server/**/*",
+    "workers/**/*",
+    "database/migrations",
+    "knexfile.ts"
+  ],
+  "exclude": ["node_modules", "src", "database/docs"]
+}

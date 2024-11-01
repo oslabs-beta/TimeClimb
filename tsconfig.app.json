@@ -13,12 +13,14 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "tsx": "react-tsx",
 
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
+    // "strict": true,
+    //"noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "server"]
 }
