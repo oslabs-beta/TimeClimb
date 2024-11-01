@@ -1,7 +1,7 @@
 {
   "name": "time-climb",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -17,7 +17,7 @@
     "migrate:rollback": "npx tsx ./node_modules/.bin/knex migrate:rollback",
     "seed:make": "npx tsx ./node_modules/.bin/knex seed:make",
     "seed:run": "npx tsx ./node_modules/.bin/knex seed:run",
-    "create:server": "npx tsx ./database/setupDatabase && npx tsx ./node_modules/.bin/knex migrate:latest && npx tsx ./node_modules/.bin/knex seed:run && node dist/server/server.js"
+    "create:server": "npx tsx ./database/setupDatabase && npx tsx ./node_modules/.bin/knex migrate:latest && node dist/server/server.js"
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.675.0",

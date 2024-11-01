@@ -41,12 +41,8 @@ function FunctionCards({
       {/* <div className=''>{region}</div> */}
 
       <div className=''>
-<<<<<<< HEAD
-        {visual} <FlowChartView size='size-80' definition={definition} />
-=======
         {/* {visual}{' '} */}
         <FlowChartView size='size-80' definition={definition} />
->>>>>>> 5f2d6a94d3d47de424ae8574339079e754df4aa8
       </div>
 
       <button
