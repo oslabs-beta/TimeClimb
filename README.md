@@ -49,12 +49,12 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 <p><img src="./ReadMeUtils/slider.gif" width="250" height="250" style = "block"/>
 </p>
 
-## View individual step latency averages as chart
+## View individual step latency averages as a chart
 
 <p>To view the latency averages for each indivual action (step) as a chart, click on desired action.
 </p>
 <p>
-<img src="./ReadMeUtils/stepLatencyChart.gif" width="250" height="250" style="block"/>
+<img src="./ReadMeUtils/steplatencychart.gif" width="250" height="250" style="block"/>
 </p>
 
 ## View individual step latency averages on a heat map
