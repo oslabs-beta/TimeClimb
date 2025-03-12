@@ -33,9 +33,9 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 
 #### A user may view a line graph of each Action's average latencies by selecting the desired Action in the display
 
-### Demonstrations
+## Demonstrations
 
-## Choose a time period
+### Choose a time period
 
 <p>A user will select a period of time for which they would like to view their State Machine's latency averages in a drop down.
 </p>
@@ -43,13 +43,13 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 <img src="./ReadMeUtils/timePeriodAdjust.gif" width="250" height="250" style="block"/>
 </p>
 
-## Select desired hour, day, week or month
+### Select desired hour, day, week or month
 
 <p>Use slider to view latencies at a specific hour, day, week or month.</p>
 <p><img src="./ReadMeUtils/slider.gif" width="250" height="250" style = "block"/>
 </p>
 
-## View individual step latency averages as a chart
+### View individual step latency averages as a chart
 
 <p>To view the latency averages for each indivual action (step) as a chart, click on desired action.
 </p>
@@ -57,7 +57,7 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 <img src="./ReadMeUtils/steplatencychart.gif" width="250" height="250" style="block"/>
 </p>
 
-## View individual step latency averages on a heat map
+### View individual step latency averages on a heat map
 
 <p>To view the latency averages for each indivual action (step) on head map, hover over desired action within desired time period.
 </p>
@@ -71,14 +71,14 @@ GitHub: https://github.com/oslabs-beta/TimeClimb.git
 
 #### Permissions
  
-To grant users permission to perform actions on the resources required for this application, an IAM administrator will need to create an IAM policy for CloudWatch Logs that includes the actions FilterLogEvents as well as DescribeLogGroups. A Step Functions policy will also need to be created including the action DescribeStateMachine. These policies can then be attached to individual users, groups, or roles. Click <a href="https://www.youtube.com/watch?v=9n28d8ezrLQ">here</a> to learn more about how to create policy's, users and roles.
+To grant users permission to perform actions on the resources required for this application, an IAM administrator will need to create an IAM policy for CloudWatch Logs that includes the actions FilterLogEvents as well as DescribeLogGroups. A Step Function's policy will also need to be created including the action DescribeStateMachine. These policies can then be attached to individual users, groups, or roles. Click <a href="https://www.youtube.com/watch?v=9n28d8ezrLQ">here</a> to learn more about how to create policy's, users and roles.
 
 #### AWS Pricing
 
 Take note of AWS Pricing associated with the use of this application
 
 <ul>
-<li>Log Ingestion: This application uses CloudWatch to retrieve information about your State Machines. For State Machines, ingestion occurs on each execution start and end events as well as one each Step-level event</li>
+<li>Log Ingestion: This application uses CloudWatch to retrieve information about your State Machines. For State Machines, ingestion occurs on each execution start and end events as well as each Step-level event</li>
 <li>Log Storage over time: Once logs are ingested into CloudWatch, they incur storage costs over time. Stored data is charged based on the total GB stored. AWS charges $0.50 per GB of data ingested into CloudWatch Logs. AWS provides the first 5 GB of ingested log data per month for free.</li>
 <li>Log Data Scanning: This application uses FilteredLogEvents for API calls to AWS which filters log queries- helping reduce costs. Charges are based on the total volume of log data scanned, not the volume of data returned. AWS charges $0.005 per GB of data scanned. AWS offers a free tier covering the first 5 GB of scanned data per month and up to 1 million API requests for free.</li>
 <li>Data Transfer Costs: AWS charges $0.09 per GB for data transferred from CloudWatch to your application. The first 100 GB per month of data transfer out is free  </li>
@@ -88,7 +88,7 @@ Take note of AWS Pricing associated with the use of this application
 
 AWS CloudWatch Pricing: https://aws.amazon.com/cloudwatch/pricing/?nc1=h_ls
 
-EC2: Data Transwer Pricing: https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer
+EC2: Data Transfer Pricing: https://aws.amazon.com/ec2/pricing/on-demand/#Data_Transfer
 
 ### 3. Insert AWS Access Key and Secret Access Key
 
@@ -104,7 +104,7 @@ EC2: Data Transwer Pricing: https://aws.amazon.com/ec2/pricing/on-demand/#Data_T
 
 # Contribution Information:
 
-## Creating and Updating the database time_climb
+## Creating and Updating the time_climb database 
 
 #### Note: See complete example of .env file in .env.example
 
@@ -471,10 +471,10 @@ localhost:3000/api/average-latencies/:step_function_id/months
 
 ## Contributers 
 
-Austin Cheng
-Andrew Mott
-Paul Uhlenkott
-Sharon Patterson
+Austin Cheng,
+Andrew Mott,
+Paul Uhlenkott,
+Sharon Patterson,
 Alex Stewart
 
 <!-- PICK UP HERE -->
